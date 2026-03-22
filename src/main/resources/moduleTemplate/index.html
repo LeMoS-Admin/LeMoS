@@ -38,6 +38,7 @@
             }
             #fields {
                 flex-grow: 4;
+                max-width: 100%;
                 box-sizing: border-box;
                 display: grid;
                 grid-auto-columns: minmax(0, 1fr);
@@ -47,6 +48,7 @@
             }
             #protocol {
                 flex-grow: 1;
+                max-width: 100%;
                 display: flex;
                 flex-direction: column;
             }
@@ -129,7 +131,7 @@
             }
 
             span:not(.label) {
-                margin: 4px;
+                padding: 4px;
                 display: inline-block;
             }
             textarea {
@@ -144,11 +146,12 @@
 
             .fieldContainer {
                 display: flex;
-                flex: 1 1 0;
+                flex-grow: 1;
                 flex-direction: column;
             }
             .field {
-                flex: 1 1 0;
+                flex-grow: 1;
+                overflow: auto;
             }
             .field > *:not(span) {
                 margin: 0;
@@ -347,6 +350,11 @@
 
             <!--ADDITIONAL-IMPORTS-->
 
+            for(let form of document.getElementsByTagName("form"))
+            {
+                form.onsubmit = () => false;
+            }
+
             document.getElementById("scenarioSelector").addEventListener("change", () => _resetModule());
             document.getElementById("backwardX").addEventListener("click", () => _previousState(9));
             document.getElementById("backward2").addEventListener("click", () => _previousState(2));
@@ -473,15 +481,15 @@
                 }
             }
 
-            // Initialisierung
-            _resetModule();
-
             <!--STATES-->
 
             class Own
             {
                 <!--SPECIAL-FUNCTIONS-->
             }
+
+            // Initialisierung (darf erst ausgeführt werden, nachdem alles andere gelesen und angelegt wurde)
+            _resetModule();
         </script>
     </body>
 </html>

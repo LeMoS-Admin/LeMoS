@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=../../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S1
+  explanation: Minimale URI
+  initialization:
+    - Schema.value = "http"
+    - Host.value = "localhorst"
+    - Pfad.value = "Pfad/zum/Ziel"

@@ -1,0 +1,295 @@
+# yaml-language-server: $schema=../../LeMoS-Modul-Schema.json
+general:
+  heading: URI bilden
+  explanation: |
+    URIs (Uniform Resource Identifiers) dienen der Lokalisierung von Ressourcen durch einen Browser. <br>
+    Die meisten URIs dienen als HTTP- bzw. HTTPS-Anfragen, um Webseiten mittels Browser abzurufen. <br>
+    Zusätzlich haben URIs aber auch einige weitere Anwendungsfälle. <br>
+    Dieses Lernmodul soll daher einen Überblick über die Möglichkeiten einer URI schaffen.
+  sources:
+    - Webtechnologien-Skript zu CSS
+    - <a href='https://wiki.selfhtml.org/wiki/URL' target="_blank">Online-Überblick zu URIs</a>
+    - <a href='https://developer.mozilla.org/de/docs/Web/URI' target="_blank">Online-Dokumentation zu URIs</a>
+  contacts:
+    - name: Professor Dr. Dieter Wißmann
+      purpose: Fachliche Fragen
+      data:
+        Telefon: 09561 317-152
+        E-Mail: dieter.wissmann@hs-coburg.de
+        Büro: 2-127
+    - name: Professor Dr. Dieter Wißmann
+      purpose: Technische Fragen
+      data:
+        Telefon: 09561 317-152
+        E-Mail: dieter.wissmann@hs-coburg.de
+        Büro: 2-127
+  settings:
+    lemosVersion: 1.0.0
+    differentStepSizes: false
+  logger:
+    minWidth: 150
+      
+fields:
+  - id: Schema
+    explanation: |
+      Zugriffsmethode (Protokoll), mit der die Resource abzurufen ist. <br>
+      Hinweis: neben den hier zur Auswahl stehenden Optionen gibt es noch einige weitere, die in der Online-Dokumentation zu URIs nachgelesen werden können.
+    type: SELECT
+    options:
+      - id: ftp
+        explanation: File Transfer Protocol – Übertragen von Dateien
+      - id: http
+        explanation: Hypertext Transfer Protocol – Hauptsächlich zum Aufruf von Webseiten
+      - id: https
+        explanation: Sicherere Variante von http
+      - id: mailto
+        explanation: Versenden einer E-Mail
+    style:
+      row: 1
+      column: 1
+      width: 4
+  - id: Host
+    name: Zuständigkeit (Authority) – Host
+    explanation: |
+      Domainname oder die IP-Adresse des Servers, der die Ressource bereitstellt. <br>
+      Hinweis: Domainnamen werden via DNS (Domain Name Service) in IP-Adressen aufgelöst.
+    type: TEXT
+    allowEmpty: true
+    restrictions:
+      - message: Für E-Mails (mailto) ist keine Zuständigkeit (Authority) anzugeben.
+        terms:
+          - "!(Schema.value === 'mailto' && !Host.isEmpty())"
+      - message: Für ftp, http und https ist eine Zuständigkeit (Authority) zwingend erforderlich.
+        terms:
+          - "!(Schema.value !== 'mailto' && Host.isEmpty())"
+    style:
+      row: 2
+      column: 1
+  - id: Port
+    name: Port (Optional)
+    explanation: |
+      Gibt an, unter welchem Port der Server die Anfrage erwartet. <br>
+      Hinweis: standardmäßig hört HTTP auf Port 80 und HTTPS auf Port 443.
+      Alle weiteren Schemata definieren entweder ebenfalls einen Standard oder machen die Angabe verpflichtend.
+    type: TEXT
+    datatype: INTEGER
+    allowEmpty: true
+    restrictions:
+      - message: Für E-Mails (mailto) ist keine Zuständigkeit (Authority) anzugeben.
+        terms:
+          - "!(Schema.value === 'mailto' && !Port.isEmpty())"
+    style:
+      row: 2
+      column: 2
+  - id: UserName
+    name: Benutzername (Optional)
+    explanation: |
+      Benutzername, dient zur Authentifizierung beim Server. <br>
+      Hinweis: nicht empfohlen, da dies sensible Informationen offenlegen kann.
+    type: TEXT
+    allowEmpty: true
+    restrictions:
+      - message: Für E-Mails (mailto) ist keine Zuständigkeit (Authority) anzugeben.
+        terms:
+          - "!(Schema.value === 'mailto' && !UserName.isEmpty())"
+    style:
+      row: 2
+      column: 3
+  - id: UserPwd
+    name: Benutzerpasswort (Optional)
+    explanation: |
+      Benutzer, dient in Kombination mit dem Benutzernamen zur Authentifizierung beim Server. <br>
+      Hinweis: nicht empfohlen, da dies sensible Informationen offenlegen kann.
+    type: TEXT
+    allowEmpty: true
+    restrictions:
+      - message: Für E-Mails (mailto) ist keine Zuständigkeit (Authority) anzugeben.
+        terms:
+          - "!(Schema.value === 'mailto' && !UserPwd.isEmpty())"
+      - message: Wenn ein Benutzerpasswort übertragen werden soll, muss auch ein Benutzername angegeben werden.
+        terms:
+          - "!(UserName.isEmpty() && !UserPwd.isEmpty())"
+    style:
+      row: 2
+      column: 4
+  - id: Pfad
+    explanation: |
+      Hierarchischer Pfad, unter dem die Resource beim Server zu finden ist. <br>
+      Hinweis: einzelne Pfadteile werden stets durch Schrägstriche (/) getrennt.
+    type: TEXT
+    style:
+      row: 3
+      column: 1
+      width: 4
+  - id: Parameter
+    name: Parameter (Query, Optional)
+    explanation: |
+      Zusätzliche Abfrage-Parameter als Schlüssel-Wert-Paare. <br>
+      Hinweis: häufig verwendet, um Informationen an die aufgerufene Webseite zu übertragen.
+    type: TABLE
+    allowEmpty: true
+    innerFields:
+      - id: Key
+        name: Schlüssel (Name des Parameters)
+        type: TEXT
+      - id: Value
+        name: Wert (Inhalt des Parameters)
+        type: TEXT
+    style:
+      row: 4
+      column: 1
+      width: 4
+  - id: Fragment
+    name: Fragment (Optional)
+    explanation: |
+      Element (Fragment), zu dem der Browser nach dem Laden der Ressource springen soll. <br>
+    type: TEXT
+    allowEmpty: true
+    restrictions:
+      - message: Für E-Mails (mailto) ist kein Fragment anzugeben.
+        terms:
+          - "!(Schema.value === 'mailto' && !Fragment.isEmpty())"
+    style:
+      row: 5
+      column: 1
+      width: 4
+  - id: URI
+    name: Fertige URI
+    explanation: |
+      URI, die sich aus den konfigurierten Informationen ergibt. <br>
+    type: SPLIT
+    usage: OUTPUT
+    style:
+      row: 6
+      column: 1
+      width: 4
+
+states:
+  - id: Z0
+    name: Lernmodul initialisiert
+    explanation: Einstieg
+    type: ENTRY
+    actions:
+      - "Module.print('Willkommen beim Lernmodul zur Bildung einer URI.')"
+      - "Module.print('Bitte konfiguriere alle gewünschten Teile der URI über die dafür vorgesehenen Felder oder lade ein Szenario.')"
+      - "Module.print('')"
+    transitions:
+      - target: Z1
+  - id: Z1
+    name: Schema ergänzt
+    actions:
+      - "Module.print('Zur Zusammenstellung der URI ist zunächst das Schema zu bilden.')"
+      - let temp;
+
+      - if (Schema.value === "mailto") {
+      -   Module.print("Für 'mailto' ist hierzu der Name zu übernehmen und ein Doppelpunkt (:) zu ergänzen.")
+      -   temp = Schema.value + ":" }
+      - else { 
+      -   Module.print(`Für '${Schema.value}' ist hierzu der Name zu übernehmen und ein Doppelpunkt gefolgt von zwei Schrägstrichen (://) zu ergänzen.`)
+      -   temp = Schema.value + "://" }
+
+      - "Module.print(`Das gebildete Schema lautet somit: '${temp}'`)"
+      - URI.add(temp)
+      - "Module.print()"
+    transitions:
+      - target: Z3
+        conditions:   # Für E-Mails gibt es keine Zuständigkeit, Z2 kann daher übersprungen werden
+          - terms:
+              - Schema.value === "mailto"
+      - target: Z2
+  - id: Z2
+    name: Zuständigkeit ergänzt
+    actions:
+      - "Module.print('Als nächstes ist die Zuständigkeit (Authority) zu bilden.')"
+      - let temp = ""
+
+      - if (!UserPwd.isEmpty()) {
+      -   Module.print("Da ein Nutzer mit Name und Passwort konfiguriert wurde, beginnt die Zuständigkeit mit diesen Angaben (getrennt durch einen ':', gefolgt von einem '@').")
+      -   temp = encodeURI(UserName.value) + ":" + encodeURI(UserPwd.value) + "@"
+      -   "Module.print(`Der Benutzer-Teil der Zuständigkeit lautet somit: '${temp}'`) }"
+      - else if (!UserName.isEmpty()) {
+      -   Module.print("Da ein Nutzername ohne Passwort konfiguriert wurde, beginnt die Zuständigkeit mit diesem, gefolgt von einem '@'.")
+      -   temp = encodeURI(UserName.value) + "@"
+      -   "Module.print(`Der Benutzer-Teil der Zuständigkeit lautet somit: '${temp}'`) }"
+      - else
+      -   Module.print("Da kein Nutzer konfiguriert wurde, ist diesbezüglich nichts zu ergänzen.")
+      
+      - if(temp === '' && Port.isEmpty())
+      -   "Module.print(`Da weder Benutzer noch Port konfiguriert wurden, entspricht die Zuständigkeit dem Host-Teil: ${encodeURI(Host.value)}`)"
+      - else if(temp === '' && !Port.isEmpty())
+      -   "Module.print(`Da kein Benutzer konfiguriert wurde, beginnt die Zuständigkeit mit dem Host-Teil: ${encodeURI(Host.value)}`)"
+      - else
+      -   "Module.print(`Nun kann der Host-Teil ergänzt werden, die Zuständigkeit lautet somit: ${temp + encodeURI(Host.value)}`)"
+      - temp += encodeURI(Host.value)
+      
+      - if (!Port.isEmpty()) {
+      -   Module.print("Da ein Port konfiguriert wurde, wird dieser durch einen Doppelpunkt (:) getrennt an Zuständigkeit angefügt.")
+      -   temp += ":" + Port.value }
+      - else
+      -   Module.print("Da kein Port konfiguriert wurde, ist diesbezüglich nichts zu ergänzen.")
+
+      - Module.print("Abschließend ist noch ein Schrägstrich (/) zur Abtrennung vom folgenden Pfad anzuhängen.")
+      - temp += "/"
+
+      - "Module.print(`Die gebildete Zuständigkeit (Authority) lautet somit: '${temp}'`)"
+      - URI.add(temp)
+      - "Module.print()"
+    transitions:
+      - target: Z3
+  - id: Z3
+    name: Pfad ergänzt
+    actions:
+      - "Module.print('Als nächstes ist der Pfad anzuhängen.')"
+      - let temp = encodeURI(Pfad.value)
+      - if (temp.startsWith("/")) temp = temp.substring(1) # Falls vorhanden, vorausgehenden Schrägstrich entfernen
+      - "Module.print(`Die anzuhängende Pfad lautet: '${temp}'`)"
+      - URI.add(temp)
+      - "Module.print()"
+    transitions:
+      - target: Z4
+  - id: Z4
+    name: Parameter ergänzt
+    actions:
+      - "Module.print('Als nächstes folgen die Parameter.')"
+      - if(Parameter.isEmpty()) { 
+      -   Module.print("Da keine Parameter konfiguriert wurden, ist diesbezüglich nichts zu ergänzen.") 
+      -   "Module.print()"
+      -   return }
+      
+      - Module.print("Zunächst müssen die einzelnen Parameter, bestehend aus Schlüssel und Wert, zusammengesetzt werden (durch '=' getrennt).")
+      - let encoder = (val) => {
+      -   if(Schema.value === "mailto") return encodeURIComponent(val)
+      -   else return encodeURIComponent(val).replaceAll("%20", "+") }
+      - let temp = Parameter.value.map(obj => encoder(obj.get("Key")) + "=" + encoder(obj.get("Value")))
+      - "Module.print(`Die zusammengesetzten Parameter lauten wie folgt: ${temp}`)"
+
+      - Module.print("Daraus können jetzt die Abfrage (Query) zusammengebaut werden, indem die Parameter durch '&' getrennt zusammengesetzt werden.")
+      - temp = temp.join("&");
+      - "Module.print(`Die zusammengesetzte Abfrage lautet nun: ${temp}`)"
+
+      - Module.print("Abschließend muss die Abfrage (Query) lediglich durch ein Fragezeichen (?) getrennt an die bisherige URI angehangen werden.")
+      - temp = "?" + temp
+      - "Module.print(`Die anzuhängende Abfrage (Query) lautet somit: '${temp}'`)"
+
+      - URI.add(temp)
+      - "Module.print()"
+    transitions:
+      - target: Z6
+        conditions:   # Für E-Mails gibt es keine Fragmente, Z5 kann daher übersprungen werden
+          - terms:
+              - Schema.value === "mailto"
+      - target: Z5
+  - id: Z5
+    name: Fragment ergänzt
+    actions:
+      - "Module.print('Zu guter Letzt kann noch ein Fragment, zu dem der Browser nach dem Laden der Ressource springen soll, angehangen werden.')"
+      - if(Fragment.isEmpty()) 
+      -   Module.print("Da kein Fragment konfiguriert wurde, ist diesbezüglich nichts zu ergänzen.")
+      - else {
+      -   Module.print("Das Fragment muss lediglich durch '#' getrennt an die bisherige URI angehangen werden.")
+      -   URI.add("#", encodeURIComponent(Fragment.value).replaceAll("%20", "+")) }
+      - "Module.print()"
+    transitions:
+      - target: Z6
+  - id: Z6
+    name: Modul abgeschlossen

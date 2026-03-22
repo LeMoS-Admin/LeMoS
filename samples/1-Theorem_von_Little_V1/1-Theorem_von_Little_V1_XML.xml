@@ -74,7 +74,7 @@
                 <restriction>
                     <message>Nur positive Zahlenwerte</message>
                     <terms>
-                        <operation>N &gt;= 0</operation>
+                        <operation>Number.isNaN(N.value) || N &gt;= 0</operation>
                     </terms>
                 </restriction>
             </restrictions>
@@ -91,7 +91,7 @@
                 <restriction>
                     <message>Nur positive Zahlenwerte</message>
                     <terms>
-                        <operation>Y &gt;= 0</operation>
+                        <operation>Number.isNaN(Y.value) || Y &gt;= 0</operation>
                     </terms>
                 </restriction>
             </restrictions>
@@ -108,7 +108,7 @@
                 <restriction>
                     <message>Nur positive Zahlenwerte</message>
                     <terms>
-                        <operation>W &gt;= 0</operation>
+                        <operation>Number.isNaN(W.value) || W &gt;= 0</operation>
                     </terms>
                 </restriction>
             </restrictions>

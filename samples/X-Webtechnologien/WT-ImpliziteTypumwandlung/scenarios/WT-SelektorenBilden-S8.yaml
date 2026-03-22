@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=../../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S8
+  explanation: "String + String"
+  initialization:
+    - A_Type.value = "String"
+    - A_Value.value = "Hallo"
+    - B_Type.value = "String"
+    - B_Value.value = "Welt!"

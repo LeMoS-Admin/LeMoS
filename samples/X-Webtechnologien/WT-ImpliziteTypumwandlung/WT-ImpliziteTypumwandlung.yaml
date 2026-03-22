@@ -1,0 +1,250 @@
+# yaml-language-server: $schema=../../LeMoS-Modul-Schema.json
+general:
+  heading: Implizite Typumwandlung
+  explanation: |
+    Implizite Typumwandlungen sind Änderungen des Datentyps einer Variable, die automatisch und ohne explizite Umwandlungsbefehle durchgeführt werden. <br>
+    Hintergrund: In JavaScript ist für Variablen kein Datentyp anzugeben, "unter der Haube" haben sie dennoch verschiedene Typen, die je nach Wert der Variable automatisch festgelegt werden. <br>
+    Je nach Datentyp können sich die Variablen dadurch unterschiedlich und gegebenenfalls auch überraschend verhalten. <br>
+    Dieses Lernmodul behandelt daher die Konsequenzen einiger impliziter Typumwandlungen für primitive Datentypen und anschließend auch für Objekte.
+  sources:
+    - Webtechnologien-Skript zu JavaScript
+    - <a href='https://developer.mozilla.org/de/docs/Web/JavaScript/Guide/Data_structures' target="_blank">Online-Dokumentation zu Datentypen</a>
+    - <a href='https://developer.mozilla.org/de/docs/Glossary/Type_coercion' target="_blank">Online-Dokumentation zur Typumwandlung</a>
+  contacts:
+    - name: Professor Dr. Dieter Wißmann
+      purpose: Fachliche Fragen
+      data:
+        Telefon: 09561 317-152
+        E-Mail: dieter.wissmann@hs-coburg.de
+        Büro: 2-127
+    - name: Professor Dr. Dieter Wißmann
+      purpose: Technische Fragen
+      data:
+        Telefon: 09561 317-152
+        E-Mail: dieter.wissmann@hs-coburg.de
+        Büro: 2-127
+  settings:
+    lemosVersion: 1.0.0
+  logger:
+    minWidth: 200
+  variables:
+    - name: A
+    - name: B
+  functions:
+    - name: konvertiereDatentyp
+      parameters:
+        - Wert
+        - Ziel
+      implementation:
+        - |
+          switch (Ziel.toUpperCase()) {
+            case 'STRING':
+              if (Wert !== undefined) return String(Wert);
+              else return "";
+            case 'NUMBER': return Number(Wert);
+            case 'BOOLEAN': return Wert.trim().toLowerCase() === 'true';
+            case 'UNDEFINED': return undefined;
+          }
+    - name: veranschaulicheObjektverhalten
+      parameters:
+        - ObjektA
+        - ObjektB
+        - toStringSimulieren
+      implementation:
+        - let a, b;
+        - if(toStringSimulieren) {
+        -   a = String(ObjektA.value)
+        -   b = String(ObjektB.value)
+        - "} else {"
+        -   a = String(ObjektA)
+        -   b = String(ObjektB)
+        - '}'
+
+        - "Module.print(`  Plus-Operator: ${a} + ${b} ergibt ${ObjektA + ObjektB}`)"
+        - "Module.print(`  Minus-Operator: ${a} - ${b} ergibt ${ObjektA - ObjektB}`)"
+        - "Module.print(`  Kleiner-Als-Operator: ${a} < ${b} ergibt ${ObjektA < ObjektB}`)"
+        - "Module.print(`  Kleiner-Gleich: ${a} <= ${b} ergibt ${ObjektA <= ObjektB}`)"
+        - "Module.print(`  Gleichheit: ${ObjektA.toSuperString()} == ${ObjektB.toSuperString()} ergibt ${ObjektA == ObjektB}`)"
+        - "Module.print(`  Strikte Gleichheit: ${ObjektA.toSuperString()} === ${ObjektB.toSuperString()} ergibt ${ObjektA === ObjektB}`)"
+        - "Module.print(`  Konsolenausgabe: console.log(LinkesObjekt + ', ' + RechtesObjekt) ergibt ${ObjektA}, ${ObjektB}`)"
+        - "Module.print('')"
+  imports:
+    - name: Objekt00, Objekt01, Objekt10, Objekt11
+      resource:
+        id: Objekte
+        source: Objekte.js
+
+fields:
+  - id: "A_Type"
+    name: Linker Datentyp
+    explanation: "Datentyp des Werts, der links der verschiedenen Operatoren liegt"
+    type: SELECT
+    options:
+      - id: String
+        explanation: beliebige Zeichenkette, auch leer
+      - id: Number
+        explanation: beliebige Zahl, kann Ganzzahl oder Kommazahl sein
+      - id: Boolean
+        explanation: boolescher Wert, entweder true oder false
+      - id: Undefined
+        explanation: kein Wert anzugeben
+    style:
+      row: 1
+      column: 1
+  - id: "A_Value"
+    name: Linker Wert
+    explanation: "Wert, der links der verschiedenen Operatoren liegt"
+    type: TEXT
+    allowEmpty: true
+    restrictions:
+      - message: Werte des Datentyps "Number" oder "Boolean" dürfen nicht leer sein.
+        terms:
+          - "!((A_Type.value === 'Number' || A_Type.value === 'Boolean') && A_Value.isEmpty())"
+      - message: Werte des Datentyps "Boolean" müssen "true" oder "false" sein.
+        terms:
+          - "!(A_Type.value === 'Boolean' && !(A_Value.value.trim().toLowerCase() === 'true' || A_Value.value.trim().toLowerCase() === 'false'))"
+      - message: Werte des Datentyps "Undefined" müssen leer sein.
+        terms:
+          - "!(A_Type.value === 'Undefined' && !A_Value.isEmpty())"
+    style:
+      row: 1
+      column: 2
+  - id: "B_Type"
+    name: Rechter Datentyp
+    explanation: "Datentyp des Werts, der links der verschiedenen Operatoren liegt"
+    type: SELECT
+    options:
+      - id: String
+        explanation: beliebige Zeichenkette, auch leer
+      - id: Number
+        explanation: beliebige Zahl, kann Ganzzahl oder Kommazahl sein
+      - id: Boolean
+        explanation: boolescher Wert, entweder true oder false
+      - id: Undefined
+        explanation: kein Wert anzugeben
+    style:
+      row: 2
+      column: 1
+  - id: "B_Value"
+    name: Rechter Wert
+    explanation: "Wert, der links der verschiedenen Operatoren liegt"
+    type: TEXT
+    allowEmpty: true
+    restrictions:
+      - message: Werte des Datentyps "Number" oder "Boolean" dürfen nicht leer sein.
+        terms:
+          - "!((B_Type.value === 'Number' || B_Type.value === 'Boolean') && B_Value.isEmpty())"
+      - message: Werte des Datentyps "Boolean" müssen "true" oder "false" sein.
+        terms:
+          - "!(B_Type.value === 'Boolean' && !(B_Value.value.trim().toLowerCase() === 'true' || B_Value.value.trim().toLowerCase() === 'false'))"
+      - message: Werte des Datentyps "Undefined" müssen leer sein.
+        terms:
+          - "!(B_Type.value === 'Undefined' && !B_Value.isEmpty())"
+    style:
+      row: 2
+      column: 2
+
+states:
+  - id: Z0
+    name: Lernmodul initialisiert
+    explanation: Einstieg
+    type: ENTRY
+    actions:
+      - "Module.print('Willkommen beim Lernmodul zur Betrachtung von impliziten Typumwandlungen in JavaScript.')"
+      - "Module.print('Bitte gib die Werte ein, die links und rechts der Operatoren stehen sollen, oder lade ein Szenario.')"
+      - "Module.print('')"
+      - A.value = Own.konvertiereDatentyp(A_Value.value, A_Type.value)
+      - B.value = Own.konvertiereDatentyp(B_Value.value, B_Type.value)
+    transitions:
+      - target: Z1
+  - id: Z1
+    name: Plus-Operator
+    importance: LOW
+    actions:
+      - "Module.print(`Der Plus-Operator führt zu folgendem Ergebnis: ${A.value} + ${B.value} ergibt ${A.value + B.value}`)"
+      - "if(typeof A.value === 'number' && typeof B.value === 'number') Module.print('Hintergrund: wenn beide Operanden eine Zahl sind, ist nichts umzuwandeln und die Operanden werden addiert.')"
+      - "else if(typeof A.value === 'boolean' && typeof B.value === 'boolean') Module.print('Hintergrund: wenn beide Operanden boolesche Werte sind, werden sie in Zahlen umgewandelt, sodass die sie addiert werden können.')"
+      - "else if(typeof A.value === 'string' && typeof B.value === 'string') Module.print('Hintergrund: wenn beide Operanden eine Zeichenkette sind, ist nichts umzuwandeln und die Operanden werden konkateniert (zusammengesetzt).')"
+      - "else if(typeof A.value === 'string' || typeof B.value === 'string') Module.print('Hintergrund: wenn nur einer der Operanden eine Zeichenkette ist, wird der andere in eine Zeichenkette umgewandelt, sodass die Operanden konkateniert (zusammengesetzt) werden können.')"
+      - "else if(typeof A.value === 'undefined' || typeof B.value === 'undefined') Module.print('Hintergrund: wenn einer der Operanden undefined und der andere keine Zeichenkette ist, kann keine Berechnung durchgeführt werden, sodass das Ergebnis stets \"NaN\" (Not a Number) lautet.')"
+      - "else if(typeof A.value === 'number' || typeof B.value === 'number') Module.print('Hintergrund: wenn einer der Operanden eine Zahl und der andere ein boolescher Wert ist, wird der boolesche Wert in eine Zahl umgewandelt, sodass die Operanden addiert werden können.')"
+      - "Module.print('')"
+    transitions:
+      - target: Z2
+  - id: Z2
+    name: Weitere arithmetische Operatoren
+    importance: LOW
+    actions:
+      - "Module.print('Die weiteren arithmetischen Operatoren konvertieren die Operanden stets in Zahlen.')"
+      - "Module.print('Hinweis: falls keine Konvertierung möglich ist, wird in \"NaN\" (Not a Number) konvertiert, sodass auch das Ergebnis stets \"NaN\" lautet.')"
+      - "Module.print('Die Ergebnisse lauten somit wie folgt:')"
+      - "Module.print(`  Minus-Operator: ${A.value} - ${B.value} ergibt ${A.value - B.value}`)"
+      - "Module.print(`  Mal-Operator: ${A.value} * ${B.value} ergibt ${A.value * B.value}`)"
+      - "Module.print(`  Geteilt-Operator: ${A.value} / ${B.value} ergibt ${A.value / B.value}`)"
+      - "Module.print(`  Prozent-Operator: ${A.value} % ${B.value} ergibt ${A.value % B.value}`)"
+      - "Module.print('')"
+    transitions:
+      - target: Z3
+  - id: Z3
+    name: Vergleichende Operatoren
+    importance: LOW
+    actions:
+      - "Module.print('Auch bei vergleichenden Operatoren können implizite Typumwandlungen durchgeführt werden, sie führt zu folgenden Ergebnissen:')"
+      - "Module.print(`  Kleiner-Als-Operator: ${A.value} < ${B.value} ergibt ${A.value < B.value}`)"
+      - "Module.print(`  Kleiner-Gleich: ${A.value} <= ${B.value} ergibt ${A.value <= B.value}`)"
+      - "Module.print(`  Größer-Als: ${A.value} > ${B.value} ergibt ${A.value > B.value}`)"
+      - "Module.print(`  Größer-Gleich: ${A.value} >= ${B.value} ergibt ${A.value >= B.value}`)"
+      - "Module.print(`  Gleichheit: ${A.value} == ${B.value} ergibt ${A.value == B.value}`)"
+      - "Module.print(`  Ungleichheit: ${A.value} != ${B.value} ergibt ${A.value != B.value}`)"
+
+      - "if(typeof A.value === typeof B.value) Module.print('Hintergrund: wenn beide Operanden vom gleichen Datentyp sind, ist nichts umzuwandeln und der Vergleich somit eindeutig.')"
+      - "else if(typeof A.value === 'undefined' || typeof B.value === 'undefined') Module.print('Hintergrund: wenn nur einer der Operanden undefined ist, lautet das Ergebnis stets false (außer beim Ungleichheit-Operator, hier ist es stets true).')"
+      - "else if(typeof A.value === 'number' || typeof B.value === 'number') Module.print('Hintergrund: wenn nur einer der Operanden eine Zahl ist, wird der andere in eine Zahl umgewandelt, sodass der Vergleich eindeutig wird. Ist keine Konvertierung möglich, wird in \"NaN\" (Not a Number) konvertiert, und das Ergebnis lautet stets false.')"
+      - "else if(typeof A.value === 'boolean' || typeof B.value === 'boolean') Module.print('Hintergrund: wenn nur einer der Operanden ein boolescher Wert ist, werden beide in eine Zahl umgewandelt, sodass der Vergleich eindeutig wird. Ist keine Konvertierung möglich, wird in \"NaN\" (Not a Number) konvertiert, und das Ergebnis lautet stets false.')"
+      - "else if(typeof A.value === 'string' || typeof B.value === 'string') Module.print('Hintergrund: wenn einer der Operanden eine Zeichenkette und der andere weder undefined, noch ein boolescher Wert oder eine Zahl ist, wird der andere in eine Zeichenkette umgewandelt, sodass der Vergleich eindeutig wird.')"
+      - "Module.print('')"
+    transitions:
+      - target: Z4
+  - id: Z4
+    name: Strikte Gleichheit-Operatoren
+    importance: HIGH
+    actions:
+      - "Module.print('Um die implizite Typumwandlung zu verhindern, kann bei Gleichheit- und Ungleichheit-Operatoren auf die jeweils strikte Version gesetzt werden, dies führt zu folgenden Ergebnissen:')"
+      - "Module.print(`  Strikte Gleichheit: ${A.value} === ${B.value} ergibt ${A.value === B.value}`)"
+      - "Module.print(`  Strikte Ungleichheit: ${A.value} !== ${B.value} ergibt ${A.value !== B.value}`)"
+      - "if(typeof A.value === typeof B.value) Module.print('Hintergrund: wenn beide Operanden den gleichen Datentyp haben, entspricht der strikte Vergleich dem normalen.')"
+      - "else Module.print('Hintergrund: wenn die beiden Operanden nicht den gleichen Datentyp haben, wird dennoch nicht konvertiert, sodass sie stets ungleich sind.')"
+      - "Module.print('')"
+    transitions:
+      - target: Z5
+  - id: Z5
+    name: Objektverhalten
+    importance: LOW
+    actions:
+      - "Module.print('Für Operanden, die Instanz einer beliebigen Klasse und somit ein Object sind, unterscheidet sich das Verhalten zusätzlich in Abhängigkeit von den implementierten Methoden:')"
+      - "Module.print(`Wenn keine weiteren Methoden implementiert wurden, wird das Objekt implizit in seine Objektreferenz umgewandelt, daraus ergeben sich folgende Ergebnisse:`)"
+      - Own.veranschaulicheObjektverhalten(new Objekt00(A.value, "vom linken Wert"), new Objekt00(B.value, "vom rechten Wert"), false)
+    transitions:
+      - target: Z6
+  - id: Z6
+    name: Objektverhalten
+    importance: LOW
+    actions:
+      - "Module.print(`Wenn nur die toString()-Methode implementiert wurde, wird das Objekt implizit in eine Zeichenkette umgewandelt (entspricht hier dem linken bzw. rechten Wert als String), daraus ergeben sich folgende Ergebnisse:`)"
+      - Own.veranschaulicheObjektverhalten(new Objekt01(A.value, "vom linken Wert"), new Objekt01(B.value, "vom rechten Wert"), true)
+    transitions:
+      - target: Z7
+  - id: Z7
+    name: Objektverhalten
+    importance: LOW
+    actions:
+      - "Module.print(`Wenn nur die valueOf()-Methode implementiert wurde, wird das Objekt implizit in seinen Wert umgewandelt (entspricht hier dem linken bzw. rechten Wert im jeweils definierten Datentyp), daraus ergeben sich folgende Ergebnisse:`)"
+      - Own.veranschaulicheObjektverhalten(new Objekt10(A.value, "vom linken Wert"), new Objekt10(B.value, "vom rechten Wert"), true)
+    transitions:
+      - target: Z8
+  - id: Z8
+    name: Objektverhalten
+    importance: HIGH
+    actions:
+      - "Module.print(`Wenn beide Methoden implementiert wurden, wird das Objekt implizit meist in seinen Wert, teilweise aber auch in eine Zeichenkette umgewandelt (hier nur bei der Konsolenausgabe der Fall), daraus ergeben sich folgende Ergebnisse:`)"
+      - Own.veranschaulicheObjektverhalten(new Objekt11(A.value, "vom linken Wert"), new Objekt11(B.value, "vom rechten Wert"), true)

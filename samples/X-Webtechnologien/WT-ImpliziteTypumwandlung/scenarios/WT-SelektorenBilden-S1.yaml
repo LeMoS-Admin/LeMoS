@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=../../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S1
+  explanation: "Boolean + Boolean"
+  initialization:
+    - A_Type.value = "Boolean"
+    - A_Value.value = false
+    - B_Type.value = "Boolean"
+    - B_Value.value = true

@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=../../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S3
+  explanation: E-Mail URI
+  initialization:
+    - Schema.value = "mailto"
+    - Pfad.value = "max@mustermann.de; eva@mustermann.de"
+    - Parameter.add(["subject", "Max eröffnet Muster-Metzger"])
+    - Parameter.add(["cc", "maja@mustermann.de; martin@mustermann.de"])
+    - Parameter.add(["bcc", "metzger@mustermann.de"])

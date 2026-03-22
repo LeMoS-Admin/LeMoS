@@ -23,7 +23,7 @@ public class Operation
         StringBuilder actionsJS = new StringBuilder();
         for (Operation action : actions)
         {
-            actionsJS.append(action.getOperationJS()).append(";\n");
+            actionsJS.append(action.getOperationJS()).append("\n");
         }
         return actionsJS.toString();
     }

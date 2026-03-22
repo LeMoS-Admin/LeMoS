@@ -107,10 +107,7 @@ export default class FieldManager
 		try
 		{
 			this.validateEmptiness(tolerateEmptiness);
-			if (!this.isEmpty())
-			{
-				this.validateInternal(undefined, tolerateEmptiness);
-			}
+			this.validateInternal(undefined, tolerateEmptiness);
 			this.setFailed(false);
 		}
 		catch (err)
@@ -129,10 +126,7 @@ export default class FieldManager
 			try
 			{
 				entry.validateEmptiness(tolerateEmptiness);
-				if (!entry.isEmpty())
-				{
-					entry.validateInternal(this, tolerateEmptiness);
-				}
+				entry.validateInternal(this, tolerateEmptiness);
 				entry.setFailed(false);
 			}
 			catch (err)
@@ -169,7 +163,7 @@ export default class FieldManager
 
 	validateDatatype(value = this.getValue())
 	{
-		if (!this.#datatypeCorrect(value))
+		if (!this.isEmpty() && !this.#datatypeCorrect(value)) // Vorherige Prüfung, ob leer, um keine Fehler durch leere Zahlen zu erzugen
 		{
 			throw new ValidationError("Wert '" + value + "' ist kein " + this.datatype);
 		}

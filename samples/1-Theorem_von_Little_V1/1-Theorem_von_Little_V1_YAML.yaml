@@ -51,7 +51,7 @@ fields:
     restrictions:
       - message: Nur positive Zahlenwerte
         terms:
-          - N >= 0
+          - Number.isNaN(N.value) || N >= 0   # Number.isNaN() erforderlich, da Restriktionen auch bei leerem Feld geprüft werden (konvertiert zu NaN)
   - id: "Y"
     name: Ankunftsrate
     explanation: Durchschnittliche Ankunftsrate neuer Einträge
@@ -62,7 +62,7 @@ fields:
     restrictions:
       - message: Nur positive Zahlenwerte
         terms:
-          - Y >= 0
+          - Number.isNaN(Y.value) || Y >= 0   # Number.isNaN() erforderlich, da Restriktionen auch bei leerem Feld geprüft werden (konvertiert zu NaN)
   - id: "W"
     name: Wartezeit
     explanation: Durchschnittliche Wartezeit eines Eintrags
@@ -73,7 +73,7 @@ fields:
     restrictions:
       - message: Nur positive Zahlenwerte
         terms:
-          - W >= 0
+          - Number.isNaN(W.value) || W >= 0   # Number.isNaN() erforderlich, da Restriktionen auch bei leerem Feld geprüft werden (konvertiert zu NaN)
 states:
   - id: Z0
     name: Lernmodul initialisiert

@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=../../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S2
+  explanation: Maximale URI
+  initialization:
+    - Schema.value = "https"
+    - Host.value = "localhorst"
+    - Port.value = 8080
+    - UserName.value = "Max.Mustermann"
+    - UserPwd.value = "MusterusMaximus"
+    - Pfad.value = "Pfad/zum/Ziel"
+    - Parameter.add(["vorname", "Max"])
+    - Parameter.add(["nachname", "Mustermann"])
+    - Parameter.add(["hobby", "Max mag malen"])
+    - Fragment.value = "Besonderheiten"

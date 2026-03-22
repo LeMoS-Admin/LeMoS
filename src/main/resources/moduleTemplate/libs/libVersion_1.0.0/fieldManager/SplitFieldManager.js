@@ -33,8 +33,9 @@ export default class SplitFieldManager extends MultilineableFieldManager
 		value = value.split(this.separator);
 		if (!keepEmptyEntries)
 		{
-			value = value.filter(entry => entry.trim() !== "");
+			value = value.filter(entry => entry !== "");
 		}
+
 		if (this.datatype === "Integer" || this.datatype === "Number")
 		{
 			value = value.map(val => Number(val.replace(",", "."))); // Dezimaltrennzeichen anpassen (Dezimalkomma durch Dezimalpunkt ersetzen)

@@ -1,38 +1,16 @@
-Wichtigste Änderungen in LeMoS-1.2.0:
-- Kompatibilität: abwärtskompatibel zu Version 1.1.0, wenn folgende Maßnahmen in der beschriebenen Reihenfolge getroffen werden:
-  - Attribut "libraryVersion" durch "lemosVersion" ersetzen
-  - Attribut "fixLines" durch Attribute "minLines" und "maxLines" mit gleichem Wert ersetzen
-  - Verwendungen von "Module" durch "Fields" ersetzen
-  - Verwendungen von "Logger" durch "Module" ersetzen
-  - Aufrufe von "Fields.isFilled(" durch "Fields.areFilled(" ersetzen
-  - Aufrufe von "Module.set(" durch "Module.setLogger(" ersetzen
-  - Aufrufe von "Module.clear()" durch "Module.clearLogger()" ersetzen
-  - Aufrufe von ".length()" durch ".getLength()" ersetzen
-  - Optional: Aufrufe von ".length" bei Strings, Arrays und Maps zur Vereinheitlichung ebenfalls durch ".getLength()" ersetzen
+Wichtigste Änderungen in LeMoS-1.2.1:
+- Kompatibilität: abwärtskompatibel zu Version 1.2.0
 - Strukturell
-  - Überarbeitung der ReadMe-Dateien (Rechtschreibfehler und Inkonsistenzen)
-  - Anpassung der Dateinamen (kein Camel-Case wie "LeMoS")
-  - Variable für LeMoS-Optionen am Anfang der Skripte eingebaut
 - Generierung
-  - Attribut libraryVersion (Settings) in lemosVersion umbenannt, um für mehr Klarheit bei potenzieller zukünftiger Kompatibilitätslogik zu sorgen
-  - Attribut "fixLines" in MultilineableFields entfernt, da es redundant zu minLines und maxLines (bei gleichem Wert) war
 - Lernmodul
-  - Methode length() von verschiedenen Feldern in getLength() umbenannt, um die Methode auch für Strings, Arrays und Maps anbieten zu können (length() würde hier zu Namenskollisionen führen)
-  - TextFields und SplitFields und ListFields mit datatype "NUMBER" oder "INTEGER" wandeln ihre Werte nun automatisch in Zahlen um
-  - Methode replaceAt() für TextFields und Strings ergänzt
-  - Fehlermeldung bei falscher Benutzung der setValue()-Methoden ergänzt (falsche Übergabeparameter wurden vorher teilweise einfach übergangen)
-  - Fehlende map()-Funktion für alle ListableFields ergänzt
-  - Methoden zur Abfrage der Option-Namen von CheckFields und SelectFields ergänzt
-  - Über general.resources konfigurierte Ressourcen werden nun automatisch im Hintergrund vorgeladen, um sie bei Bedarf schneller nutzen zu können
-  - Systemfunktionenklasse "Module" zur Verständlichkeit in "Fields" umbenannt, da sich die Systemfunktionen darin ausschließlich um Felder drehten
-  - Funktion Fields.isFilled() (ehemals Module.isFilled()) grammatikalisch zu Fields.areFilled() angepasst
-  - Funktion Fields.areFilled() ergänzt
-  - Systemfunktionenklasse "Logger" zur Verständlichkeit in "Module" umbenannt, da "Module" besser als Analogie zu Klassen wie "System" passt
-  - Funktionen Module.set() (ehemals Logger.set()) und Module.clear() (ehemals Logger.clear()) aufgrund der Umbenennung von "Logger" zu "Module" zu Module.setLogger() und Module.clearLogger() umbenannt
+  - Einbau eines vertikalen Scrollbalkens für überbreite Felder (insbesondere für das Protokollfeld relevant)
+  - Automatisches Anfügen eines Semikolons an jede Aktion entfernt (JS braucht Semikolons nicht zwingend, es stets anzufügen kann aber Probleme machen)
+  - Restriktionen werden nun auch bei leeren Feldern ausgeführt, um Felder zu ermöglichen, die nur unter bestimmten Bedingungen leer sein dürfen
+  - Kleinere Fehlerbehebungen, u.a. in der getValue()-Methode vom SplitFieldManager
 - Konfigurationen
-  - Konfigurationen aller Lernmodule überarbeitet (hauptsächlich auf einfachere/lesbarere Befehle umgestellt)
-  - Konfigurationen zur ersten Lösung von 7-Freispeicherverwaltung ergänzt ("7-Freispeicherverwaltung_L1"), bisherige Lösung entsprechend zu "7-Freispeicherverwaltung_L2" umbenannt
-  - Konfigurationen der Lernmodule "WT-SpezifitaetBerechnen", "WT-SelektorenBilden" und "WT-BoxmodelleVergleichen" ergänzt
+  - Durch Restriktions-Änderung entstandene Fehler in den Konfigurationen zu Theorem von Little und Freispeicherverwaltung behoben
+  - Ungenutzten Code in der Konfiguration "WT-SelektorenBilden" entfernt
+  - Konfigurationen der Lernmodule "WT-ImpliziteTypumwandlung", "WT-ZeichenKodieren" und "WT-UriBilden" ergänzt
 
 Allgemeine Hinweise:
 - Zum Ausführen der Lernmodule wird ein aktueller Browser benötigt
@@ -62,13 +40,16 @@ Testen des LeMoS:
   - "7-Freispeicherverwaltung_L1" auf Basis von Lösung 1 (+ 1 Szenario)
   - "7-Freispeicherverwaltung_L2" auf Basis von Lösung 2 (+ 1 Szenario)
   - Im Unterordner "X-Webtechnologien":
-    - "WT-SpezifitaetBerechnen" (+ 5 Szenarien)
-    - "WT-SelektorenBilden" (+ 5 Szenarien)
     - "WT-BoxmodelleVergleichen" (+ 3 Szenarien)
+    - "WT-ImpliziteTypumwandlung" (+ 9 Szenarien)
+    - "WT-SelektorenBilden" (+ 5 Szenarien)
+    - "WT-SpezifitaetBerechnen" (+ 5 Szenarien)
+    - "WT-UriBilden" (+ 3 Szenarien)
+    - "WT-ZeichenKodieren" (+ 2 Szenarien)
   - Hinweis-1: die Konfigurationen der Lernmodule decken sich nicht mehr mit den Darstellungen aus der Anforderungsanalyse, sie sind eher daran angelehnt
   - Hinweis-2: für die Protokollfelder der Lernmodule sind aktuell nur in den WT- und Testmodulen Ausgaben konfiguriert, in den Modulen der Anforderungsanalyse bleibt das Protokoll somit korrekterweise leer, solange kein Fehler auftritt
 - Folgende Funktionalitäten des LeMoS sind umgesetzt und sollten funktionieren:
-  - Kompilieren und Ausführen des LeMoS unter Linux (.bat-Dateien für Windows aktuell noch nicht implementiert)
+  - Kompilieren und Ausführen des LeMoS unter Linux und Windows
   - Berücksichtigung aller konfigurierbaren Eigenschaften
   - Konfiguration und Verwendung aller Feldtypen (INFO, TEXT, SPLIT, CHECK, SELECT, LIST, TABLE) in allen Varianten (z.B. multiline, horizontal/vertikal)
   - Verwendung aller Vorwärts- und Rückwärts-Schritte und des Resets (|<, <<, <, O, >, >>, >|)

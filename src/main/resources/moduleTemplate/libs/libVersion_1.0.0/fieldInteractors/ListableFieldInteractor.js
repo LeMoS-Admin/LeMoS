@@ -30,10 +30,7 @@ export default class ListableFieldInteractor extends FieldInteractor
 	_reset(excludeInputFields = false)
 	{
 		super._reset(excludeInputFields);
-		if (!(excludeInputFields && this._fieldManager.isInputField()))
-		{
-			this.restartIterator();
-		}
+		this.restartIterator(); // Iterator muss immer zurückgesetzt werden (auch bei InputFields), da das Lernmodul nach einem Reset neugestartet wird
 		return this;
 	}
 

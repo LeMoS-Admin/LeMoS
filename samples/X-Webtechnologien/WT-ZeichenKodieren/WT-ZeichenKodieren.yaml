@@ -1,0 +1,153 @@
+# yaml-language-server: $schema=../../LeMoS-Modul-Schema.json
+general:
+  heading: Zeichen kodieren
+  explanation: |
+    URLs können nicht alle Zeichen direkt übertragen, die möglichen Zeichen teilen sich in zwei Gruppen auf: die reservierten Zeichen und die nicht reservierten Zeichen. <br>
+    Zu den reservierten Zeichen gehören neben Leerzeichen noch folgende: ! # $ % & ' ( ) * + , / : ; = ? @ [ ] <br>
+    Die nicht reservierten Zeichen umfassen die Klein- und Großbuchstaben von A bis Z sowie die Zahlen von 0 bis 9 und die folgenden Zeichen: - _ . ~ <br>
+    Nicht enthalten sind somit beispielsweise Umlaute (Ä, Ö, Ü) oder das scharfe S (ß). <br><br>
+    Um die nicht enthaltenen Zeichen dennoch übertragen zu können, müssen sie kodiert werden, gleiches gilt für reservierte Zeichen, die ohne ihre syntaktische Bedeutung interpretiert werden sollen. <br>
+    Dieses Lernmodul soll das Verständnis der Kodierung unterstützen und ermöglicht daher, beliebige Zeichenketten zu kodieren oder zu dekodieren. <br>
+    Hinweis: die Kodierung erfolgt gemäß dem MIME-Typ "application/x-www-form-urlencoded", reservierte Zeichen werden somit ohne ihre syntaktische Bedeutung interpretiert.
+  sources:
+    - Webtechnologien-Skript zu HTML-Formularen
+    - <a href='https://wiki.selfhtml.org/wiki/URL-Codierung' target="_blank">Online-Dokumentation zur URL-Codierung</a>
+    - <a href='https://wiki.selfhtml.org/wiki/MIME-Type/%C3%9Cbersicht' target="_blank">Online-Dokumentation zu MIME-Typen</a>
+  contacts:
+    - name: Professor Dr. Dieter Wißmann
+      purpose: Fachliche Fragen
+      data:
+        Telefon: 09561 317-152
+        E-Mail: dieter.wissmann@hs-coburg.de
+        Büro: 2-127
+    - name: Professor Dr. Dieter Wißmann
+      purpose: Technische Fragen
+      data:
+        Telefon: 09561 317-152
+        E-Mail: dieter.wissmann@hs-coburg.de
+        Büro: 2-127
+  settings:
+    lemosVersion: 1.0.0
+  logger:
+    minWidth: 200
+  variables:
+    - name: encodedChar   # Muss globale Variable sein, damit sie in den Übergängen (transitions) referenziert werden kann
+    - name: decodedChar   # Muss globale Variable sein, damit sie in den Übergängen (transitions) referenziert werden kann
+  functions:
+    - name: nextEncodedChar
+      implementation:
+        - let encodedChar = Input.next()
+        - if(encodedChar !== '%') return encodedChar
+        - encodedChar += Input.next()
+        - encodedChar += Input.next()
+        - while (!Own.isCharComplete(encodedChar)) {
+        -   let nextChar = Input.next()
+        -   if(nextChar !== '%') Module.error("Zeichen " + encodedChar + " kann nicht konvertiert werden, vermutlich ist es falsch oder unvollständig.")
+        -   encodedChar += nextChar
+        -   encodedChar += Input.next()
+        -   encodedChar += Input.next()
+        - '}'
+        - return encodedChar
+    - name: isCharComplete
+      parameters:
+        - encodedChar
+      implementation:
+        - try {
+        -    decodeURIComponent(encodedChar)
+        -    return true
+        - '} catch(err) {'
+        -   return false
+        -   '}'
+
+fields:
+  - id: "Action"
+    name: Kodierungsrichtung
+    explanation: "Datentyp des Werts, der links der verschiedenen Operatoren liegt"
+    type: SELECT
+    options:
+      - id: Encode
+        name: Enkodieren
+        explanation: Zeichenkette zu URL
+      - id: Decode
+        name: Dekodieren
+        explanation: URL zu Zeichenkette
+  - id: "Input"
+    name: Ausgangswert
+    explanation: "Zeichenkette, die enkodiert bzw. dekodiert werden soll"
+    type: SPLIT
+  - id: "Output"
+    name: Ergebnis
+    explanation: "Enkodierter bzw. dekodierter Ausgangswert"
+    type: SPLIT
+    usage: OUTPUT
+
+states:
+  - id: Z0
+    name: Lernmodul initialisiert
+    explanation: Einstieg
+    type: ENTRY
+    actions:
+      - "Module.print('Willkommen beim Lernmodul zur Betrachtung der Zeichenkodierung in URLs.')"
+      - "Module.print('Bitte wähle die Kodierungsrichtung und gebe eine Zeichenkette ein, oder lade ein Szenario.')"
+      - "Module.print('')"
+    transitions:
+      - target: Z1a
+        conditions:
+          - terms:
+              - Action.value === "Encode"
+      - target: Z1b
+  - id: Z1a
+    name: Weiteres Zeichen enkodiert
+    importance: LOW
+    actions:
+      - decodedChar.value = Input.next()
+      - encodedChar.value = encodeURIComponent(decodedChar.value)
+      - if (encodedChar.value === "%20") encodedChar.value = "+"
+      - if (decodedChar.value !== encodedChar.value) Module.print(`Zeichen '${decodedChar.value}' wurde als '${encodedChar.value}' enkodiert.`)
+      - Output.add(encodedChar.value)
+    transitions:
+      - target: Z3                            # Eingabe vollständig umgewandelt
+        conditions:
+          - terms:
+              - "!Input.hasNext()"
+      - target: Z2a                           # Tatsächlich enkodiertes Zeichen --> soll sich wie großer Schritt verhalten, daher Übergang in einen großen Schritt ohne Aktionen
+        conditions:
+          - terms:
+              - decodedChar.value !== encodedChar.value
+      - target: Z1a                           # Keine enkodierung notwendig --> soll als kleiner Schritt überspringbar sein
+  - id: Z2a
+    name: Tatsächlich weiteres Zeichen enkodiert
+    importance: HIGH
+    transitions:
+      - target: Z1a
+  - id: Z1b
+    name: Weiteres Zeichen dekodiert
+    importance: LOW
+    actions:
+      - encodedChar.value = Own.nextEncodedChar()
+      - decodedChar.value = decodeURIComponent(encodedChar.value)
+      - if (decodedChar.value === "+") decodedChar.value = " "
+      - if (encodedChar.value !== decodedChar.value) Module.print(`Zeichen '${encodedChar.value}' wurde zu '${decodedChar.value}' dekodiert.`)
+      - Output.add(decodedChar.value)
+    transitions:
+      - target: Z3                            # Eingabe vollständig umgewandelt
+        conditions:
+          - terms:
+              - "!Input.hasNext()"
+      - target: Z2b                           # Tatsächlich enkodiertes Zeichen --> soll sich wie großer Schritt verhalten, daher Übergang in einen großen Schritt ohne Aktionen
+        conditions:
+          - terms:
+              - encodedChar.value !== decodedChar.value
+      - target: Z1b                           # Keine enkodierung notwendig --> soll als kleiner Schritt überspringbar sein
+  - id: Z2b
+    name: Tatsächlich weiteres Zeichen dekodiert
+    importance: HIGH
+    transitions:
+      - target: Z1b
+  - id: Z3
+    name: Umwandlung abgeschlossen
+    actions:
+      - if (Input.value === Output.value) Module.print('Keine Umwandlungen nötig.')
+      - else Module.print('Umwandlung abgeschlossen')
+      - if (Action.value === "Encode") Module.log('Direct encode-result = ' + encodeURIComponent(Input.value.join('')))
+      - else Module.log('Direct decode-result = ' + decodeURIComponent(Input.value.join('')))

@@ -2,7 +2,7 @@
 general:
   heading: Selektoren bilden
   explanation: |
-    Um mit CSS das Erscheinungsbild der Elemente der Webseite zu modifizieren, müssen diese zunächst selektiert werden. <br>
+    Um das Erscheinungsbild der Elemente einer Webseite mittels CSS zu modifizieren, müssen diese zunächst selektiert werden. <br>
     Die Selektierung erfolgt auf Basis des DOM (Document Object Model), dass die Elemente der Webseite als Baumstruktur darstellt. <br>
     <br>
     Zur Bildung eines CSS-Selektors werden verschiedene Teil-Selektoren durch Kombinatoren zusammengefügt. <br>
@@ -74,12 +74,13 @@ fields:
         explanation: |
           Beziehung dieses Eintrags zum vorherigen Eintrag, Erläuterungen: <br>
           - Gleiches Element (kein Kombinator): Selektor bezieht sich auf das gleiche Element, wie der des vorherigen Eintrags <br>
-          - Beliebiger Nachkomme (' '): Selektor durchsucht die kompleten DOM-Teilbäume aller Treffer des vorherigen Selektors <br>
-          - Direkter Nachkomme ('>'): Selektor durchsucht ausschlißlich die jeweis erste Hierachie-Ebene der DOM-Teilbäume aller Treffer des vorherigen Selektors <br>
-          - Beliebiges Geschwister ('~'): Selektor durchsucht den DOM-Baum jeweils auf der gleichen Hierachie-Ebene der Treffer des vorherigen Selektors <br>
-          - Direktes Geschwister ('+'): Selektor prüft jeweils das nächste auf gleicher Hierachie-Ebene wie der Treffer des vorherigen Selektors liegende Element <br>
+          - Beliebiger Nachkomme (' '): Selektor durchsucht die kompletten DOM-Teilbäume aller Treffer des vorherigen Selektors <br>
+          - Direkter Nachkomme ('>'): Selektor durchsucht ausschließlich die jewels erste Hierarchie-Ebene der DOM-Teilbäume aller Treffer des vorherigen Selektors <br>
+          - Beliebiges Geschwister ('~'): Selektor durchsucht den DOM-Baum jeweils auf der gleichen Hierarchie-Ebene der Treffer des vorherigen Selektors <br>
+          - Direktes Geschwister ('+'): Selektor prüft jeweils das nächste auf gleicher Hierarchie-Ebene wie der Treffer des vorherigen Selektors liegende Element <br>
           Hinweis: Die Beziehung des ersten Eintrags wird ignoriert.
         type: SELECT
+        emptyOption: true
         allowEmpty: true
         options:
           - id: ''
@@ -103,6 +104,7 @@ fields:
           - Pseudo-Klasse (:): Sucht Elemente auf Basis ihres Zustands (z.B. h1) <br>
           - Pseudo-Element (::): Sucht Pseudo-Elemente auf Basis ihres Namens (z.B. h1)
         type: SELECT
+        emptyOption: true
         allowEmpty: true
         options:
           - id: '#'
@@ -120,7 +122,7 @@ fields:
       - id: Wert
         name: Selektor-Wert
         explanation: |
-          Wert des Selektors in diesem Eintrag, Beipsiele: <br>
+          Wert des Selektors in diesem Eintrag, Beispiele: <br>
           - Für IDs: feldID <br>
           - Für Klassen: feldKlasse <br>
           - Für Elemente: p oder h1 <br>
@@ -130,7 +132,7 @@ fields:
         type: TEXT
       - id: Selektor
         name: Resultierender Teilselektor
-        explanation: Resultierender Selektor dieses Eintrags, stellt einen Teil des gesammten Selektors dar
+        explanation: Resultierender Selektor dieses Eintrags, stellt einen Teil des gesamten Selektors dar
         usage: OUTPUT
         type: TEXT
   - id: Ergebnis
@@ -150,10 +152,6 @@ states:
       - "Module.print('')"
     transitions:
       - target: Z1
-        conditions:
-          - message: "Bitte gib mindestens einen gewünschten Teil des CSS-Selektor in die dafür vorgesehene Tabelle ein oder lade ein Szenario."
-            terms:
-              - "!Selektoren.isEmpty()"
   - id: Z1
     name: Teilselektoren gebildet
     actions:

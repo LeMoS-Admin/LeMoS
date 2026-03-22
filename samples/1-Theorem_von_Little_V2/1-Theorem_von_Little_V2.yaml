@@ -38,7 +38,7 @@ fields:
     restrictions:
       - message: Nur positive Zahlenwerte
         terms:
-          - entry >= 0
+          - Number.isNaN(entry.value) || entry >= 0   # Number.isNaN() erforderlich, da Restriktionen auch bei leerem Feld geprüft werden (konvertiert zu NaN)
     growthDirection: HORIZONTAL
     initialEntries: 7
     maxEntries: -1
@@ -57,7 +57,7 @@ fields:
     restrictions:
       - message: Nur positive Zahlenwerte
         terms:
-          - entry >= 0
+          - Number.isNaN(entry.value) || entry >= 0   # Number.isNaN() erforderlich, da Restriktionen auch bei leerem Feld geprüft werden (konvertiert zu NaN)
     growthDirection: HORIZONTAL
     initialEntries: 7
     maxEntries: -1

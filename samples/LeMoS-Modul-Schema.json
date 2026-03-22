@@ -192,7 +192,7 @@
               },
               "alias": {
                 "type": "string",
-                "description": "Bezeichnung unter der die Komponente angesprochen wird, muss konfiguriert werden, wenn 'name‘ den Standard-Import referenziert (Standard: Wert von 'name')"
+                "description": "Bezeichnung unter der die Komponente angesprochen wird, muss konfiguriert werden, wenn 'name‘ den Standard-Import referenziert"
               }
             }
           }

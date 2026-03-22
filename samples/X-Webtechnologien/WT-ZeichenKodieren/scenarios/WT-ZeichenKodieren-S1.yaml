@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=../../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S1
+  explanation: Enkodieren
+  initialization:
+    - Action.value = "Encode"
+    - Input.value = "Falsches Üben von Xylophonmusik quält jeden größeren Zwerg"

@@ -17,7 +17,7 @@ public class Import
     {
         this.resource = Objects.requireNonNull(resource, "Missing required attribute 'resource'");
         this.name     = Objects.requireNonNullElse(name, "");
-        this.alias    = Objects.requireNonNullElse(alias, name);
+        this.alias    = Objects.requireNonNullElse(alias, "");
 
         validate();
     }
