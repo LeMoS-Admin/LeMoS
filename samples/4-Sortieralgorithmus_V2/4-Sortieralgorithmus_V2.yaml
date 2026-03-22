@@ -1,0 +1,133 @@
+# yaml-language-server: $schema=../LeMoS-Modul-Schema.json
+general:
+  heading: Sortieralgorithmus V2
+  explanation: Sortieren einer Liste von Werten durch direktes Einfügen ("Insertionsort")
+  settings:
+    libraryVersion: 1.0.0
+
+fields:
+  - id: 'E'
+    name: Eingabeliste
+    explanation: Zu sortierende Liste
+    type: LIST
+    usage: INPUT
+    allowEmpty: true
+    datatype: INTEGER
+    initialEntries: 3
+    style:
+      row: 1
+      column: 1
+      width: 3
+  - id: 'W'
+    name: Neuer Wert
+    explanation: In der Ausgabeliste einzuordnender Wert
+    type: TEXT
+    usage: TEMP
+    style:
+      row: 2
+      column: 1
+  - id: 'P'
+    name: Einfügepunkt
+    explanation: Position, an der der neue Wert eingeschoben werden soll
+    type: TEXT
+    usage: TEMP
+    style:
+      row: 2
+      column: 2
+  - id: 'X'
+    name: Aktueller Wert
+    explanation: Aktuell zu vergleichender Wert der Ausgabeliste
+    type: TEXT
+    usage: TEMP
+    style:
+      row: 2
+      column: 3
+  - id: 'A'
+    name: Ausgabeliste
+    explanation: Sortierte Liste
+    type: LIST
+    usage: OUTPUT
+    style:
+      row: 3
+      column: 1
+      width: 3
+
+states:
+  - id: Z0
+    name: Lernmodul initialisiert
+    type: ENTRY
+    transitions:
+      - target: Z1
+        conditions:
+          - message: |
+                      Bitte die folgenden Felder befüllen:
+                      - Eingabeliste
+            terms:
+              - Module.isFilled(E)
+  - id: Z1
+    name: Neuer Wert initialisiert
+    importance: LOW
+    actions:
+      - W.setValue(E.first())
+      - A.restartIterator()
+    transitions:
+      - target: Z2
+  - id: Z2
+    name: Aktueller Wert definiert
+    importance: LOW
+    actions:
+      - let Atemp = A.next()
+      - if(Atemp !== undefined) X.setValue(Atemp) # undefined nicht schreiben
+    transitions:
+      - target: Z3
+      - target: Z4a
+        explanation: Wenn die Iteration über die Ausgabeliste abgeschlossen ist, folgt die Aktualisierung der Ein- und Ausgabeliste
+        conditions:
+          - terms:
+              - A.isAtEnd()
+  - id: Z3
+    name: Ist der neue Wert kleiner als der aktuelle Wert?
+    type: JUNCTION
+    transitions:
+      - target: Z2
+      - target: Z4b
+        conditions:
+          - terms:
+              -  W.getValue() < X.getValue()
+  - id: Z4a
+    name: Einfügepunkt auf letzte Position gesetzt
+    importance: LOW
+    actions:
+      - P.setValue(A.length())
+    transitions:
+      - target: Z5
+  - id: Z4b
+    name: Einfügepunkt auf Position des aktuellen Werts gesetzt
+    importance: LOW
+    actions:
+      - P.setValue(A.indexOf(X.getValue()))
+    transitions:
+      - target: Z5
+  - id: Z5
+    name: Neuer Wert in Ausgabeliste eingetragen
+    importance: LOW
+    actions:
+      - A.insert(P.getValue(), W.getValue())
+    transitions:
+      - target: Z6
+  - id: Z6
+    name: Neuer Wert aus Eingabeliste entfernt
+    importance: HIGH
+    actions:
+      - E.remove(W.getValue())
+    transitions:
+      - target: Z1
+      - target: Z7
+        explanation: Wenn alle Einträge der Eingabeliste verarbeitet wurden ist die Ausgabeliste vollständig und die Sortierung somit abgeschlossen
+        conditions:
+          - terms:
+              - E.isEmpty()
+  - id: Z7
+    name: Sortierung abgeschlossen
+    importance: HIGH
+

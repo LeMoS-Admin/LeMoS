@@ -27,7 +27,7 @@
         }
       }
     ],
-    "config": {
+    "settings": {
       "libraryVersion": "1.0.0",
       "showFieldIDs": true,
       "differentStepSizes": false
@@ -35,11 +35,40 @@
   },
   "fields": [
     {
+      "id": "T",
+      "name": "Aufgabentyp",
+      "explanation": "Auswahl, welche Variante der Formel genutzt werden soll (nicht implementiert)",
+      "type": "SELECTOR",
+      "options": [
+        {
+          "id": "Auto",
+          "name": "Automatisch",
+          "explanation": "Berechnung des leer gelassenen Felds"
+        },
+        {
+          "id": "Fall1",
+          "name": "Länge gesucht",
+          "explanation": "Y und W gegeben, N gesucht"
+        },
+        {
+          "id": "Fall2",
+          "name": "Ankunftsrate gesucht",
+          "explanation": "N und W gegeben, Y gesucht"
+        },
+        {
+          "id": "Fall3",
+          "name": "Wartezeit gesucht",
+          "explanation": "N und Y gegeben, W gesucht"
+        }
+      ]
+    },
+    {
       "id": "N",
       "name": "Länge",
       "explanation": "Durchschnittliche Länge der Warteschlange",
-      "type": "PLAIN",
+      "type": "TEXT",
       "usage": "INPUT",
+      "allowEmpty": true,
       "datatype": "NUMBER",
       "restrictions": [
         {
@@ -48,18 +77,15 @@
             "N >= 0"
           ]
         }
-      ],
-      "style": {
-        "row": 1,
-        "column": 1
-      }
+      ]
     },
     {
       "id": "Y",
       "name": "Ankunftsrate",
       "explanation": "Durchschnittliche Ankunftsrate neuer Einträge",
-      "type": "PLAIN",
+      "type": "TEXT",
       "usage": "INPUT",
+      "allowEmpty": true,
       "datatype": "NUMBER",
       "restrictions": [
         {
@@ -68,18 +94,15 @@
             "Y >= 0"
           ]
         }
-      ],
-      "style": {
-        "row": 2,
-        "column": 1
-      }
+      ]
     },
     {
       "id": "W",
       "name": "Wartezeit",
       "explanation": "Durchschnittliche Wartezeit eines Eintrags",
-      "type": "PLAIN",
+      "type": "TEXT",
       "usage": "INPUT",
+      "allowEmpty": true,
       "datatype": "NUMBER",
       "restrictions": [
         {
@@ -88,11 +111,7 @@
             "W >= 0"
           ]
         }
-      ],
-      "style": {
-        "row": 3,
-        "column": 1
-      }
+      ]
     }
   ],
   "states": [
@@ -111,7 +130,7 @@
             {
               "message": "",
               "terms": [
-                "List.length(Module.filled()) === 2"
+                "Module.countFilled() === 3"
               ]
             }
           ]
@@ -132,7 +151,7 @@
             {
               "message": "",
               "terms": [
-                "Module.filled(Y, W)"
+                "Module.isFilled(Y, W)"
               ]
             }
           ]
@@ -145,7 +164,7 @@
             {
               "message": "",
               "terms": [
-                "Module.filled(N, W)"
+                "Module.isFilled(N, W)"
               ]
             }
           ]
@@ -158,7 +177,7 @@
             {
               "message": "",
               "terms": [
-                "Module.filled(N, Y)"
+                "Module.isFilled(N, Y)"
               ]
             }
           ]

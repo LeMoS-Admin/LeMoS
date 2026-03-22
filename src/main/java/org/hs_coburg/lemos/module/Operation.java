@@ -8,34 +8,34 @@ import java.util.Objects;
 
 public class Operation
 {
-	public final String operation;
+    public final String operation;
 
-	// Erzeugung läuft hier über Konstruktor, da in Konfigurationsdatei kein Variablenname angegeben wird:
-	// (in YAML: "- <<Befehl>>" statt "- operation: <<Befehl>>")
-	@JsonCreator
-	public Operation(String operation)
-	{
-		this.operation = Objects.requireNonNull(operation, "Missing required attribute 'operation'");
-	}
+    // Erzeugung läuft hier über Konstruktor, da in Konfigurationsdatei kein Variablenname angegeben wird:
+    // (in YAML: "- <<Befehl>>" statt "- operation: <<Befehl>>")
+    @JsonCreator
+    public Operation(String operation)
+    {
+        this.operation = Objects.requireNonNull(operation, "Missing required attribute 'operation'");
+    }
 
-	public static String generateActionJS(List<Operation> actions)
-	{
-		StringBuilder actionsJS = new StringBuilder();
-		for (Operation action : actions)
-		{
-			actionsJS.append(action.getOperationJS()).append(";\n");
-		}
-		return actionsJS.toString();
-	}
+    public static String generateActionJS(List<Operation> actions)
+    {
+        StringBuilder actionsJS = new StringBuilder();
+        for (Operation action : actions)
+        {
+            actionsJS.append(action.getOperationJS()).append(";\n");
+        }
+        return actionsJS.toString();
+    }
 
-	public String getOperationJS()
-	{
-		return operation.trim();
-	}
+    public String getOperationJS()
+    {
+        return operation.trim();
+    }
 
-	@Override
-	public String toString()
-	{
-		return getClass().getSimpleName() + ": '" + StringHelper.get(operation) + "'";
-	}
+    @Override
+    public String toString()
+    {
+        return getClass().getSimpleName() + ": '" + StringHelper.get(operation) + "'";
+    }
 }

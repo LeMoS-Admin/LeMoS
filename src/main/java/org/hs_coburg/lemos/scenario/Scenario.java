@@ -11,48 +11,48 @@ import java.util.Objects;
 
 public class Scenario
 {
-	public final String          id;
-	public final String          name;
-	public final String          explanation;
-	public final List<Operation> initialization;
+    public final String          id;
+    public final String          name;
+    public final String          explanation;
+    public final List<Operation> initialization;
 
-	@JsonCreator
-	public Scenario(@JsonProperty("id") String id,
-					@JsonProperty("name") String name,
-					@JsonProperty("explanation") String explanation,
-					@JsonProperty("initialization") List<Operation> initialization)
-	{
-		this.id             = Objects.requireNonNull(id, "Missing required attribute 'id'");
-		this.name           = Objects.requireNonNullElse(name, id);
-		this.explanation    = Objects.requireNonNullElse(explanation, "");
-		this.initialization = Objects.requireNonNull(initialization, "Missing required attribute 'initialization'");
-	}
+    @JsonCreator
+    public Scenario(@JsonProperty("id") String id,
+                    @JsonProperty("name") String name,
+                    @JsonProperty("explanation") String explanation,
+                    @JsonProperty("initialization") List<Operation> initialization)
+    {
+        this.id             = Objects.requireNonNull(id, "Missing required attribute 'id'");
+        this.name           = Objects.requireNonNullElse(name, id);
+        this.explanation    = Objects.requireNonNullElse(explanation, "");
+        this.initialization = Objects.requireNonNull(initialization, "Missing required attribute 'initialization'");
+    }
 
-	public String generateScenarioOptionHTML()
-	{
-		return new Option(id, name, explanation).generateOptionHTML();
-	}
+    public String generateScenarioOptionHTML()
+    {
+        return new Option(id, name, explanation).generateSelectorOptionHTML();
+    }
 
-	public String generateScenarioCaseJS()
-	{
-		String template = """
-						  case '{{id}}':
-						  {
-						    {{initialization}}
-						    break;
-						  }
-						  """;
-		return template.replace("{{id}}", StringHelper.escape(id))
-					   .replace("{{initialization}}", Operation.generateActionJS(initialization));
-	}
+    public String generateScenarioCaseJS()
+    {
+        String template = """
+                          case '{{id}}':
+                          {
+                            {{initialization}}
+                            break;
+                          }
+                          """;
+        return template.replace("{{id}}", StringHelper.escape(id))
+                       .replace("{{initialization}}", Operation.generateActionJS(initialization));
+    }
 
-	@Override
-	public String toString()
-	{
-		return getClass().getSimpleName() + ":" +
-			   "\n\t" + "id: '" + StringHelper.get(id) + '\'' +
-			   "\n\t" + "name: '" + StringHelper.get(name) + '\'' +
-			   "\n\t" + "explanation: '" + StringHelper.get(explanation) + '\'' +
-			   "\n\t" + "initialization: " + StringHelper.get(initialization);
-	}
+    @Override
+    public String toString()
+    {
+        return getClass().getSimpleName() + ":" +
+               "\n\t" + "id: '" + StringHelper.get(id) + '\'' +
+               "\n\t" + "name: '" + StringHelper.get(name) + '\'' +
+               "\n\t" + "explanation: '" + StringHelper.get(explanation) + '\'' +
+               "\n\t" + "initialization: " + StringHelper.get(initialization);
+    }
 }

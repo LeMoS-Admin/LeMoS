@@ -1,0 +1,111 @@
+# yaml-language-server: $schema=../LeMoS-Modul-Schema.json
+general:
+  heading: Servlet-Mapping
+  explanation: Erstellen eines Konfigurationseintrags, um eine URL auf eine Webressource zu mappen
+  settings:
+    differentStepSizes: false
+    libraryVersion: 1.0.0
+
+fields:
+  - id: LOCP
+    name: Pfad zur Ressource
+    explanation: Pfad zur Ressource, die durch eine URL erreichbar gemacht werden soll
+    type: TEXT
+    usage: INPUT
+  - id: EURL
+    name: URL zur Ressource
+    explanation: URL unter der die Ressource erreichbar gemacht werden soll
+    type: TEXT
+    usage: INPUT
+  - id: NAME
+    name: Name des Servlets
+    explanation: Interner Name der Ressource
+    type: TEXT
+    usage: INPUT
+  - id: ITAG
+    name: Tag für Servlet-Inhalt
+    explanation: Im Konfigurationseintrag zu verwendender Tag für die Ressource 
+    type: TEXT
+    usage: OUTPUT
+  - id: KONF
+    name: Konfigurationseintrag
+    explanation: Konfigurationseintrag, der die Ressource unter der gewünschten URL bereitstellt
+    type: TEXT
+    usage: OUTPUT
+    multiline: true
+
+states:
+  - id: Z0
+    name: Lernmodul initialisiert
+    type: ENTRY
+    transitions:
+      - target: Z1
+        conditions:
+          - message: |
+                      Bitte die folgenden Felder befüllen:
+                      - Pfad zur Ressource
+                      - URL zur Ressource
+                      - Name des Servlets
+            terms:
+              - Module.isFilled(LOCP, EURL, NAME)
+  - id: Z1
+    name: Grundstruktur definiert
+    actions:
+      - |
+          let temp = 
+          `<servlet>
+          	SERVLET-NAME
+          	SERVLET-INHALT
+          </servlet>
+          <servlet-mapping>
+          	SERVLET-NAME
+          	MAPPING-URL
+          </servlet-mapping>`
+      - KONF.setValue(temp)
+    transitions:
+      - target: Z2
+  - id: Z2
+    name: Servlet-Name eingetragen
+    actions:
+      - let temp = "<servlet-name>" + NAME.getValue() + "</servlet-name>"
+      - KONF.replaceAll("SERVLET-NAME", temp)
+    transitions:
+      - target: Z3
+  - id: Z3
+    name: Dateityp?
+    type: JUNCTION
+    transitions:
+      - target: Z3a
+        conditions:
+          - terms:
+              - LOCP.endsWith(".jsp")
+      - target: Z3b
+        conditions:
+          - message: Ressource muss entwender die Dateiendung ".jsp" oder ".class" haben.
+            terms:
+              - LOCP.endsWith(".class")
+  - id: Z3a
+    name: Tag für Inhalt definiert (jsp)
+    actions:
+      - ITAG.setValue("jsp-file")
+    transitions:
+      - target: Z4
+  - id: Z3b
+    name: Tag für Inhalt definiert (class)
+    actions:
+      - ITAG.setValue("servlet-class")
+    transitions:
+      - target: Z4
+  - id: Z4
+    name: Servlet-Inhalt eingetragen
+    actions:
+      - let temp = "<" + ITAG.getValue() + ">" + LOCP.getValue() + "</" + ITAG.getValue() + ">"
+      - KONF.replace("SERVLET-INHALT", temp)
+    transitions:
+      - target: Z5
+  - id: Z5
+    name: Mapping-URL eingetragen
+    actions:
+      - let temp = "<url-pattern>" + EURL.getValue() + "</url-pattern>"
+      - KONF.replace("MAPPING-URL", temp)
+

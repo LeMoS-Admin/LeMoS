@@ -1,0 +1,117 @@
+# yaml-language-server: $schema=../LeMoS-Modul-Schema.json
+general:
+  heading: Sortieralgorithmus V1
+  explanation: Sortieren einer Liste von Werten durch direktes Auswählen ("Selectionsort")
+  settings:
+    libraryVersion: 1.0.0
+
+fields:
+  - id: 'E'
+    name: Eingabeliste
+    explanation: Zu sortierende Liste
+    type: LIST
+    usage: INPUT
+    allowEmpty: true
+    datatype: INTEGER
+    initialEntries: 3
+    style:
+      row: 1
+      column: 1
+      width: 2
+  - id: 'X'
+    name: Aktueller Wert
+    explanation: Aktuell zu prüfender Wert der Eingabeliste
+    type: TEXT
+    usage: TEMP
+    style:
+      row: 2
+      column: 1
+  - id: 'K'
+    name: Kleinster Wert
+    explanation: Kleinster bisher gefundener Wert in der verbliebenen Eingabeliste
+    type: TEXT
+    usage: TEMP
+    style:
+      row: 2
+      column: 2
+  - id: 'A'
+    name: Ausgabeliste
+    explanation: Sortierte Liste
+    type: LIST
+    usage: OUTPUT
+    style:
+      row: 3
+      column: 1
+      width: 2
+
+states:
+  - id: Z0
+    name: Lernmodul initialisiert
+    type: ENTRY
+    transitions:
+      - target: Z1
+        conditions:
+          - message: |
+                      Bitte die folgenden Felder befüllen:
+                      - Eingabeliste
+            terms:
+              - Module.isFilled(E)
+  - id: Z1
+    name: Kleinster Wert initialisiert
+    importance: LOW
+    actions:
+      - K.setValue(E.first())
+      - E.restartIterator()
+    transitions:
+      - target: Z2
+  - id: Z2
+    name: Aktueller Wert definiert
+    importance: LOW
+    actions:
+      - let Etemp = E.next()
+      - if(Etemp !== undefined) X.setValue(Etemp) # undefined nicht schreiben
+    transitions:
+      - target: Z3
+      - target: Z5
+        explanation: Wenn die Iteration über die Eingabeliste abgeschlossen ist, folgt die Aktuallisierung der Ein- und Ausgabeliste
+        conditions:
+          - terms:
+              - E.isAtEnd()
+  - id: Z3
+    name: Ist der aktuelle Wert kleiner als der bisher kleinste Wert?
+    type: JUNCTION
+    transitions:
+      - target: Z2
+      - target: Z4
+        conditions:
+          - terms:
+              - X.getValue() < K.getValue()
+  - id: Z4
+    name: Kleinsten Wert überschrieben
+    importance: LOW
+    actions:
+      - K.setValue(X.getValue())
+    transitions:
+      - target: Z2
+  - id: Z5
+    name: Kleinsten Wert in Ausgabeliste eingetragen
+    importance: LOW
+    actions:
+      - A.add(K.getValue())
+    transitions:
+      - target: Z6
+  - id: Z6
+    name: Kleinsten Wert aus Eingabeliste entfernt
+    importance: HIGH
+    actions:
+      - E.remove(K.getValue())
+    transitions:
+      - target: Z1
+      - target: Z7
+        explanation: Wenn alle Einträge der Eingabeliste verarbeitet wurden ist die Ausgabeliste vollständig und die Sortierung somit abgeschlossen
+        conditions:
+          - terms:
+              - E.isEmpty()
+  - id: Z7
+    name: Sortierung abgeschlossen
+    importance: HIGH

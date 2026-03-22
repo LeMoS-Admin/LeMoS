@@ -6,218 +6,232 @@
             <!--HEADING-->
         </title>
         <style>
+            /*Allgemeiner Webseitenaufbau*/
             body {
                 box-sizing: border-box;
                 min-height: 100vh;
                 margin: 0;
-                padding: 24pt;
+                padding: 32px;
                 display: flex;
                 flex-direction: column;
-                row-gap: 12pt;
+                row-gap: 12px;
+            }
+            *:not(h1, h2, h3, h4, h5, h6) {
+                font-family: Arial, sans-serif;
+                font-size: 1em;
             }
 
             header {
-                margin-bottom: 24pt;
+                margin-bottom: 24px;
             }
-
             header > h1,
             header > p {
                 margin-top: 0;
-                margin-bottom: 24pt;
+                margin-bottom: 24px;
             }
 
-            body > hr {
-                margin-top: 24pt;
-                width: 100%;
-            }
-
-            p, input, select, textarea {
-                width: 100%;
-                box-sizing: border-box;
-                font-family: Arial, sans-serif;
-                font-size: 1em;
-                margin: 0;
-                padding: 2px;
-            }
-
-            input, select, button {
-                height: 1.5lh
-            }
-
-            #spacer {
-                flex: 1 1 0;
-            }
-
-            footer {
+            #main {
                 display: flex;
                 flex-wrap: wrap;
-                row-gap: 8pt;
-                column-gap: 32pt;
+                row-gap: 12px;
+                column-gap: 32px;
             }
-
-            footer > div > div {
-                margin: 4pt 4pt 4pt 0;
-            }
-
-            #sources li {
-                margin-bottom: 4pt;
-            }
-
-            #contact > div {
-                display: flex;
-                flex-wrap: wrap;
-                row-gap: 4pt;
-                column-gap: 24pt;
-            }
-
-            details > summary {
-                cursor: pointer;
-                list-style: none;
-                display: inline-block;
-            }
-
-            details > summary::after {
-                content: "\00a0\25BC";
-            }
-
-            details[open] > summary::after {
-                content: "\00a0\25B2";
-            }
-
-            details > div,
-            details > span {
-                display: block;
-                margin-left: 4pt;
-            }
-
-            .systemFieldContainer > details {
-                margin-bottom: 4pt;
-            }
-
-            ul {
-                margin: 0 0 4pt 0;
-                padding: 0;
-            }
-
-            li {
-                list-style-position: inside;
-            }
-
-            #stepSelector {
-                width: 100%;
-                box-sizing: border-box;
-                margin-top: 20pt;
-            }
-
-            #stepSelector .buttons {
-                display: flex;
-                flex-wrap: nowrap;
-                flex-direction: row;
-                row-gap: 4pt;
-                column-gap: 4pt;
-            }
-
-            #stepSelector button {
-                flex: 1 1 0;
-            }
-
             #fields {
-                width: 100%;
+                flex-grow: 4;
                 box-sizing: border-box;
                 display: grid;
                 grid-auto-columns: minmax(0, 1fr);
                 grid-auto-rows: auto;
                 grid-auto-flow: row;
-                gap: 20pt;
+                gap: 20px;
+            }
+            #protocol {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+            }
+            #protocol > .field > textarea {
+                height: 100%;
             }
 
-            #fields .fieldContainer {
+            #stepSelector {
+                width: 100%;
+                box-sizing: border-box;
+                margin-top: 20px;
+            }
+
+            #spacer {
+                flex: 1 1 0;
+            }
+            footer {
+                display: flex;
+                flex-wrap: wrap;
+                row-gap: 8px;
+                column-gap: 32px;
+            }
+            footer > div > div {
+                margin: 4px 4px 4px 0;
+            }
+            #contact > div {
+                display: flex;
+                flex-wrap: wrap;
+                row-gap: 4px;
+                column-gap: 24px;
+            }
+
+            ul {
+                margin: 0 0 4px 4px;
+                padding: 0;
+            }
+            li {
+                list-style-position: inside;
+            }
+            hr {
+                margin-top: 24px;
+                width: 100%;
+            }
+
+            /*Allgemeine Elemente*/
+            details {
+                margin-bottom: 4px;
+            }
+            details > summary {
+                cursor: pointer;
+                list-style: none;
+                display: block;
+            }
+            details > summary::after {
+                content: "\00a0\25BC";
+            }
+            details[open] > summary::after {
+                content: "\00a0\25B2";
+            }
+
+            input, select, button {
+                height: 1.5lh;
+            }
+            button, select {
+                cursor: pointer;
+            }
+            button {
+                flex: 1 1 0;
+            }
+            .buttons {
+                margin-top: 4px;
+                display: flex;
+                row-gap: 4px;
+                column-gap: 4px;
+                flex-direction: row;
+                flex-wrap: nowrap;
+            }
+            *[disabled] {
+                cursor: not-allowed;
+            }
+
+            span:not(.label) {
+                margin: 0 0 0 4px;
+                display: inline-block;
+            }
+            textarea {
+                resize: none;
+            }
+            img, audio, video {
+                object-fit: contain;
+            }
+            img {
+                object-position: top left;
+            }
+
+            .fieldContainer {
                 display: flex;
                 flex: 1 1 0;
                 flex-direction: column;
-                row-gap: 4pt;
-                column-gap: 4pt;
+            }
+            .field {
+                flex: 1 1 0;
+            }
+            .field > *:not(span) {
+                margin: 0;
+                padding: 2px;
+            }
+            .field > *:not(label, input[type="radio"], input[type="checkbox"]) {
+                width: 100%;
+                display: block;
+                box-sizing: border-box;
             }
 
-            #fields .table {
-                display: grid;
-                grid-auto-columns: minmax(min-content, 1fr);
-                grid-auto-rows: auto;
-                overflow-y: auto;
-                border: 1pt gray solid;
+            /*Feldelemente*/
+            #fields .failed {
+                border: red solid;
+            }
+            #fields .TempField > .buttons,
+            #fields .OutputField > .buttons {
+                display: none;
             }
 
-            #fields .TableField.Vertical > .table {
-                grid-auto-flow: row;
+            #fields .CheckField > .field.failed {
+                padding: 0 1px 1px 1px;
+            }
+            #fields .CheckField > .field > label,
+            #fields .CheckField > .field > input {
+                position: relative;
+                vertical-align: middle;
+            }
+            #fields .CheckField > .field > input {
+                margin-right: 4px;
             }
 
-            #fields .TableField.Horizontal > .table {
-                grid-auto-flow: column;
-                grid-template-columns: minmax(min-content, max-content);
-            }
-
-            #fields .entries,
-            #fields .buttons {
+            #fields .ListField > .entries {
                 display: flex;
-                row-gap: 4pt;
-                column-gap: 4pt;
+                row-gap: 4px;
+                column-gap: 4px;
             }
-
-            #fields .buttons {
-                flex-direction: row;
-                flex-wrap: wrap;
+            #fields .ListField > .entries.failed {
+                padding: 0 1px 1px 1px;
             }
-
-            #fields .ListField.Horizontal > .entries {
-                flex-direction: row;
+            #fields .ListField > .entries > .entry {
+                flex: 1 1 0;
             }
-
             #fields .ListField.Vertical > .entries {
                 flex-direction: column;
             }
-
-            #fields .ListField.Wrap > .entries {
+            #fields .ListField.Horizontal > .entries {
+                flex-direction: row;
+            }
+            #fields .ListField.Horizontal.Wrap > .entries {
                 flex-wrap: wrap;
             }
-
-            #fields .ListField.NoWrap > .entries {
+            #fields .ListField.Horizontal.NoWrap > .entries {
                 flex-wrap: nowrap;
                 overflow-y: auto;
             }
 
-            #fields .table > .header,
-            #fields .table > .entry {
-                padding: 4pt;
-                border: 1pt lightgray solid;
+            #fields .TableField > .table {
+                display: grid;
+                grid-auto-columns: minmax(min-content, 1fr);
+                grid-auto-rows: auto;
+                overflow-y: auto;
+                border: 1px gray solid;
             }
-
-            #fields .entries > .entry,
-            #fields .field {
-                flex: 1 1 0;
-            }
-
-            #fields textarea {
-                resize: none;
-            }
-
-            #fields button {
-                flex: 1 1 0;
-            }
-
-            #fields > .TextField p {
-                margin: 0 0 0 4pt;
-            }
-
-            #fields > .TableField p {
-                margin: 0;
-            }
-
-            #fields .failed {
+            #fields .TableField > .table.failed {
                 border: red solid;
             }
-
-            #fields .failed.entries {
-                padding: 0 1pt 1pt 1pt;
+            #fields .TableField > .table > .header,
+            #fields .TableField > .table > .entry {
+                padding: 4px;
+                border: 1px lightgray solid;
+            }
+            #fields .TableField > .table > .header summary,
+            #fields .TableField > .table > .header > span,
+            #fields .TableField > .table > .entry span {
+                margin: 0;
+            }
+            #fields .TableField.Vertical > .table {
+                grid-auto-flow: row;
+            }
+            #fields .TableField.Horizontal > .table {
+                grid-auto-flow: column;
+                grid-template-columns: minmax(min-content, max-content);
             }
         </style>
     </head>
@@ -239,16 +253,27 @@
                         </span>
                     </div>
                 </details>
-                <div class='field'>
+                <form class='field'>
                     <select name='scenario' style="min-width: 30ch; width: max-content">
                         <option value="empty">Keines</option>
                         <!--SCENARIO-OPTIONS-->
                     </select>
-                </div>
+                </form>
             </div>
         </header>
-        <section id="fields">
-            <!--FIELDS-->
+
+        <section id="main">
+            <div id="fields">
+                <!--FIELDS--></div>
+            <div id='protocol' style="<!--PROTOCOL-CONTAINER-STYLE-->">
+                <details class='label'>
+                    <summary>Protokoll</summary>
+                    <span>Ausgaben des Lernmoduls</span>
+                </details>
+                <form class='field'>
+                    <textarea name='protocol' style="<!--PROTOCOL-FIELD-STYLE-->" disabled></textarea>
+                </form>
+            </div>
         </section>
         <section class="systemFieldContainer" id='stepSelector'>
             <details class='label'>
@@ -288,7 +313,7 @@
         <section id="spacer">
             <!--Kein Inhalt-->
         </section>
-        <hr/>
+        <hr>
         <footer>
             <div id='sources'>
                 <span>Quellen zur Vertiefung</span>
@@ -304,16 +329,17 @@
             </div>
         </footer>
         <script type="module">
-            import TextField from "./lib/fields/TextField.js";
-            import PlainField from "./lib/fields/PlainField.js";
-            import SplitField from "./lib/fields/SplitField.js";
-            import SelectorField from "./lib/fields/SelectorField.js";
-            import ListField from "./lib/fields/ListField.js";
-            import TableField from "./lib/fields/TableField.js";
-            import Module from "./lib/functions/Module.js";
-            import String from "./lib/functions/String.js";
-            import List from "./lib/functions/List.js";
-            import Table from "./lib/functions/Table.js";
+            import InfoFieldManager from "./lib/fieldManager/InfoFieldManager.js";
+            import TextFieldManager from "./lib/fieldManager/TextFieldManager.js";
+            import SplitFieldManager from "./lib/fieldManager/SplitFieldManager.js";
+            import CheckFieldManager from "./lib/fieldManager/CheckFieldManager.js";
+            import SelectorFieldManager from "./lib/fieldManager/SelectorFieldManager.js";
+            import ListFieldManager from "./lib/fieldManager/ListFieldManager.js";
+            import TableFieldManager from "./lib/fieldManager/TableFieldManager.js";
+            import Module from "./lib/systemFunctions/Module.js";
+            import Utils from "./lib/systemFunctions/Utils.js";
+            import Resource from "./lib/systemFunctions/Resource.js";
+            import GlobalVariable from "./lib/GlobalVariable.js";
             import ValidationError from "./lib/ValidationError.js";
 
             <!--ADDITIONAL-IMPORTS-->
@@ -328,7 +354,13 @@
             document.getElementById("forwardX").addEventListener("click", () => _nextState(9));
             let _history = [];
 
-            <!--VARIABLES-->
+            Module.setLogger(new SplitFieldManager("#protocol", "Log", true, false, "\n", true, "String", () => {}).getInteractor())
+            Resource._set({<!--RESOURCES-->});
+            Utils._performOverwrite();
+
+            <!--FIELD-VARIABLES-->
+
+            <!--ADDITIONAL-VARIABLES-->
 
             let _firstState = () =>
             {
@@ -337,53 +369,20 @@
             let _nextTransition = () =>
             {
             };
-            Module._setGeneralEventHandler("change", _restartModule)
+            Module._setChangeEventHandler(_restartModule)
 
             function _resetModule()
             {
                 Module._resetAllFields();
-                _loadSzenario();
                 _restartModule();
+                _loadSzenario();
             }
 
             function _restartModule()
             {
                 Module._resetNonInputFields();
-                _history = [];
+                _history.length = 0;
                 _firstState();
-            }
-
-            function _saveStepHistory(stepSize)
-            {
-                // Erstellen und speichern eines Backups
-                let historyEntry = new Map();
-                historyEntry.set("stepSize", stepSize);
-                historyEntry.set("nextTransition", _nextTransition);
-                historyEntry.set("backup", Module._backupFields());
-                _history.push(historyEntry);
-            }
-
-            function _previousState(stepSize)
-            {
-                // Backup des aktuellen Zustands entfernen, damit nicht zum aktuellen Zustand zurückgegangen wird
-                _history.pop();
-
-                // Index des letzten kleinen/großen Schritts ermitteln
-                let historyEntryIndex = _history.findLastIndex(entry => entry.get("stepSize") >= stepSize);
-
-                // Wenn kein entsprechender Eintrag gefunden wurde, wird zum Ausgangszustand zurückgegangen
-                if(historyEntryIndex === -1){
-                    _resetModule();
-                    return;
-                }
-
-                // Wiederherstellen des gespeicherten Backups
-                let historyEntry = _history.at(historyEntryIndex);
-                Module._restoreFields(historyEntry.get("backup"));
-                _nextTransition = historyEntry.get("nextTransition");
-
-                // Abschneiden der zurückgegangenen Einträge, behalten des aktuellen
-                _history = _history.slice(0, historyEntryIndex + 1);
             }
 
             function _nextState(stepSize)
@@ -392,7 +391,7 @@
                 while (true)
                 {
                     let ret = _nextTransition();
-                    _saveStepHistory(ret);
+                    _saveStepToHistory(ret);
                     if (ret === -1)
                     {
                         // Kein Übergang vollzogen, daher letztes Backup wieder entfernen
@@ -404,6 +403,47 @@
                         return;
                     }
                 }
+            }
+
+            function _previousState(stepSize)
+            {
+                // Backup des aktuellen Zustands entfernen, damit nicht zum aktuellen Zustand zurückgegangen wird
+                _history.pop();
+
+                // Index des letzten kleinen/großen Schritts ermitteln
+                let historyEntryIndex = _history.findLastIndex(entry => entry.get("stepSize") >= stepSize);
+
+                // Wenn kein entsprechender Eintrag gefunden wurde, wird zum Ausgangszustand zurückgegangen
+                if (historyEntryIndex === -1)
+                {
+                    _resetModule();
+                    return;
+                }
+
+                // Wiederherstellen des gespeicherten Backups
+                _loadStepFromHistory(historyEntryIndex);
+            }
+
+            function _saveStepToHistory(stepSize)
+            {
+                // Erstellen und speichern eines Backups
+                let historyEntry = new Map();
+                historyEntry.set("stepSize", stepSize);
+                historyEntry.set("nextTransition", _nextTransition);
+                historyEntry.set("variablesBackup", Module._backupVariables());
+                historyEntry.set("fieldBackup", Module._backupFields());
+                _history.push(historyEntry);
+            }
+
+            function _loadStepFromHistory(index)
+            {
+                // Laden und wiederherstellen eines Backups
+                let historyEntry = _history.at(index);
+                Module._restoreFields(historyEntry.get("fieldBackup"));
+                Module._restoreVariables(historyEntry.get("variablesBackup"));
+                _nextTransition = historyEntry.get("nextTransition");
+                // Abschneiden der zurückgegangenen Einträge, behalten des Aktuellen (Ende des _history-Arrays vorziehen)
+                _history.length = index + 1;
             }
 
             function _loadSzenario()
@@ -421,6 +461,10 @@
 
             <!--STATES-->
 
+            class Own
+            {
+                <!--SPECIAL-FUNCTIONS-->
+            }
         </script>
     </body>
 </html>

@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S1
+  name: Szenario 1
+  initialization:
+    - |
+        E.setValue([["Allokation", 1, 11], 
+                    ["Allokation", 2, 14], 
+                    ["Allokation", 3, 13], 
+                    ["Allokation", 4, 2], 
+                    ["Freigabe", 1, ""], 
+                    ["Freigabe", 2, ""], 
+                    ["Freigabe", 3, ""], 
+                    ["Freigabe", 4, ""]])
+    - S.withEmptyEntries().fillAttribute("Z", 0)
+    - S.withEmptyEntries().fillAttribute("P", 0)

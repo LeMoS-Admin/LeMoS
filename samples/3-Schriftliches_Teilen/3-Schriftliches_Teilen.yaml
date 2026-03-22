@@ -1,0 +1,116 @@
+# yaml-language-server: $schema=../LeMoS-Modul-Schema.json
+general:
+  heading: Schriftliche Division
+  explanation: Schriftliche d.h. manuelle Berechnung des Quotienten und ggf. des Restes aus Dividend und Divisor
+  settings:
+    libraryVersion: 1.0.0
+
+fields:
+  - id: 'X'
+    name: Dividend
+    explanation: Ausgangswert der geteilt wird
+    type: SPLIT
+    usage: INPUT
+    datatype: INTEGER
+    separator: ''
+    style:
+      row: 1
+      column: 1
+  - id: 'Y'
+    name: Divisor
+    explanation: Ausgangswert durch den geteilt wird
+    type: TEXT
+    usage: INPUT
+    datatype: INTEGER
+    style:
+      row: 1
+      column: 2
+  - id: 'Q'
+    name: Quotient mit Rest
+    explanation: Endergebnis
+    type: SPLIT
+    usage: OUTPUT
+    separator: ""
+    style:
+      row: 1
+      column: 3
+  - id: 'M'
+    name: Minuend
+    explanation: Letzte Differenz * 10 + nächste Ziffer des Dividenden
+    type: TEXT
+    usage: TEMP
+    style:
+      row: 2
+      column: 1
+  - id: 'S'
+    name: Subtrahend
+    explanation: Letzte (gerade berechnete) Ziffer des Quotienten * Divisor
+    type: TEXT
+    usage: TEMP
+    style:
+      row: 3
+      column: 1
+  - id: 'D'
+    name: Differenz
+    explanation: Differenz von Minuend und Subtrahend
+    type: TEXT
+    usage: TEMP
+    style:
+      row: 4
+      column: 1
+
+states:
+  - id: Z0
+    name: Lernmodul initialisiert
+    type: ENTRY
+    transitions:
+      - target: Z1
+        conditions:
+          - message: |
+                      Bitte die folgenden Felder befüllen:
+                      - Dividend
+                      - Divisor
+            terms:
+              - Module.isFilled(X, Y)
+  - id: Z1
+    name: Minuend zusammengesetzt
+    importance: LOW
+    actions:
+      - let Xi = X.next()
+      - let Dtemp = D.getValue()
+      - if(Dtemp === undefined) Dtemp = 0
+      - M.setValue(Dtemp * 10 + Number(Xi))
+    transitions:
+      - target: Z2
+  - id: Z2
+    name: Nächste Ziffer des Quotienten berechnet
+    importance: LOW
+    actions:
+      - let Qi = Math.floor(M.getValue() / Y.getValue())
+      - Q.add(Qi)
+    transitions:
+      - target: Z3
+  - id: Z3
+    name: Subtrahend berechnet
+    importance: LOW
+    actions:
+      - S.setValue(Q.last() * Y.getValue())
+    transitions:
+      - target: Z4
+  - id: Z4
+    name: Dividend berechnet
+    importance: HIGH
+    actions:
+      - D.setValue(M.getValue() - S.getValue())
+    transitions:
+      - target: Z1
+      - target: Z5
+        explanation: Wenn die Iteration über den Dividenden abgeschlossen ist, folgt die Berechnung des Rests
+        conditions:
+          - terms:
+              - "!X.hasNext()"
+  - id: Z5
+    name: Rest berechnet
+    importance: HIGH
+    actions:
+      - Q.add(" R" + D.getValue())

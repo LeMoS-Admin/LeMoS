@@ -18,15 +18,24 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Eindeutige Identifikation, z.B. 'S1'"
+          "description": "Eindeutige Identifikation",
+          "examples": [
+            "S1"
+          ]
         },
         "name": {
           "type": "string",
-          "description": "Anzeigename in Szenario-Auswahl, z.B. 'Länge gesucht' (Standard: 'id)"
+          "description": "Anzeigename in Szenario-Auswahl, z.B. 'Länge gesucht' (Standard: Wert von 'id)",
+          "examples": [
+            "Szenario 1"
+          ]
         },
         "explanation": {
           "type": "string",
-          "description": "Zusätzliche Erläuterungen"
+          "description": "Beschreibung des Szenarios",
+          "examples": [
+            "Länge gesucht"
+          ]
         },
         "initialization": {
           "type": "array",

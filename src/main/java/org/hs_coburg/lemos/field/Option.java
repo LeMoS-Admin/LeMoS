@@ -8,46 +8,58 @@ import java.util.Objects;
 
 public class Option
 {
-	public final String id;
-	public final String name;
-	public final String explanation;
+    public final String id;
+    public final String name;
+    public final String explanation;
 
-	@JsonCreator
-	public Option(@JsonProperty("id") String id,
-				  @JsonProperty("name") String name,
-				  @JsonProperty("explanation") String explanation)
-	{
-		this.id          = Objects.requireNonNull(id, "Missing required attribute 'id'");
-		this.name        = Objects.requireNonNullElse(name, id);
-		this.explanation = Objects.requireNonNullElse(explanation, "");
-	}
+    @JsonCreator
+    public Option(@JsonProperty("id") String id,
+                  @JsonProperty("name") String name,
+                  @JsonProperty("explanation") String explanation)
+    {
+        this.id          = Objects.requireNonNull(id, "Missing required attribute 'id'");
+        this.name        = Objects.requireNonNullElse(name, id);
+        this.explanation = Objects.requireNonNullElse(explanation, "");
+    }
 
-	public String generateOptionHTML()
-	{
-		String template = "<option value='{{id}}'>{{name_unescaped}}{{explanation_unescaped}}</option>";
-		return template.replace("{{id}}", StringHelper.escape(id))
-					   .replace("{{name_unescaped}}", name)
-					   .replace("{{explanation_unescaped}}", getExplanation());
-	}
+    public String generateSelectorOptionHTML()
+    {
+        String template = "<option value='{{id}}'>{{name}}{{explanation}}</option>";
+        return performReplacements(template);
+    }
 
-	private String getExplanation()
-	{
-		if (explanation.isEmpty())
-		{
-			return "";
-		}
-		else
-		{
-			return " (" + explanation + ")";
-		}
-	}
+    public String generateCheckOptionHTML()
+    {
+        String template = "<input type='{{checkType}}' name='{{fieldID}}' value='{{id}}'>" +
+                          "<label>{{name}}{{explanation}}</label><br>";
+        return performReplacements(template).replace("{{fieldID}}", "{{id}}");
+    }
 
-	@Override
-	public String toString()
-	{
-		return getClass().getSimpleName() + ":" +
-			   "\n\t" + "id: '" + StringHelper.get(id) + "'" +
-			   "\n\t" + "name: '" + StringHelper.get(name) + "'" +
-			   "\n\t" + "explanation: '" + StringHelper.get(explanation) + "'";
-	}
+    private String performReplacements(String string)
+    {
+        return string.replace("{{id}}", StringHelper.escape(id))
+                     .replace("{{name}}", name)
+                     .replace("{{explanation}}", getExplanation());
+    }
+
+    private String getExplanation()
+    {
+        if (explanation.isEmpty())
+        {
+            return "";
+        }
+        else
+        {
+            return " (" + explanation + ")";
+        }
+    }
+
+    @Override
+    public String toString()
+    {
+        return getClass().getSimpleName() + ":" +
+               "\n\t" + "id: '" + StringHelper.get(id) + "'" +
+               "\n\t" + "name: '" + StringHelper.get(name) + "'" +
+               "\n\t" + "explanation: '" + StringHelper.get(explanation) + "'";
+    }
 }

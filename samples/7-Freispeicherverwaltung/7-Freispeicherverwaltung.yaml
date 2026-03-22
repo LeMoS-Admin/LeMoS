@@ -1,0 +1,439 @@
+# yaml-language-server: $schema=../LeMoS-Modul-Schema.json
+general:
+  heading: Freispeicherverwaltung
+  explanation: |
+                  Arbeitsspeicher verschiedener Prozesse mittels Bitmap verwalten (Verfahren: First Fit)<br>
+                  --> Speicherabschnitte können für Prozesse allokiert und freigegeben werden
+  settings:
+    libraryVersion: 1.0.0
+  variables:
+    - name: X
+  functions:
+    - name: speicherVerfügbar
+      implementation:
+        - |
+            S.restartIterator();
+            while(true) {
+              let index0 = S.findNextByAttribute("Z", 0);
+              if(index0 === undefined)
+                return false;
+              else
+                index0 = index0.get("N");
+
+              let index1 = S.findNextByAttribute("Z", 1);
+              if(index1 === undefined)
+                index1 = S.length();
+              else
+                index1 = index1.get("N");
+
+              let length = index1 - index0;
+              if(length >= X.value.get("G"))
+                return true;
+              else
+                return false;
+            }
+    - name: speicherSetzen
+      parameters:
+        - Prozess
+        - Zustand
+      implementation:
+        - S.withEmptyEntries().fillAttribute("Z", Prozess, V.asNumber(), B.asNumber())
+        - S.withEmptyEntries().fillAttribute("P", Zustand, V.asNumber(), B.asNumber())
+            
+
+fields:
+  - id: E
+    name: Ereignistabelle
+    explanation: Liste der durchzuführenden Allokationen und Freigaben
+    type: TABLE
+    allowEmpty: true
+    restrictions:
+      - message: Bei der Allokation von Speicher ist die zu allokierende Größe anzugeben, bei der Freigabe ist keine Größe anzugeben
+        terms:
+          - |
+              ((entry.get('A').getValue() === 'Allokation') && !entry.get('G').isEmpty()) ||
+              ((entry.get('A').getValue() === 'Freigabe') && entry.get('G').isEmpty())
+    initialEntries: 1
+    innerFields:
+      - id: A
+        name: Aktion
+        type: SELECTOR
+        emptyOption: true
+        options:
+          - id: Leer
+            name: Bitte wählen
+          - id: Allokation
+          - id: Freigabe
+      - id: P
+        name: Prozess
+        type: TEXT
+        datatype: INTEGER
+        restrictions:
+          - message: Nur positive Zahlenwerte
+            terms:
+              - P.getValue() >= 0
+      - id: G
+        name: Größe
+        type: TEXT
+        allowEmpty: true
+        datatype: INTEGER
+        restrictions:
+          - message: Nur positive Zahlenwerte
+            terms:
+              - G.getValue() >= 0
+    style:
+      row: 1
+      column: 1
+  - id: W
+    name: Wartetabelle
+    explanation: Liste der durchzuführenden Allokationen und Freigaben
+    type: TABLE
+    allowEmpty: true
+    restrictions:
+      - message: Bei der Allokation von Speicher ist die zu allokierende Größe anzugeben, bei der Freigabe ist keine Größe anzugeben
+        terms:
+          - |
+              ((entry.get('A').getValue() === 'Allokation') && !entry.get('G').isEmpty()) ||
+              ((entry.get('A').getValue() === 'Freigabe') && entry.get('G').isEmpty())
+    initialEntries: 1
+    innerFields:
+      - id: A
+        name: Aktion
+        type: SELECTOR
+        emptyOption: true
+        options:
+          - id: Leer
+            name: Bitte wählen
+          - id: Allokation
+          - id: Freigabe
+      - id: P
+        name: Prozess
+        type: TEXT
+        datatype: INTEGER
+        restrictions:
+          - message: Nur positive Zahlenwerte
+            terms:
+              - P.getValue() >= 0
+      - id: G
+        name: Größe
+        type: TEXT
+        allowEmpty: true
+        datatype: INTEGER
+        restrictions:
+          - message: Nur positive Zahlenwerte
+            terms:
+              - G.getValue() >= 0
+    style:
+      row: 1
+      column: 2
+  - id: S
+    name: Speichertabelle
+    explanation: Aktuelle Bitmap zur Speicherverwaltung
+    usage: OUTPUT
+    type: TABLE
+    growthDirection: HORIZONTAL
+    initialEntries: 32
+    innerFields:
+      - id: 'N'
+        name: Nummer
+        explanation: Nummer der Speicherzelle
+        usage: OUTPUT
+        type: TEXT
+      - id: Z
+        name: Zustand
+        explanation: Aktuelle Verfügbarkeit der Speicherzelle, 0 für unbelegt, 1 für belegt
+        type: TEXT
+        usage: INPUT
+        datatype: INTEGER
+        restrictions:
+          - message: Zustand muss 0 (unbelegt) oder 1 (belegt) sein
+            terms:
+              - Z.equals(0) || Z.equals(1)
+      - id: P
+        name: Prozess
+        explanation: Prozess, der die Speicherzelle aktuell belegt
+        usage: INPUT
+        type: TEXT
+        datatype: INTEGER
+        restrictions:
+          - message: Nur positive Zahlenwerte
+            terms:
+              - P.getValue() >= 0
+    style:
+      row: 2
+      column: 1
+      width: 2
+  - id: 'V'
+    name: Index-Von
+    explanation: Speicherzellennummer, ab der allokiert bzw. freigegeben werden soll
+    usage: TEMP
+    type: TEXT
+    style:
+      row: 3
+      column: 1
+  - id: 'B'
+    name: Index-Bis
+    explanation: Speicherzellennummer, bis zu der allokiert bzw. freigegeben werden soll
+    usage: TEMP
+    type: TEXT
+    style:
+      row: 3
+      column: 2
+
+states:
+  - id: Z0
+    name: Lernmodul initialisiert
+    type: ENTRY
+    actions:
+      - for(let [index, field] of S.withEmptyEntries().entries()) field.get("N").setValue(index)
+    transitions:
+      - target: Z1
+  - id: Z1
+    name: Iteration über Wartetabelle neugestartet
+    importance: ZERO
+    actions:
+      - W.restartIterator()
+    transitions:
+      - target: Z2  
+  - id: Z2
+    name: Aktueller Eintrag definiert
+    importance: LOW
+    actions:
+      - X.value = W.next()
+      - if (X.value !== undefined) X.value = X.value.valueOf()
+    transitions:
+      - target: Z11
+        conditions:
+          - terms:
+              - X.value === undefined
+      - target: Z3a
+        conditions:
+          - terms:
+              - X.value.get("A") === "Freigabe"
+      - target: Z3b
+        conditions:
+          - terms:
+              - X.value.get("A") === "Allokation"
+  - id: Z3a
+    name: Aktueller Eintrag allokiert?
+    type: JUNCTION
+    transitions:
+      - target: Z2
+      - target: Z5a
+        conditions:
+          - terms:
+              - S.getAttribute("P").includes(X.value.get("P"))
+  - id: Z3b
+    name: Aktueller Eintrag allokierbar?
+    type: JUNCTION
+    transitions:
+      - target: Z2
+      - target: Z4b
+        conditions:
+          - terms:
+              - Own.speicherVerfügbar()
+  - id: Z4b
+    name: Iteration über Speicher neugestartet
+    importance: ZERO
+    actions:
+      - S.restartIterator()
+    transitions:
+      - target: Z5b
+  - id: Z5a
+    name: Von-Index definiert
+    importance: LOW
+    actions:
+      - let speicherEintrag = S.findByAttribute("P", X.value.get("P"))
+      - V.setValue(speicherEintrag.get("N"))
+    transitions:
+      - target: Z7a
+  - id: Z5b
+    name: Von-Index definiert
+    importance: LOW
+    actions:
+      - let speicherEintrag = S.findNextByAttribute("Z", 0)
+      - V.setValue(speicherEintrag.get("N"))
+    transitions:
+      - target: Z6b
+  - id: Z6b
+    name: Bis-Index probiert
+    importance: LOW
+    actions:
+      - let speicherEintrag = S.findNextByAttribute("Z", 1)
+      - if(speicherEintrag === undefined) B.setValue(S.length())
+      - else B.setValue(speicherEintrag.get("N"))
+    transitions:
+      - target: Z5b
+      - target: Z7b
+        conditions:
+          - terms:
+              - (B.asNumber() - V.asNumber()) >= X.value.get("G").asNumber()
+  - id: Z7a
+    name: Bis-Index definiert
+    importance: LOW
+    actions:
+      - let speicherEintrag = S.findLastByAttribute("P", X.value.get("P"))
+      - V.setValue(speicherEintrag.get("N").asNumber() + 1)
+    transitions:
+      - target: Z8a
+  - id: Z7b
+    name: Bis-Index definiert
+    importance: LOW
+    actions:
+      - B.setValue(V.asNumber() + X.value.get("G").asNumber())
+    transitions:
+      - target: Z8b
+  - id: Z8a
+    name: Speicherbereich freigegeben
+    importance: LOW
+    actions:
+      - Own.speicherSetzen(0, 0)
+    transitions:
+      - target: Z9
+  - id: Z8b
+    name: Speicherbereich allokiert
+    importance: LOW
+    actions:
+      - Own.speicherSetzen(1, X.value.get("P"))
+    transitions:
+      - target: Z9
+  - id: Z9
+    name: Aktueller Eintrag aus Wartetabelle entfernt
+    importance: HIGH
+    actions:
+      - W.remove(X.value)
+    transitions:
+      - target: Z2
+  - id: Z11
+    name: Iteration über Ereignistabelle neugestartet
+    importance: ZERO
+    actions:
+      - E.restartIterator()
+    transitions:
+      - target: Z12
+  - id: Z11a
+    name: Aktuellen Eintrag am Anfang der Wartetabelle eingeschoben
+    importance: HIGH
+    actions:
+      - W.insert(0, X.value)
+    transitions:
+      - target: Z12
+  - id: Z11b
+    name: Aktuellen Eintrag am Ende der Wartetabelle angehangen
+    importance: HIGH
+    actions:
+      - W.add(X.value)
+    transitions:
+      - target: Z12
+  - id: Z12
+    name: Aktueller Eintrag definiert
+    importance: LOW
+    actions:
+      - X.value = E.next()
+      - if (X.value !== undefined) X.value = X.value.valueOf()
+    transitions:
+      - target: Z19
+      - target: Z20
+        conditions:
+          - terms:
+              - X.value === undefined
+  - id: Z19
+    name: Aktueller Eintrag aus Ereignistabelle entfernt
+    importance: LOW
+    actions:
+      - E.remove(X.value)
+    transitions:
+      - target: Z13a
+        conditions:
+          - terms:
+              - X.value.get("A") === "Freigabe"
+      - target: Z13b
+        conditions:
+          - terms:
+              - X.value.get("A") === "Allokation"
+  - id: Z13a
+    name: Aktueller Eintrag allokiert?
+    type: JUNCTION
+    transitions:
+      - target: Z11a
+      - target: Z15a
+        conditions:
+          - terms:
+              - S.getAttribute("P").includes(X.value.get("P"))
+  - id: Z13b
+    name: Aktueller Eintrag allokierbar?
+    type: JUNCTION
+    transitions:
+      - target: Z11b
+      - target: Z14b
+        conditions:
+          - terms:
+              - Own.speicherVerfügbar()
+  - id: Z14b
+    name: Iteration über Speicher neugestartet
+    importance: ZERO
+    actions:
+      - S.restartIterator()
+    transitions:
+      - target: Z15b
+  - id: Z15a
+    name: Von-Index definiert
+    importance: LOW
+    actions:
+      - let speicherEintrag = S.findByAttribute("P", X.value.get("P"))
+      - V.setValue(speicherEintrag.get("N"))
+    transitions:
+      - target: Z17a
+  - id: Z15b
+    name: Von-Index definiert
+    importance: LOW
+    actions:
+      - let speicherEintrag = S.findNextByAttribute("Z", 0)
+      - V.setValue(speicherEintrag.get("N"))
+    transitions:
+      - target: Z16b
+  - id: Z16b
+    name: Bis-Index probiert
+    importance: LOW
+    actions:
+      - let speicherEintrag = S.findNextByAttribute("Z", 1)
+      - if(speicherEintrag === undefined) B.setValue(S.length())
+      - else B.setValue(speicherEintrag.get("N"))
+    transitions:
+      - target: Z15b
+      - target: Z17b
+        conditions:
+          - terms:
+              - (B.asNumber() - V.asNumber()) >= X.value.get("G").asNumber()
+  - id: Z17a
+    name: Bis-Index definiert
+    importance: LOW
+    actions:
+      - let speicherEintrag = S.findLastByAttribute("P", X.value.get("P"))
+      - B.setValue(speicherEintrag.get("N").asNumber() + 1)
+    transitions:
+      - target: Z18a
+  - id: Z17b
+    name: Bis-Index definiert
+    importance: LOW
+    actions:
+      - B.setValue(V.asNumber() + X.value.get("G").asNumber())
+    transitions:
+      - target: Z18b
+  - id: Z18a
+    name: Speicherbereich freigegeben
+    importance: HIGH
+    actions:
+      - Own.speicherSetzen(0, 0)
+    transitions:
+      - target: Z1
+  - id: Z18b
+    name: Speicherbereich allokiert
+    importance: HIGH
+    actions:
+      - Own.speicherSetzen(1, X.value.get("P"))
+    transitions:
+      - target: Z1
+  - id: Z20
+    name: Modul abgeschlossen
+    importance: HIGH

@@ -2,15 +2,14 @@
 general:
   heading: Dreisatz
   explanation: Interaktives Modul, um den Dreisatz auszuprobieren
-  config:
-    differentStepSizes: true
-    showFieldIDs: false
+  settings:
+    libraryVersion: 1.0.0
 
 fields:
   - id: LS
     name: Linker Startwert
     explanation: Ausgangswert für den der Endwert bekannt ist
-    type: PLAIN
+    type: TEXT
     usage: INPUT
     datatype: NUMBER
     style:
@@ -20,7 +19,7 @@ fields:
   - id: RS
     name: Rechter Startwert
     explanation: Ausgangswert für den der Endwert unbekannt ist
-    type: PLAIN
+    type: TEXT
     usage: INPUT
     datatype: NUMBER
     style:
@@ -30,7 +29,7 @@ fields:
   - id: T
     name: Teiler
     explanation: Gemeinsamer Teiler, um auf jeweiligen Zwischenwert zu kommen
-    type: PLAIN
+    type: TEXT
     usage: TEMP
     style:
       row: 2
@@ -39,7 +38,7 @@ fields:
   - id: LZ
     name: Linker Zwischenwert
     explanation: Zwischenwert für den der Endwert bekannt ist
-    type: PLAIN
+    type: TEXT
     usage: TEMP
     style:
       row: 3
@@ -48,7 +47,7 @@ fields:
   - id: RZ
     name: Rechter Zwischenwert
     explanation: Zwischenwert für den der Endwert unbekannt ist
-    type: PLAIN
+    type: TEXT
     usage: TEMP
     style:
       row: 3
@@ -57,7 +56,7 @@ fields:
   - id: F
     name: Faktor
     explanation: Gemeinsamer Faktor, um auf den jeweiligen Endwert zu kommen
-    type: PLAIN
+    type: TEXT
     usage: TEMP
     style:
       row: 4
@@ -66,7 +65,7 @@ fields:
   - id: LE
     name: Linker Endwert
     explanation: Gegebender Endwert
-    type: PLAIN
+    type: TEXT
     usage: INPUT
     datatype: NUMBER
     style:
@@ -76,7 +75,7 @@ fields:
   - id: RE
     name: Rechter Endwert
     explanation: Gesuchter Endwert
-    type: PLAIN
+    type: TEXT
     usage: OUTPUT
     style:
       row: 5
@@ -96,7 +95,7 @@ states:
                       - Rechter Startwert
                       - Linker Endwert
             terms:
-              - Module.filled(LS, RS, LE)
+              - Module.isFilled(LS, RS, LE)
   - id: Z1
     name: Teiler berechnet
     importance: LOW

@@ -14,20 +14,36 @@ then
 	exit 1
 fi
 
+failedGeneration=false
 for arg in "$@"; do
 	# Endung und Pfad entfernen, um Namen des Lernmoduls zu bestimmen
 	name="${arg##*/}"
 	name="${name%.*}"
+
+	# Dateinamen entfernen, um Pfad des Lernmoduls zu bestimmen
+	pfad=${arg%/*}
 	
 	# Erstellen einer Kopie der Vorlage, damit diese anschließend mit den Daten des Lernmodul ausgefüllt werden kann
 	echo $name: preparing template
 	cd "$LWD"
 	unzip -q LeMoS*.jar "$TEMPLATE/*"
+	
+	# Übernehmen der hinterlegten Resourcen in das Verzeichnis des Lernmoduls
+	echo $name: preparing resources
+	cp -r "$pfad/resource" "$LWD/$TEMPLATE/res"
 
 	# Aufruf des LeMoS-Generators zur Verarbeitung der Lernmodul-Konfiguration (Parameter: Lernmodul-Konfigurationsdatei, Zielordner)
 	echo $name: starting generator
 	cd "$SWD"	# LeMoS muss in Startverzeichnis aufgerufen werden, damit es etwaige relative Pfade korrekt auflösen kann
 	java -jar "$LWD"/LeMoS*.jar "$arg" "$LWD/$TEMPLATE"
+	
+	# Behandeln von erfolglosen Generierungen (über einen vom LeMoS-Generator zurückgegebenen Statuscode, der ungleich 0 ist)
+	if [ $? != 0 ]
+	then
+		failedGeneration=true
+		rm -r "$LWD/$TEMPLATE"
+		continue
+	fi
 	
 	# Verschieben der gewählten Systembibliothek, bereinigen aller anderen (Gewünschte Version der Bibliothek wurde vorher im LeMoS-Generator zu "lib" umbenannt)
 	echo $name: moving library
@@ -44,4 +60,10 @@ for arg in "$@"; do
 
 	echo $name: finished "$SWD/$name.zip"
 done
-exit 0
+
+if $failedGeneration
+then
+	exit 1
+else
+	exit 0
+fi

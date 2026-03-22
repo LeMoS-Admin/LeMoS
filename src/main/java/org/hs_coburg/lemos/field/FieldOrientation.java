@@ -2,18 +2,18 @@ package org.hs_coburg.lemos.field;
 
 public enum FieldOrientation
 {
-	HORIZONTAL("Horizontal"),
-	VERTICAL("Vertical");
+    HORIZONTAL("Horizontal"),
+    VERTICAL("Vertical");
 
-	private final String name;
+    private final String name;
 
-	FieldOrientation(String name)
-	{
-		this.name = name;
-	}
+    FieldOrientation(String name)
+    {
+        this.name = name;
+    }
 
-	public String asName()
-	{
-		return name;
-	}
+    public String asName()
+    {
+        return name;
+    }
 }

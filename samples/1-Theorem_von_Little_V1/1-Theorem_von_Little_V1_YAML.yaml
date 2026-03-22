@@ -18,7 +18,7 @@ general:
         Telefon: 09561 317-152
         E-Mail: dieter.wissmann@hs-coburg.de
         Büro: 2-127
-  config:
+  settings:
     libraryVersion: 1.0.0
     showFieldIDs: true
     differentStepSizes: false
@@ -44,7 +44,7 @@ fields:
   - id: "N"
     name: Länge
     explanation: Durchschnittliche Länge der Warteschlange
-    type: PLAIN
+    type: TEXT
     usage: INPUT
     allowEmpty: true
     datatype: NUMBER
@@ -55,7 +55,7 @@ fields:
   - id: "Y"
     name: Ankunftsrate
     explanation: Durchschnittliche Ankunftsrate neuer Einträge
-    type: PLAIN
+    type: TEXT
     usage: INPUT
     allowEmpty: true
     datatype: NUMBER
@@ -66,7 +66,7 @@ fields:
   - id: "W"
     name: Wartezeit
     explanation: Durchschnittliche Wartezeit eines Eintrags
-    type: PLAIN
+    type: TEXT
     usage: INPUT
     allowEmpty: true
     datatype: NUMBER
@@ -93,7 +93,7 @@ states:
         conditions:
           - message: "Bitte genau 2 der 3 Textfelder befüllen"
             terms:
-              - List.length(Module.filled()) === 3
+              - Module.countFilled() === 3
   - id: Z1a
     name: Welcher Aufgabentyp?
     explanation: Fallunterscheidung bei festem Aufgabentyp
@@ -108,7 +108,7 @@ states:
               - T.getValue() === "Fall1"
           - message: "Bitte die Felder \"Ankunftsrate\" und 'Wartezeiten' ausfüllen"
             terms:
-              - Module.filled(Y, W)
+              - Module.isFilled(Y, W)
       - target: Z2b
         name: Z1a-Z2b
         explanation: Fester Übergang zu Fall 2
@@ -118,7 +118,7 @@ states:
               - T.getValue() === "Fall2"
           - message: Bitte die Felder \"Länge\" und 'Wartezeiten' ausfüllen
             terms:
-              - Module.filled(N, W)
+              - Module.isFilled(N, W)
       - target: Z2c
         name: Z1a-Z2c
         explanation: Fester Übergang zu Fall 3
@@ -128,7 +128,7 @@ states:
               - T.getValue() === "Fall3"
           - message: Bitte die Felder "Länge" und 'Ankunftsrate' ausfüllen
             terms:
-              - Module.filled(N, Y)
+              - Module.isFilled(N, Y)
   - id: Z1b
     name: Welche Felder?
     explanation: Fallunterscheidung bei automatischem Aufgabentyp
@@ -140,21 +140,21 @@ states:
         conditions:
           - message: ""
             terms:
-              - Module.filled(Y, W)
+              - Module.isFilled(Y, W)
       - target: Z2b
         name: Z1b-Z2b
         explanation: Automatischer Übergang zu Fall 2
         conditions:
           - message: ""
             terms:
-              - Module.filled(N, W)
+              - Module.isFilled(N, W)
       - target: Z2c
         name: Z1b-Z2c
         explanation: Automatischer Übergang zu Fall 3
         conditions:
           - message: ""
             terms:
-              - Module.filled(N, Y)
+              - Module.isFilled(N, Y)
   - id: Z2a
     name: N berechnet
     explanation: "Fall 1: Y und W gegeben, N gesucht"

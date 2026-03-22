@@ -27,19 +27,48 @@
                 </data>
             </contact>
         </contacts>
-        <config>
+        <settings>
             <libraryVersion>1.0.0</libraryVersion>
             <showFieldIDs>true</showFieldIDs>
             <differentStepSizes>false</differentStepSizes>
-        </config>
+        </settings>
     </general>
     <fields>
+        <field>
+            <id>T</id>
+            <name>Aufgabentyp</name>
+            <explanation>Auswahl, welche Variante der Formel genutzt werden soll (nicht implementiert)</explanation>
+            <type>SELECTOR</type>
+            <options>
+                <option>
+                    <id>Auto</id>
+                    <name>Automatisch</name>
+                    <explanation>Berechnung des leer gelassenen Felds</explanation>
+                </option>
+                <option>
+                    <id>Fall1</id>
+                    <name>Länge gesucht</name>
+                    <explanation>Y und W gegeben, N gesucht</explanation>
+                </option>
+                <option>
+                    <id>Fall2</id>
+                    <name>Ankunftsrate gesucht</name>
+                    <explanation>N und W gegeben, Y gesucht</explanation>
+                </option>
+                <option>
+                    <id>Fall3</id>
+                    <name>Wartezeit gesucht</name>
+                    <explanation>N und Y gegeben, W gesucht</explanation>
+                </option>
+            </options>
+        </field>
         <field>
             <id>N</id>
             <name>Länge</name>
             <explanation>Durchschnittliche Länge der Warteschlange</explanation>
-            <type>PLAIN</type>
+            <type>TEXT</type>
             <usage>INPUT</usage>
+            <allowEmpty>true</allowEmpty>
             <datatype>NUMBER</datatype>
             <restrictions>
                 <restriction>
@@ -49,17 +78,14 @@
                     </terms>
                 </restriction>
             </restrictions>
-            <style>
-                <row>1</row>
-                <column>1</column>
-            </style>
         </field>
         <field>
             <id>Y</id>
             <name>Ankunftsrate</name>
             <explanation>Durchschnittliche Ankunftsrate neuer Einträge</explanation>
-            <type>PLAIN</type>
+            <type>TEXT</type>
             <usage>INPUT</usage>
+            <allowEmpty>true</allowEmpty>
             <datatype>NUMBER</datatype>
             <restrictions>
                 <restriction>
@@ -69,17 +95,14 @@
                     </terms>
                 </restriction>
             </restrictions>
-            <style>
-                <row>2</row>
-                <column>1</column>
-            </style>
         </field>
         <field>
             <id>W</id>
             <name>Wartezeit</name>
             <explanation>Durchschnittliche Wartezeit eines Eintrags</explanation>
-            <type>PLAIN</type>
+            <type>TEXT</type>
             <usage>INPUT</usage>
+            <allowEmpty>true</allowEmpty>
             <datatype>NUMBER</datatype>
             <restrictions>
                 <restriction>
@@ -89,10 +112,6 @@
                     </terms>
                 </restriction>
             </restrictions>
-            <style>
-                <row>3</row>
-                <column>1</column>
-            </style>
         </field>
     </fields>
     <states>
@@ -111,7 +130,7 @@
                     <conditions>
                         <condition>
                             <terms>
-                                <operation>List.length(Module.filled()) === 2</operation>
+                                <operation>Module.countFilled() === 3</operation>
                             </terms>
                         </condition>
                     </conditions>
@@ -131,7 +150,7 @@
                     <conditions>
                         <condition>
                             <terms>
-                                <operation>Module.filled(Y, W)</operation>
+                                <operation>Module.isFilled(Y, W)</operation>
                             </terms>
                         </condition>
                     </conditions>
@@ -143,7 +162,7 @@
                     <conditions>
                         <condition>
                             <terms>
-                                <operation>Module.filled(N, W)</operation>
+                                <operation>Module.isFilled(N, W)</operation>
                             </terms>
                         </condition>
                     </conditions>
@@ -155,7 +174,7 @@
                     <conditions>
                         <condition>
                             <terms>
-                                <operation>Module.filled(N, Y)</operation>
+                                <operation>Module.isFilled(N, Y)</operation>
                             </terms>
                         </condition>
                     </conditions>

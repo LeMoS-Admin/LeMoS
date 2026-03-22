@@ -2,20 +2,19 @@ package org.hs_coburg.lemos.field;
 
 public enum FieldUsage
 {
-	INPUT("InputField"),
-	TEMP("TempField"),
-	OUTPUT("OutputField"),
-	HIDDEN("HiddenField");
+    INPUT("InputField"),
+    TEMP("TempField"),
+    OUTPUT("OutputField");
 
-	private final String name;
+    private final String name;
 
-	FieldUsage(String name)
-	{
-		this.name = name;
-	}
+    FieldUsage(String name)
+    {
+        this.name = name;
+    }
 
-	public String asName()
-	{
-		return name;
-	}
+    public String asName()
+    {
+        return name;
+    }
 }

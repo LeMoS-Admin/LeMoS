@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S2
+  name: Szenario 2
+  initialization:
+    - LOCP.setValue("/bsp/beispiel.class")
+    - EURL.setValue("Beispiel")
+    - NAME.setValue("Beispielname")
