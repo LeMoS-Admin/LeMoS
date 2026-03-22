@@ -2,8 +2,8 @@ package org.hs_coburg.lemos.state;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hs_coburg.lemos.Operation;
-import org.hs_coburg.lemos.StringHelper;
+import org.hs_coburg.lemos.module.Operation;
+import org.hs_coburg.lemos.util.StringHelper;
 
 import java.util.Collections;
 import java.util.List;

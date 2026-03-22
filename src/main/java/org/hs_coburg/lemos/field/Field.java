@@ -3,7 +3,7 @@ package org.hs_coburg.lemos.field;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.hs_coburg.lemos.StringHelper;
+import org.hs_coburg.lemos.util.StringHelper;
 
 import java.util.Objects;
 

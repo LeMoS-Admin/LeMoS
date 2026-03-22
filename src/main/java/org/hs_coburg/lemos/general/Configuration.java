@@ -2,7 +2,7 @@ package org.hs_coburg.lemos.general;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hs_coburg.lemos.StringHelper;
+import org.hs_coburg.lemos.util.StringHelper;
 
 import java.util.Objects;
 
@@ -17,7 +17,7 @@ public class Configuration
                          @JsonProperty("showFieldNames") Boolean showFieldNames,
                          @JsonProperty("differentStepSizes") Boolean differentStepSizes)
     {
-        this.libraryVersion     = Objects.requireNonNullElse(libraryVersion, "");
+        this.libraryVersion     = Objects.requireNonNullElse(libraryVersion, "LATEST");
         this.showFieldNames     = Objects.requireNonNullElse(showFieldNames, true);
         this.differentStepSizes = Objects.requireNonNullElse(differentStepSizes, false);
     }

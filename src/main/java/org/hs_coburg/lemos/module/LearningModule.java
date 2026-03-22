@@ -3,7 +3,7 @@ package org.hs_coburg.lemos.module;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hs_coburg.lemos.StringHelper;
+import org.hs_coburg.lemos.util.StringHelper;
 import org.hs_coburg.lemos.field.Field;
 import org.hs_coburg.lemos.general.GeneralData;
 import org.hs_coburg.lemos.state.State;

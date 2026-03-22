@@ -1,6 +1,6 @@
 package org.hs_coburg.lemos.field;
 
-import org.hs_coburg.lemos.StringHelper;
+import org.hs_coburg.lemos.util.StringHelper;
 
 import java.util.Collections;
 import java.util.List;

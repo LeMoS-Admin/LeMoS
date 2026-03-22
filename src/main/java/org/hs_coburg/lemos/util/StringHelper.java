@@ -1,4 +1,4 @@
-package org.hs_coburg.lemos;
+package org.hs_coburg.lemos.util;
 
 import java.util.List;
 import java.util.Map;

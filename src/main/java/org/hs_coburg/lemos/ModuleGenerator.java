@@ -7,49 +7,38 @@ import org.hs_coburg.lemos.module.Scenario;
 import org.hs_coburg.lemos.state.State;
 import org.hs_coburg.lemos.state.StateType;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
 
-public class Generator
+public class ModuleGenerator
 {
-    public static void generateModule(LearningModule module, File target)
+    public static String generateWebXmlContent(LearningModule module) throws IOException
     {
-        String result = readDefault();
+        String result = readResource("moduleTemplate/WEB-INF/web.xml");
+        result = insertGeneralData(module.general, result);
+        return result;
+    }
+
+    public static String generateModuleHtmlContent(LearningModule module) throws IOException
+    {
+        String result = readResource("moduleTemplate/module.html");
         result = insertGeneralData(module.general, result);
         result = insertFields(module.fields, result);
         result = insertStates(module.states, result);
         result = insertSzenarios(module.scenarios, result);
-        writeResult(target.toPath(), result);
+        return result;
     }
 
-    private static String readDefault()
+    private static String readResource(String resource) throws IOException
     {
-        try (InputStream in = Generator.class.getClassLoader().getResourceAsStream("default.html"))
+        try (InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource))
         {
             assert in != null;
             return new String(in.readAllBytes());
         }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static void writeResult(Path path, String result)
-    {
-        try
-        {
-            Files.writeString(path, result);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
+        // Kein catch, da zentrale Behandlung von Fehlern in der main-Methode
     }
 
     private static String insertGeneralData(GeneralData general, String result)

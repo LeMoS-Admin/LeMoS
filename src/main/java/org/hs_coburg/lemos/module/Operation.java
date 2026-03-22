@@ -1,6 +1,7 @@
-package org.hs_coburg.lemos;
+package org.hs_coburg.lemos.module;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import org.hs_coburg.lemos.util.StringHelper;
 
 import java.util.Objects;
 
