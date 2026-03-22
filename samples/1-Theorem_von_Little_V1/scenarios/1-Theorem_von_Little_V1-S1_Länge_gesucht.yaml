@@ -1,0 +1,6 @@
+name: Länge gesucht
+description: Y und W gegeben, N gesucht
+comment: Fall 1
+initialization:
+  - Y = 0.5
+  - W = 4

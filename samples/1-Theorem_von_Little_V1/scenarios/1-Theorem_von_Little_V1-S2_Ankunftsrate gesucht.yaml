@@ -1,0 +1,6 @@
+name: Ankunftsrate gesucht
+description: N und W gegeben, Y gesucht
+comment: Fall 2
+initialization:
+  - N = 3
+  - W = 12

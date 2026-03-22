@@ -1,0 +1,6 @@
+name: Wartezeit gesucht
+description: N und Y gegeben, W gesucht
+comment: Fall 3
+initialization:
+  - N = 1
+  - Y = 5

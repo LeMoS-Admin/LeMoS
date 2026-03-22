@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8">
+        <title>
+            <!--HEADING-->
+        </title>
+    </head>
+    <style>
+        header, footer, section {
+            margin: 12pt;
+        }
+
+        div {
+            display: block;
+        }
+
+        span {
+            margin: 4pt 8pt;
+            display: inline-block;
+        }
+    </style>
+    <body>
+        <header>
+            <h1>
+                <!--HEADING-->
+            </h1>
+            <p>
+                <!--EXPLANATION-->
+            </p>
+        </header>
+        <section>
+            <form>
+                <label for="scenarioSelector">Szenario</label>
+                <select name="scenario" id="scenarioSelector" onchange="submit()">
+                    <option value="empty">Keines</option>
+                    <!--SCENARIO-OPTIONS-->
+                </select>
+            </form>
+        </section>
+        <section id="fields">
+            <!--FIELDS-->
+        </section>
+        <section>
+            <button id="forward1">&gt;</button>
+            <button id="forward2">&gt;&gt;</button>
+        </section>
+        <footer>
+
+        </footer>
+    </body>
+    <script type="module">
+        import {Variable} from "../0-System/variables/Variable.js";
+        import {FieldVariable} from "../0-System/variables/FieldVariable.js";
+        import {PseudoVariable} from "../0-System/variables/PseudoVariable.js";
+        import {PlainFieldVariable} from "../0-System/variables/fieldVariables/PlainFieldVariable.js";
+        import {PlainPseudoVariable} from "../0-System/variables/pseudoVariables/PlainPseudoVariable.js";
+        import {String} from "../0-System/functions/String.js";
+        import {List} from "../0-System/functions/List.js";
+        import {Table} from "../0-System/functions/Table.js";
+        import {Module} from "../0-System/functions/Module.js";
+        //<!--IMPORTS-->
+
+        document.addEventListener("DOMContentLoaded", () => _initializeModule());
+        document.getElementById("forward1").addEventListener("click", () => _nextState(1));
+        document.getElementById("forward2").addEventListener("click", () => _nextState(2));
+        for (let input of document.getElementsByClassName("InputField")) {
+            input.addEventListener("change", () => _eventFieldChange());
+        }
+        //<!--EVENTS-->
+
+        let _firstState = () => {
+            <!--ENTRY-STATE-CALL-->
+        };
+        let _nextTransition = () => {
+        };
+
+        <!--VARIABLES-->
+
+        function _initializeModule() {
+            let params = new URLSearchParams(location.search);
+
+            if (params.has("scenario")) {
+                let scenario = params.get("scenario");
+                document.getElementById("scenarioSelector").value = scenario;
+                _loadSzenario(scenario);
+            }
+            _firstState();
+        }
+
+        function _loadSzenario(scenario) {
+            switch (scenario) {
+                case "empty":
+                    break;
+                    <!--SCENARIO-CASES-->
+            }
+        }
+
+        function _nextState(stepSize) {
+            _validateFields();
+            while (true) {
+                let ret = _nextTransition();
+                if (ret === -1)
+                    return;
+                if (ret >= stepSize)
+                    return;
+            }
+        }
+
+        function _eventFieldChange() {
+            _validateFields();
+            _firstState();
+        }
+
+        function _validateFields() {
+            <!--RESTRICTIONS-->
+        }
+
+        <!--STATES-->
+    </script>
+</html>
