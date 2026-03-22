@@ -3,6 +3,7 @@ echo Executing LeMoS
 
 SWD=$PWD                        # SWD = Start Working Directory
 cd $(dirname "$BASH_SOURCE")    # Auflösen des ggf. relativen Pfades zum Skript, um absoluten Pfad des Skripts zu erhalten
+cd ..                           # In den Überordner des Skripts wechseln (entspricht dem LeMoS-Ordner)
 LWD=$PWD                        # LWD = LeMoS Working Directory
 TEMPLATE="moduleTemplate"       # TEMPLATE = Vorlage für Webarchiv eines Lernmoduls
 OPTIONS=""                      # OPTIONS = Optionen für LeMoS-Aufruf, folgende sind möglich: -PaS bzw. -PrintAsStructure, -PaL bzw. -PrintAsLine (siehe Aufruf des LeMoS-Generators ohne Parameter)

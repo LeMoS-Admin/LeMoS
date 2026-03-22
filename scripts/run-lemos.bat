@@ -3,7 +3,8 @@ setlocal EnableDelayedExpansion	& :: Variablen sollen nicht bereits vor Beginn e
 echo Executing LeMoS
 
 set "SWD=%cd%"			& :: SWD = Start Working Directory
-cd /d "%~dp0"			& :: Auflösen des ggf. relativen Pfades zum Skript, um absoluten Pfad des Skripts zu erhalten
+cd /d "%~dp0"		    & :: Auflösen des ggf. relativen Pfades zum Skript, um absoluten Pfad des Skripts zu erhalten
+cd ..                   & :: In den Überordner des Skripts wechseln (entspricht dem LeMoS-Ordner)
 set "LWD=%cd%"			& :: LWD = LeMoS Working Directory
 set "TEMPLATE=moduleTemplate" 	& :: TEMPLATE = Vorlage für Webarchiv eines Lernmoduls
 set "OPTIONS="                  & :: OPTIONS = Optionen für LeMoS-Aufruf, folgende sind möglich: -PaS bzw. -PrintAsStructure, -PaL bzw. -PrintAsLine (siehe Aufruf des LeMoS-Generators ohne Parameter)
@@ -17,7 +18,7 @@ echo Found LeMoS-Version: %lemos%
 echo.
 
 :: Wenn keine Parameter übergeben: Erklärung der Funktionsweise des LeMoS
-if %1 equ "" (
+if "%1" equ "" (
 	echo "Bitte mindestens eine Lernmodulkonfiguration (YAML-, JSON- oder XML-Datei) als absoluten oder relativen Pfad angeben."
 	echo "Konfigurationen von Lernmodul-Szenarien (YAML-, JSON- oder XML-Datei) sind nicht anzugeben, sie werden am Speicherort der Lernmodulkonfiguration im Unterordner 'scenarios' erwartet."
 	echo "Bei erfolgreicher Ausführung werden die generierten Lernmodule am Aufrufort dieses Skripts als ZIP-Datei unter dem Namen der Lernmodulkonfiguration abgelegt."
