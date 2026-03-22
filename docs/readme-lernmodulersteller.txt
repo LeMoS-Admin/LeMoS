@@ -5,7 +5,7 @@ Vorbedingungen:
 - Die vom Softwareentwickler gelieferten Dateien liegen entpackt im Dateisystem vor (siehe exemplarische Ordnerstruktur unter Punkt 3)
 
 Allgemeine Hinweise:
-- Zum Ausführen der Lernmodule wird ein aktueller Browser benötigt
+- Zum Ausführen der Lernmodule wird ein aktueller Browser mit mindestens ECMAScript-Version es2022 benötigt
 - Falls der Browser 'Mozilla Firefox' verwendet wird, darf dieser nicht via Snap installiert sein
 
 Ablauf zur Erstellung eines Lernmoduls mithilfe des LeMoS:
@@ -30,7 +30,7 @@ Ablauf zur Erstellung eines Lernmoduls mithilfe des LeMoS:
    - Beispiel:
      - Ordnerstruktur:
        - Lernmodule
-         - LeMoSystem
+         - LeMoS
            - lemos-<version>.jar (z.B. lemos-1.0.0.jar)	// Vom Softwareentwickler des LeMoS bereitzustellen
            - run-lemos.sh				// Vom Softwareentwickler des LeMoS bereitzustellen
            - run-lemos.bat				// Vom Softwareentwickler des LeMoS bereitzustellen
@@ -50,7 +50,7 @@ Ablauf zur Erstellung eines Lernmoduls mithilfe des LeMoS:
                - ...
            - ...
          - Zielordner
-     - Aufruf im Zielordner: ../LeMoSystem/run-lemos.sh ../Lernmodulkonfigurationen/1-Theorem_von_Little_V1/1-Theorem_von_Little_V1.yaml
+     - Aufruf im Zielordner: ../LeMoS/run-lemos.sh ../Lernmodulkonfigurationen/1-Theorem_von_Little_V1/1-Theorem_von_Little_V1.yaml
      - Ergebnis im Zielordner: 1-Theorem_von_Little_V1.zip
    - Für weitere Informationen zur Verwendung des LeMoS: Skript ohne Parameter aufrufen
 4. Bereitstellen des Lernmoduls

@@ -49,7 +49,7 @@ general:
       implementation:
         - let speicherEintrag = S.findNextByAttribute("Z", Zustand)
         - if(speicherEintrag !== undefined) return speicherEintrag.get("N")
-        - else return S.getLength();
+        - else return S.getLength()
     - name: speicherSetzen
       parameters:
         - Prozess

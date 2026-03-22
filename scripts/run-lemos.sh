@@ -8,8 +8,8 @@ TEMPLATE="moduleTemplate"       # TEMPLATE = Vorlage für Webarchiv eines Lernmo
 OPTIONS=""                      # OPTIONS = Optionen für LeMoS-Aufruf, folgende sind möglich: -PaS bzw. -PrintAsStructure, -PaL bzw. -PrintAsLine (siehe Aufruf des LeMoS-Generators ohne Parameter)
 
 # LeMoS-Dateinamen ermitteln
-lemos=(lemos*.jar)             # Liefert Array mit allen passenden Dateien (sollte stets einen Eintrag haben)
-lemos=${lemos[0]}
+lemos=(lemos*.jar)             # Liefert Array mit allen passenden Dateien (es sollte nur einen Eintrag geben, ggf. werden aber auch alte Versionen gefunden)
+lemos=${lemos[-1]}             # Letzten Eintrag nehmen (für den Fall, dass es mehr als einen Eintrag gibt, ist der Letzte vermutlich der Aktuellste)
 echo Found LeMoS-Version: $lemos
 echo
 

@@ -188,7 +188,7 @@
               },
               "name": {
                 "type": "string",
-                "description": "Zu importierende Komponente, Standard-Import muss von importierter Ressource durch einen Standard-Export unterstützt werden (Standard: leere Zeichenkette = Standard-Import)"
+                "description": "Zu importierende Komponente, Standard-Import muss von importierter Ressource via Standard-Export unterstützt werden (Standard: leere Zeichenkette = Standard-Import)"
               },
               "alias": {
                 "type": "string",
@@ -256,11 +256,11 @@
                   },
                   "maxWidth": {
                     "type": "integer",
-                    "description": "Maximale Breite des Inhalts, bei contentType TEXT ignoriert"
+                    "description": "Maximale Breite des Inhalts in Pixeln, bei contentType TEXT ignoriert"
                   },
                   "maxHeight": {
                     "type": "integer",
-                    "description": "Maximale Höhe des Inhalts, bei contentType TEXT ignoriert"
+                    "description": "Maximale Höhe des Inhalts in Pixeln, bei contentType TEXT ignoriert"
                   }
                 }
               }
@@ -532,7 +532,7 @@
           },
           "actions": {
             "type": "array",
-            "description": "Vor Zustandseintritt auszuführende Operationen",
+            "description": "Vor Zustandseintritt auszuführende Operationen \nBei type 'JUNCTION' nicht berücksichtigt, stattdessen stets leere Liste",
             "items": {
               "$ref": "#/$defs/operation"
             }
@@ -652,7 +652,7 @@
         },
         "usage": {
           "type": "string",
-          "description": "Verwendungsart, bei type INFO nicht berücksichtigt, da Infofelder für Benutzer stets unveränderlich sind (Standard: 'INPUT')",
+          "description": "Verwendungsart (Standard: 'INPUT') \nBei type INFO nicht berücksichtigt, da Infofelder für Benutzer stets unveränderlich sind \nWirkt sich bei type TABLE nur auf die Möglichkeit zum Hinzufügen/Entfernen von Einträgen aus",
           "enum": [
             "INPUT",
             "TEMP",

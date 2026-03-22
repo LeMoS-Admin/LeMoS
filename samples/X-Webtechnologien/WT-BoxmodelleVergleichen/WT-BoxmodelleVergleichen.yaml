@@ -9,15 +9,15 @@ general:
     Bei zwei nebeneinander liegenden Boxen werden die Außenabstände daher nicht addiert, sondern lediglich der größere Wert als Abstand eingehalten.<br>
     <br>
     Für die Auswirkung der beiden anderen Schichten gibt es hingegen zwei verschiedene Modelle: 'content-box' und 'border-box'.<br>
-    Die 'content-box' ist das Standardverhalten und berechnet die tatsächliche Größe der Box wie folgt: 
-    Gesamtgröße = Eingestellte Größe + Innenabstand + Rahmendicke, für die Größe des eigentlichen Inhalts gilt somit: Inhalt = Eingestellte Größe<br>
-    Bei dem alternativen Modell 'border-box' inkludiert die angegebene Größe der Box den Innenabstand und die Rahmendicke, somit gilt: 
-    Gesamtgröße = Eingestellte Größe, die Größe des eigentlichen Inhalts berechnet sich somit wie folgt: Inhalt = Eingestellte Größe - Innenabstand - Rahmendicke<br>
+    Die 'content-box' ist das Standardverhalten und berechnet die tatsächliche Größe der Box wie folgt: <br>
+    &nbsp;&nbsp; Boxgröße = Eingestellte Größe + Innenabstand + Rahmendicke, für die Größe des eigentlichen Inhalts gilt somit: Inhalt = Eingestellte Größe<br>
+    Bei dem alternativen Modell 'border-box' inkludiert die angegebene Größe der Box den Innenabstand und die Rahmendicke, somit gilt: <br>
+    &nbsp;&nbsp; Boxgröße = Eingestellte Größe, die Größe des eigentlichen Inhalts berechnet sich somit wie folgt: Inhalt = Eingestellte Größe - Innenabstand - Rahmendicke<br>
     <br>
     Um diese Unterschiede greifbarer zu machen, ermöglicht dieses Lernmodul den interaktiven Vergleich der beiden Modelle.
   sources:
     - Webtechnologien-Skript zu CSS
-    - <a href=https://developer.mozilla.org/de/docs/Learn_web_development/Core/Styling_basics/Box_model' target="_blank">Online-Dokumentation</a>
+    - <a href='https://developer.mozilla.org/de/docs/Learn_web_development/Core/Styling_basics/Box_model' target="_blank">Online-Dokumentation</a>
   contacts:
     - name: Professor Dr. Dieter Wißmann
       purpose: Fachliche Fragen
@@ -48,11 +48,11 @@ fields:
     type: SELECT
     options:
       - id: Einstellwerte
-        name: Eingestellte Größe ist gegeben
+        name: Eingestellte Größe (Einstellgröße) ist gegeben
       - id: Inhaltswerte
-        name: Größe des Inhalts ist gegeben
+        name: Größe des Inhalts (Inhaltsgröße) ist gegeben
       - id: Boxwerte
-        name: Größe der Boxen ist gegeben
+        name: Größe der Boxen (Boxgröße) ist gegeben
     style:
       row: 1
       column: 1
@@ -81,6 +81,19 @@ fields:
       row: 2
       column: 3
       width: 2
+  - id: Beispiel
+    name: "Beispiel aus der Mozilla-Dokumentation:"
+    type: INFO
+    contentType: IMAGE
+    maxHeight: 180
+    resource:
+      id: BoxModell
+      source: box-model.png
+    style:
+      row: 1
+      column: 10
+      height: 3
+      width: 5
   - id: MT
     name: Oberer Außenabstand
     explanation: "CSS-Attribut: margin-top"
@@ -199,7 +212,7 @@ fields:
       width: 6
   - id: CBox_EB
     name: Einstellbreite
-    explanation: Breite, die über das width-Attribut einzustellen wäre
+    explanation: Breite, die über das width-Attribut eingestellt ist
     type: TEXT
     datatype: INTEGER
     usage: OUTPUT
@@ -209,7 +222,7 @@ fields:
       width: 3
   - id: CBox_EH
     name: Einstellhöhe
-    explanation: Höhe, die über das height-Attribut einzustellen wäre
+    explanation: Höhe, die über das height-Attribut eingestellt ist
     type: TEXT
     datatype: INTEGER
     usage: OUTPUT
@@ -307,7 +320,7 @@ fields:
       width: 6
   - id: BBox_EB
     name: Einstellbreite
-    explanation: Breite, die über das width-Attribut einzustellen wäre
+    explanation: Breite, die über das width-Attribut eingestellt ist
     type: TEXT
     datatype: INTEGER
     usage: OUTPUT
@@ -317,7 +330,7 @@ fields:
       width: 3
   - id: BBox_EH
     name: Einstellhöhe
-    explanation: Höhe, die über das height-Attribut einzustellen wäre
+    explanation: Höhe, die über das height-Attribut eingestellt ist
     type: TEXT
     datatype: INTEGER
     usage: OUTPUT
@@ -422,16 +435,6 @@ states:
       - "Module.print('- Innenabstände (alle Seiten)')"
     transitions:
       - target: Z1
-        conditions:
-          - message: |
-              `Bitte konfiguriere folgende Werte oder lade ein Szenario:
-              - Breite (abhängig vom Aufgabentyp)
-              - Höhe (abhängig vom Aufgabentyp)
-              - Außenabstände (alle Seiten)
-              - Rahmendicken (alle Seiten)
-              - Innenabstände (alle Seiten)`
-            terms:
-              - Fields.allFilled()
   - id: Z1
     name: Aufgabentyp?
     type: JUNCTION

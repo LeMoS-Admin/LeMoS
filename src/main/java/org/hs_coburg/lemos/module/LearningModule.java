@@ -51,6 +51,10 @@ public class LearningModule
         {
             throw new RuntimeException("LearningModule requires unique IDs for each state");
         }
+        if (scenarios.size() != scenarios.stream().map(scenario -> scenario.id).distinct().count())
+        {
+            throw new RuntimeException("LearningModule requires unique IDs for each scenario");
+        }
         if (fields.size() != fields.stream().map(field -> field.id).distinct().count())
         {
             throw new RuntimeException("LearningModule requires unique IDs for each field (inner #fields must only be unique in their context)");

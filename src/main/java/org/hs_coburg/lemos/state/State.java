@@ -32,15 +32,16 @@ public class State
         this.name        = Objects.requireNonNullElse(name, id);
         this.explanation = Objects.requireNonNullElse(explanation, "");
         this.type        = Objects.requireNonNullElse(type, StateType.STATE);
-        this.actions     = Objects.requireNonNullElse(actions, Collections.emptyList());
         this.transitions = Objects.requireNonNullElse(transitions, Collections.emptyList());
         if (this.type == StateType.JUNCTION)
         {
             this.importance = StateImportance.ZERO;
+            this.actions    = Collections.emptyList();
         }
         else
         {
             this.importance = Objects.requireNonNullElse(importance, StateImportance.HIGH);
+            this.actions    = Objects.requireNonNullElse(actions, Collections.emptyList());
 
         }
         validate();
@@ -86,7 +87,7 @@ public class State
                      .replace("{{name}}", StringHelper.escape(getName()))
                      .replace("{{explanation}}", StringHelper.escape(getExplanation()))
                      .replace("{{type}}", type.asName())
-                     .replace("{{importance}}", Integer.toString(importance.asNumber()))
+                     .replace("{{importance}}", getImportance())
                      .replace("{{actions}}", Operation.generateActionJS(actions))
                      .replace("{{transitions}}", generateTransitionsJS())
                      .replace("{{functionName}}", generateStateFunctionCallJS(id));
@@ -113,6 +114,18 @@ public class State
         else
         {
             return " (" + explanation + ")";
+        }
+    }
+
+    private String getImportance()
+    {
+        if (transitions.isEmpty())
+        {
+            return "9";
+        }
+        else
+        {
+            return Integer.toString(importance.asNumber());
         }
     }
 

@@ -15,18 +15,6 @@ export default class Fields
 		return result;
 	}
 
-	static allFilled()
-	{
-		for (let field of Controller.getInputFields())
-		{
-			if (field.isEmpty())
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
 	static areFilled(...fields)
 	{
 		for (let field of fields)

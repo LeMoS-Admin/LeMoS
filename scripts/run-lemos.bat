@@ -8,8 +8,8 @@ set "LWD=%cd%"			& :: LWD = LeMoS Working Directory
 set "TEMPLATE=moduleTemplate" 	& :: TEMPLATE = Vorlage für Webarchiv eines Lernmoduls
 set "OPTIONS="                  & :: OPTIONS = Optionen für LeMoS-Aufruf, folgende sind möglich: -PaS bzw. -PrintAsStructure, -PaL bzw. -PrintAsLine (siehe Aufruf des LeMoS-Generators ohne Parameter)
 
-
-:: LeMoS-Dateinamen ermitteln, indem über alle passenden Dateien iteriert wird (sollte stets genau eine sein)
+:: LeMoS-Dateinamen ermitteln, indem über alle passenden Dateien iteriert wird (es sollte nur einen Eintrag geben, ggf. werden aber auch alte Versionen gefunden)
+:: Schleife stellt sicher, dass der letzte Eintrag genommen wird (für den Fall, dass es mehr als einen Eintrag gibt, ist der Letzte vermutlich der Aktuellste)
 for %%f in (lemos*.jar) do (
 	set "lemos=%%f"
 )
@@ -40,8 +40,8 @@ for %%x in (%*) do (
 
 	:: Übernehmen der hinterlegten Resourcen (falls vorhanden) in das Verzeichnis des Lernmoduls
 	echo !name!: preparing resources
-	if exist "%pfad%\resources\" (
-		xcopy "%pfad%\resources" "%LWD%\%TEMPLATE%\res" /e /i /q /y >nul
+	if exist "!pfad!\resources\" (
+		xcopy "!pfad!\resources" "%LWD%\%TEMPLATE%\res" /e /i /q /y >nul
 	)
 	
 	:: Aufruf des LeMoS-Generators zur Verarbeitung der Lernmodulkonfiguration (Parameter: Lernmodulkonfigurationsdatei, Zielordner)

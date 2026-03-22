@@ -1,11 +1,11 @@
 Weitergabe des LeMoS
 
 Zur reinen Verwendung des LeMoS weiterzugebende Dateien:
-- ReadMe-Lernmodulersteller.txt (Name beliebig anpassbar, sollte aber ggf. in "ReadMe.txt" ebenfalls geändert werden)
-- Modellierungssprache.pdf (Name beliebig anpassbar, sollte aber ggf. in "ReadMe-Lernmodulersteller.txt" ebenfalls geändert werden)
-- Systemfunktionen.pdf (Name beliebig anpassbar, sollte aber ggf. in "ReadMe-Lernmodulersteller.txt" ebenfalls geändert werden)
-- run-lemos.bat (Name beliebig anpassbar, sollte aber in "ReadMe-Lernmodulersteller.txt" ebenfalls geändert werden)
-- run-lemos.sh (Name beliebig anpassbar, sollte aber in "ReadMe-Lernmodulersteller.txt" ebenfalls geändert werden)
+- readme-lernmodulersteller.txt (Name beliebig anpassbar, sollte aber ggf. in "readme.txt" ebenfalls geändert werden)
+- Modellierungssprache.pdf (Name beliebig anpassbar, sollte aber ggf. in "readme-lernmodulersteller.txt" ebenfalls geändert werden)
+- Systemfunktionen.pdf (Name beliebig anpassbar, sollte aber ggf. in "readme-lernmodulersteller.txt" ebenfalls geändert werden)
+- run-lemos.bat (Name beliebig anpassbar, sollte aber in "readme-lernmodulersteller.txt" ebenfalls geändert werden)
+- run-lemos.sh (Name beliebig anpassbar, sollte aber in "readme-lernmodulersteller.txt" ebenfalls geändert werden)
 - lemos-<version>.jar (Name anpassbar, muss aber weiterhin dem Muster "lemos*.jar" entsprechen)
 - LeMoS-Modul-Schema.json (Name anpassbar, sollte aber konsistent gehalten werden, da er in den Szenariokonfigurationen erwähnt wird)
 - LeMoS-Szenario-Schema.json (Name anpassbar, sollte aber konsistent gehalten werden, da er in den Szenariokonfigurationen erwähnt wird)
@@ -16,7 +16,7 @@ Vorbedingungen zum Kompilieren des LeMoS (zur Generierung der lemos-<version>.ja
 
 Kompilieren des LeMoS (zur Generierung der lemos-<version>.jar):
 - Ausführen des Skripts "compile-lemos.sh" (Linux) bzw. "compile-lemos.bat" (Windows) im Verzeichnis des "src"-Ordners
-- Beispiel: Pfad des "src"-Ordners: "LeMoSystem/src" --> ausführen des Kompilier-Skripts im Ordner "LeMoSystem"
+- Beispiel: Pfad des "src"-Ordners: "LeMoS/src" --> ausführen des Kompilier-Skripts im Ordner "LeMoS"
 
 
 __________________________

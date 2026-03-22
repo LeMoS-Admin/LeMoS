@@ -67,7 +67,7 @@ fields:
       row: 2
       column: 2
   - id: "TYPE"
-    name: ELEMENT-Spalte
+    name: TYPE-Spalte
     explanation: "Niedrigste Gewichtungskategorie, zählt Elemente (h1) und Pseudo-Elemente (::first-letter)"
     type: TEXT
     usage: OUTPUT

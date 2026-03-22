@@ -307,13 +307,13 @@
                 </div>
             </details>
             <div class='buttons'>
-                <button id="backwardX">|&lt;</button>
-                <button id="backward2" style="<!--BIG-STEP-ENABLING-->">&lt;&lt;</button>
-                <button id="backward1">&lt;</button>
+                <button id="backwardX" class="backwardButton">|&lt;</button>
+                <button id="backward2" class="backwardButton" style="<!--BIG-STEP-ENABLING-->">&lt;&lt;</button>
+                <button id="backward1" class="backwardButton">&lt;</button>
                 <button id="reset">O</button>
-                <button id="forward1">&gt;</button>
-                <button id="forward2" style="<!--BIG-STEP-ENABLING-->">&gt;&gt;</button>
-                <button id="forwardX">&gt;|</button>
+                <button id="forward1" class="forwardButton">&gt;</button>
+                <button id="forward2" class="forwardButton" style="<!--BIG-STEP-ENABLING-->">&gt;&gt;</button>
+                <button id="forwardX" class="forwardButton">&gt;|</button>
             </div>
         </section>
         <hr>
@@ -350,7 +350,7 @@
 
             <!--ADDITIONAL-IMPORTS-->
 
-            for(let form of document.getElementsByTagName("form"))
+            for (let form of document.getElementsByTagName("form"))
             {
                 form.onsubmit = () => false;
             }
@@ -387,11 +387,8 @@
                 Controller.resetAllFields();
                 Controller.resetVariables();
                 _loadSzenario();
-
-                _firstState();
-                _history.length = 0;
-                _saveStepToHistory(9);
                 window.scrollTo(0, 0);
+                _resetSteps();
             }
 
             function _restartModule()
@@ -400,24 +397,44 @@
                 Controller.resetNonInputFields();
                 Controller.resetVariables();
                 Scroller.scrollToSavedPosition();
+                _resetSteps();
+            }
 
-                _firstState();
-                _history.length = 0;
-                _saveStepToHistory(9);
+            function _resetSteps()
+            {
+                _firstState();                      // Neustarten des Lernmoduls beim Start-Zustand
+                _history.length = 0;                // Zurücksetzen der bisher gespeicherten Historie
+                _saveStepToHistory(9);              // Aktuellen Zustand speichern, damit zur Ausgangssituation mit den eingegebenen Werten zurückgekehrt werden kann (9 = höchste Wichtigkeit, um Zustand unüberspringbar zu machen)
+                _setNextButtonEnabled(true);        // Aktivierender Weiter-Buttons, da sich Lernmodul nun wieder am Start befindet
+                _setPreviousButtonEnabled(false);   // Deaktivieren der Zurück-Buttons, da sich Lernmodul bereits am Start befindet
             }
 
             function _nextState(stepSize)
             {
                 Scroller.saveCurrentScrollPosition("#stepSelector");
                 Controller.validateFields();
+
+                // Aktivieren der Zurück-Buttons, da einen Schritt weitergegangen wird
+                _setPreviousButtonEnabled(true);
+
                 while (true)
                 {
                     let ret = _nextTransition();
                     _saveStepToHistory(ret);
-                    if (ret === -1)
+                    if (ret === -1)     // Kein Übergang vollzogen
                     {
-                        // Kein Übergang vollzogen, daher letztes Backup wieder entfernen
+                        // Letztes Backup wieder entfernen
                         _history.pop();
+
+                        // Deaktivieren der Weiter-Buttons, da kein Fortsetzen möglich ist
+                        _setNextButtonEnabled(false);
+
+                        break;
+                    }
+                    if (ret === 9)
+                    {
+                        // Deaktivieren der Weiter-Buttons, da Endzustand erreicht
+                        _setNextButtonEnabled(false);
                         break;
                     }
                     if (ret >= stepSize)
@@ -433,14 +450,20 @@
                 // Backup des aktuellen Zustands entfernen, damit nicht zum aktuellen Zustand zurückgegangen wird
                 _history.pop();
 
+                // Aktivieren der Weiter-Buttons, da einen Schritt zurückgegangen wird
+                _setNextButtonEnabled(true);
+
                 // Index des letzten kleinen/großen Schritts ermitteln
                 let historyEntryIndex = _history.findLastIndex(entry => entry.get("stepSize") >= stepSize);
 
-                // Wenn kein entsprechender Eintrag gefunden wurde, wird zum Ausgangszustand zurückgegangen
-                if (historyEntryIndex === -1)
+                if (historyEntryIndex === -1) // Wenn kein entsprechender Eintrag gefunden wurde, wird das Modul neu gestartet
                 {
                     _restartModule();
                     return;
+                }
+                if (historyEntryIndex === 0) // Wenn bis zum Start zurückgegangen wurde, müssen die Zurück-Buttons deaktiviert werden
+                {
+                    _setPreviousButtonEnabled(false);
                 }
 
                 // Wiederherstellen des gespeicherten Backups
@@ -478,6 +501,22 @@
                     case "empty":
                         break;
                         <!--SCENARIO-CASES-->
+                }
+            }
+
+            function _setNextButtonEnabled(enabled)
+            {
+                for (let button of document.getElementsByClassName("forwardButton"))
+                {
+                    button.disabled = !enabled;
+                }
+            }
+
+            function _setPreviousButtonEnabled(enabled)
+            {
+                for (let button of document.getElementsByClassName("backwardButton"))
+                {
+                    button.disabled = !enabled;
                 }
             }
 
