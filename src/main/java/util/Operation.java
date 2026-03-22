@@ -1,0 +1,24 @@
+package util;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+import java.util.Objects;
+
+public class Operation
+{
+    public final String operation;
+
+    // Erzeugung läuft hier über Konstruktor, da in Konfigurationsdatei kein Variablenname angegeben wird:
+    // (in YAML: "- <<Befehl>>" statt "- operation: <<Befehl>>")
+    @JsonCreator
+    public Operation(String operation)
+    {
+        this.operation = Objects.requireNonNull(operation, "Missing required attribute 'operation'");
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Operation: '" + StringHelper.get(operation) + '\'';
+    }
+}

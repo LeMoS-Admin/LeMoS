@@ -1,0 +1,204 @@
+{
+    "general": {
+        "heading": "Theorem von Little",
+        "explanation": "Nutzen Sie das Lernmodul, um die Formel des Theorems von Little anzuwenden.",
+        "sources": [
+            "Skript von Herr Professor Wißmann"
+        ],
+        "contact": {
+            "name": "Professor Dr. Dieter Wißmann",
+            "mail": "dieter.wißmann@hs-coburg.de"
+        },
+        "config": {
+            "showFieldNames": true,
+            "differentStepSizes": false
+        }
+    },
+    "fields": [
+        {
+            "name": "N",
+            "description": "Länge",
+            "comment": "Durchschnittliche Länge der Warteschlange",
+            "usage": "INPUT",
+            "type": "PLAIN",
+            "datatype": "NUMBER",
+            "restrictions": [
+                {
+                    "message": "Nur positive Zahlenwerte",
+                    "terms": [
+                        "N >= 0"
+                    ]
+                }
+            ],
+            "size": 10,
+            "position": {
+                "xAxis": 1,
+                "yAxis": 1
+            }
+        },
+        {
+            "name": "Y",
+            "description": "Ankunftsrate",
+            "comment": "Durchschnittliche Ankunftsrate neuer Einträge",
+            "usage": "INPUT",
+            "type": "PLAIN",
+            "datatype": "NUMBER",
+            "restrictions": [
+                {
+                    "message": "Nur positive Zahlenwerte",
+                    "terms": [
+                        "Y >= 0"
+                    ]
+                }
+            ],
+            "size": 10,
+            "position": {
+                "xAxis": 1,
+                "yAxis": 2
+            }
+        },
+        {
+            "name": "W",
+            "description": "Wartezeit",
+            "comment": "Durchschnittliche Wartezeit eines Eintrags",
+            "usage": "INPUT",
+            "type": "PLAIN",
+            "datatype": "NUMBER",
+            "restrictions": [
+                {
+                    "message": "Nur positive Zahlenwerte",
+                    "terms": [
+                        "W >= 0"
+                    ]
+                }
+            ],
+            "size": 10,
+            "position": {
+                "xAxis": 1,
+                "yAxis": 3
+            }
+        }
+    ],
+    "states": [
+        {
+            "name": "Z0",
+            "description": "Lernmodul initialisiert",
+            "comment": "Einstieg",
+            "type": "ENTRY_POINT",
+            "action": [],
+            "transitions": [
+                {
+                    "target": "Z1",
+                    "comment": "Übergang zur Fallunterscheidung",
+                    "condition": {
+                        "name": "B1",
+                        "terms": [
+                            "List.length(Module.setted()) == 2"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Z1",
+            "description": "Welche Felder?",
+            "comment": "Fallunterscheidung",
+            "importance": "HIGH",
+            "type": "JUNCTION",
+            "transitions": [
+                {
+                    "target": "Z1a",
+                    "comment": "Übergang zu Fall 1",
+                    "condition": {
+                        "name": "B1a",
+                        "terms": [
+                            "Module.setted(Y, W)"
+                        ]
+                    }
+                },
+                {
+                    "target": "Z1b",
+                    "comment": "Übergang zu Fall 2",
+                    "condition": {
+                        "name": "B1b",
+                        "terms": [
+                            "Module.setted(N, W)"
+                        ]
+                    }
+                },
+                {
+                    "target": "Z1c",
+                    "comment": "Übergang zu Fall 3",
+                    "condition": {
+                        "name": "B1c",
+                        "terms": [
+                            "Module.setted(N, Y)"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Z1a",
+            "description": "N berechnet",
+            "comment": "Fall 1: Y und W gegeben, N gesucht",
+            "importance": "HIGH",
+            "type": "STATE",
+            "action": [
+                "N = Y * W"
+            ],
+            "transitions": []
+        },
+        {
+            "name": "Z1b",
+            "description": "Y berechnet",
+            "comment": "Fall 2: N und W gegeben, Y gesucht",
+            "importance": "HIGH",
+            "type": "STATE",
+            "action": [
+                "Y = N / W"
+            ],
+            "transitions": []
+        },
+        {
+            "name": "Z1c",
+            "description": "W berechnet",
+            "comment": "Fall 3: N und Y gegeben, W gesucht",
+            "importance": "HIGH",
+            "type": "STATE",
+            "action": [
+                "W = N / Y"
+            ],
+            "transitions": []
+        }
+    ],
+    "scenarios": [
+        {
+            "name": "Länge gesucht",
+            "description": "Y und W gegeben, N gesucht",
+            "comment": "Fall 1",
+            "initialization": [
+                "Y = 0.5",
+                "W = 4"
+            ]
+        },
+        {
+            "name": "Ankunftsrate gesucht",
+            "description": "N und W gegeben, Y gesucht",
+            "comment": "Fall 2",
+            "initialization": [
+                "N = 3",
+                "W = 12"
+            ]
+        },
+        {
+            "name": "Wartezeit gesucht",
+            "description": "N und Y gegeben, W gesucht",
+            "comment": "Fall 3",
+            "initialization": [
+                "N = 1",
+                "Y = 5"
+            ]
+        }
+    ]
+}
