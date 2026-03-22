@@ -115,4 +115,15 @@ export default class FieldInteractor
 		this._fieldManager.setEnabled(enabled);
 		return this;
 	}
+
+	isHighlighted()
+	{
+		return this._fieldManager.isHighlighted();
+	}
+
+	setHighlighted(highlighted = true)
+	{
+		this._fieldManager.setHighlighted(highlighted);
+		return this;
+	}
 }

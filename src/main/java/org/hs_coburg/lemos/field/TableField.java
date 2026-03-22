@@ -3,6 +3,7 @@ package org.hs_coburg.lemos.field;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hs_coburg.lemos.module.Condition;
+import org.hs_coburg.lemos.module.Operation;
 import org.hs_coburg.lemos.util.StringHelper;
 
 import java.util.Collections;
@@ -24,9 +25,11 @@ public class TableField extends ExpandableField
                       @JsonProperty("type") FieldType type,
                       @JsonProperty("style") Style style,
                       @JsonProperty("hidden") Boolean hidden,
+                      @JsonProperty("highlighted") Boolean highlighted,
                       @JsonProperty("allowEmpty") Boolean allowEmpty,
                       @JsonProperty("datatype") FieldDatatype datatype,
                       @JsonProperty("restrictions") List<Condition> restrictions,
+                      @JsonProperty("reactions") List<Operation> reactions,
                       @JsonProperty("growthDirection") FieldOrientation growthDirection,
                       @JsonProperty("initialEntries") Integer initialEntries,
                       @JsonProperty("maxEntries") Integer maxEntries,
@@ -35,7 +38,7 @@ public class TableField extends ExpandableField
                       @JsonProperty("minColumnWidths") List<Integer> minColumnWidths,
                       @JsonProperty("relativeColumnWidths") List<Integer> relativeColumnWidths)
     {
-        super(id, name, explanation, usage, type, style, hidden, allowEmpty, FieldDatatype.STRING, restrictions, growthDirection, initialEntries, maxEntries);
+        super(id, name, explanation, usage, type, style, hidden, highlighted,allowEmpty, FieldDatatype.STRING, restrictions, reactions, growthDirection, initialEntries, maxEntries);
         this.innerFields     = Objects.requireNonNull(innerFields, "Missing required attribute 'innerFields'");
         this.minColumnWidth  = Objects.requireNonNullElse(minColumnWidth, -1);
         this.minColumnWidths = Objects.requireNonNullElse(minColumnWidths, Collections.emptyList());
@@ -88,7 +91,7 @@ public class TableField extends ExpandableField
         String template = """
                           <div id='{{id}}' class='fieldContainer {{usage}} {{type}} {{growthDirection}}' style='{{style}}'>
                             {{label}}
-                            <div class='table' style='{{tableStyle}}'>
+                            <div class='table {{highlighted}}' style='{{tableStyle}}'>
                               {{header}}
                               {{innerFields}}
                             </div>
@@ -198,7 +201,7 @@ public class TableField extends ExpandableField
     @Override
     protected String getFieldVariableTemplateJS()
     {
-        String template = "let {{id}} = new TableFieldManager('#{{id}}', '{{name}}', {{initialEntries}}, {{maxEntries}}, {{allowEmpty}}, (entry) => {\n{{restrictions}}}, {\n{{innerFieldObjects}}}).getInteractor();";
+        String template = "let {{id}} = new TableFieldManager('#{{id}}', '{{name}}', {{initialEntries}}, {{maxEntries}}, {{allowEmpty}}, (entry) => {\n{{restrictions}}}, (entry) => {\n{{reactions}}}, {\n{{innerFieldObjects}}}).getInteractor();";
         return template.replace("{{innerFieldObjects}}", generateInnerFieldObjectsJS());
     }
 

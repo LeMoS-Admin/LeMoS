@@ -4,7 +4,7 @@ general:
   explanation: Erstellen eines Konfigurationseintrags, um eine URL auf eine Webressource zu mappen
   settings:
     differentStepSizes: false
-    lemosVersion: 1.0.0
+    lemosVersion: 2.0.0
 
 fields:
   - id: LOCP
@@ -43,7 +43,7 @@ states:
     transitions:
       - target: Z1
         conditions:
-          - message: |
+          - errorMessage: |
                       Bitte die folgenden Felder befüllen:
                       - Pfad zur Ressource
                       - URL zur Ressource
@@ -82,7 +82,7 @@ states:
               - LOCP.endsWith(".jsp")
       - target: Z3b
         conditions:
-          - message: Ressource muss entweder die Dateiendung ".jsp" oder ".class" haben.
+          - errorMessage: Ressource muss entweder die Dateiendung ".jsp" oder ".class" haben.
             terms:
               - LOCP.endsWith(".class")
   - id: Z3a

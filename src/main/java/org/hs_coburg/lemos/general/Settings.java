@@ -17,7 +17,7 @@ public class Settings
                     @JsonProperty("showFieldIDs") Boolean showFieldIDs,
                     @JsonProperty("differentStepSizes") Boolean differentStepSizes)
     {
-        this.lemosVersion       = Objects.requireNonNullElse(lemosVersion, "LATEST");
+        this.lemosVersion       = Objects.requireNonNullElse(lemosVersion, "");
         this.showFieldIDs       = Objects.requireNonNullElse(showFieldIDs, false);
         this.differentStepSizes = Objects.requireNonNullElse(differentStepSizes, true);
     }

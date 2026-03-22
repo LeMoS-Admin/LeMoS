@@ -3,6 +3,7 @@ package org.hs_coburg.lemos.field;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hs_coburg.lemos.module.Condition;
+import org.hs_coburg.lemos.module.Operation;
 import org.hs_coburg.lemos.util.StringHelper;
 
 import java.util.List;
@@ -21,16 +22,18 @@ public class ListField extends ExpandableField
                      @JsonProperty("type") FieldType type,
                      @JsonProperty("style") Style style,
                      @JsonProperty("hidden") Boolean hidden,
+                     @JsonProperty("highlighted") Boolean highlighted,
                      @JsonProperty("allowEmpty") Boolean allowEmpty,
                      @JsonProperty("datatype") FieldDatatype datatype,
                      @JsonProperty("restrictions") List<Condition> restrictions,
+                     @JsonProperty("reactions") List<Operation> reactions,
                      @JsonProperty("growthDirection") FieldOrientation growthDirection,
                      @JsonProperty("initialEntries") Integer initialEntries,
                      @JsonProperty("maxEntries") Integer maxEntries,
                      @JsonProperty("allowWrap") Boolean allowWrap,
                      @JsonProperty("minEntryWidth") Integer minEntryWidth)
     {
-        super(id, name, explanation, usage, type, style, hidden, allowEmpty, datatype, restrictions, growthDirection, initialEntries, maxEntries);
+        super(id, name, explanation, usage, type, style, hidden, highlighted,allowEmpty, datatype, restrictions, reactions, growthDirection, initialEntries, maxEntries);
 
         // Die nachfolgenden Attribute sind nur bei growthDirection HORIZONTAL relevant, da VERTICAL stets die volle Breite nutzt und grundsätzlich unbegrenzt lang sein kann
         if (growthDirection == FieldOrientation.HORIZONTAL)
@@ -51,7 +54,7 @@ public class ListField extends ExpandableField
         return """
                <div id='{{id}}' class='fieldContainer {{usage}} {{type}} {{growthDirection}} {{wrappableState}}' style='{{style}}'>
                  {{label}}
-                 <div class='entries'>
+                 <div class='entries {{highlighted}}' >
                    <div class='entry entry0' style='min-width: {{minWidth}};'>
                        <div class='fieldContainer {{usage}} InfoField'>
                          <form class='field'>
@@ -71,7 +74,7 @@ public class ListField extends ExpandableField
     @Override
     protected String getFieldVariableTemplateJS()
     {
-        return "let {{id}} = new ListFieldManager('#{{id}}', '{{name}}', {{initialEntries}}, {{maxEntries}}, {{allowEmpty}}, '{{datatype}}', (entry) => {\n{{restrictions}}}).getInteractor();";
+        return "let {{id}} = new ListFieldManager('#{{id}}', '{{name}}', {{initialEntries}}, {{maxEntries}}, {{allowEmpty}}, '{{datatype}}', (entry) => {\n{{restrictions}}}, (entry) => {\n{{reactions}}}).getInteractor();";
     }
 
     @Override

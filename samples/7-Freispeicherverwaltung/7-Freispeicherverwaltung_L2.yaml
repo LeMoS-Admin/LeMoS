@@ -6,7 +6,7 @@ general:
     --> Speicherabschnitte können für Prozesse allokiert und freigegeben werden<br>
     L2 = Allokation und Freigabe als Zustände ausmodelliert
   settings:
-    lemosVersion: 1.0.0
+    lemosVersion: 2.0.0
   variables:
     - name: X
   functions:
@@ -66,7 +66,7 @@ fields:
     type: TABLE
     allowEmpty: true
     restrictions:
-      - message: Bei der Allokation von Speicher ist die zu allokierende Größe anzugeben, bei der Freigabe ist keine Größe anzugeben
+      - errorMessage: Bei der Allokation von Speicher ist die zu allokierende Größe anzugeben, bei der Freigabe ist keine Größe anzugeben
         terms:
           - |
             ((entry.get('A').getValue() === 'Allokation') && !entry.get('G').isEmpty()) ||
@@ -87,7 +87,7 @@ fields:
         type: TEXT
         datatype: INTEGER
         restrictions:
-          - message: Nur positive Zahlenwerte
+          - errorMessage: Nur positive Zahlenwerte
             terms:
               - P >= 0
       - id: G
@@ -96,9 +96,14 @@ fields:
         allowEmpty: true
         datatype: INTEGER
         restrictions:
-          - message: Nur positive Zahlenwerte
+          - errorMessage: Nur positive Zahlenwerte
             terms:
               - Number.isNaN(G.value) || G.getValue() >= 0   # Number.isNaN() erforderlich, da Feld leer sein kann und Restriktionen dadurch auch bei leerem Feld geprüft werden (konvertiert zu NaN)
+    reactions:
+      - if(entry.get('A').value === 'Allokation')
+      - entry.get('G').setEnabled(true);
+      - else if(entry.get('A').value === 'Freigabe')
+      - entry.get('G').clear().setEnabled(false);
     style:
       row: 1
       column: 1
@@ -108,7 +113,7 @@ fields:
     type: TABLE
     allowEmpty: true
     restrictions:
-      - message: Bei der Allokation von Speicher ist die zu allokierende Größe anzugeben, bei der Freigabe ist keine Größe anzugeben
+      - errorMessage: Bei der Allokation von Speicher ist die zu allokierende Größe anzugeben, bei der Freigabe ist keine Größe anzugeben
         terms:
           - |
             ((entry.get('A').getValue() === 'Allokation') && !entry.get('G').isEmpty()) ||
@@ -129,7 +134,7 @@ fields:
         type: TEXT
         datatype: INTEGER
         restrictions:
-          - message: Nur positive Zahlenwerte
+          - errorMessage: Nur positive Zahlenwerte
             terms:
               - P >= 0
       - id: G
@@ -138,9 +143,14 @@ fields:
         allowEmpty: true
         datatype: INTEGER
         restrictions:
-          - message: Nur positive Zahlenwerte
+          - errorMessage: Nur positive Zahlenwerte
             terms:
               - Number.isNaN(G.value) || G.getValue() >= 0   # Number.isNaN() erforderlich, da Feld leer sein kann und Restriktionen dadurch auch bei leerem Feld geprüft werden (konvertiert zu NaN)
+    reactions:
+      - if(entry.get('A').value === 'Allokation')
+      - entry.get('G').setEnabled(true);
+      - else if(entry.get('A').value === 'Freigabe')
+      - entry.get('G').clear().setEnabled(false);
     style:
       row: 1
       column: 2
@@ -165,7 +175,7 @@ fields:
         usage: INPUT
         datatype: INTEGER
         restrictions:
-          - message: Zustand muss 0 (unbelegt) oder 1 (belegt) sein
+          - errorMessage: Zustand muss 0 (unbelegt) oder 1 (belegt) sein
             terms:
               - Z.equals(0) || Z.equals(1)
       - id: P
@@ -175,7 +185,7 @@ fields:
         type: TEXT
         datatype: INTEGER
         restrictions:
-          - message: Nur positive Zahlenwerte
+          - errorMessage: Nur positive Zahlenwerte
             terms:
               - P >= 0
     style:

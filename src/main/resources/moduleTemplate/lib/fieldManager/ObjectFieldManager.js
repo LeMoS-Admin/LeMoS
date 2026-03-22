@@ -6,9 +6,9 @@ import ObjectFieldInteractor from "../fieldInteractors/ObjectFieldInteractor.js"
 
 export default class ObjectFieldManager extends FieldManager
 {
-	constructor(parentSelector, parentName, restrictions, entryName, fieldMap)
+	constructor(parentSelector, parentName, restrictions, reactions, entryName, fieldMap)
 	{
-		super(parentSelector, parentName, true, "Ignore", restrictions);
+		super(parentSelector, parentName, true, "Ignore", restrictions, reactions);
 		this.entryName = entryName;
 
 		if (fieldMap instanceof Map)
@@ -37,6 +37,8 @@ export default class ObjectFieldManager extends FieldManager
 		{
 			entry.addEventListener("change", (event) => this.handleChangeEvent(event), true);
 		}
+
+		this.initialyHighlighted = this.isHighlighted();
 	}
 
 	clone(newParentSelector, newEntryName)
@@ -53,7 +55,7 @@ export default class ObjectFieldManager extends FieldManager
 														 .replace(this.selector, newParentSelector);
 			newFieldMap[key] = field.clone(newEntrySelector);
 		}
-		return new ObjectFieldManager(newParentSelector, this.fieldName, this.restrictions, newEntryName, newFieldMap);
+		return new ObjectFieldManager(newParentSelector, this.fieldName, this.restrictions, this.reactions, newEntryName, newFieldMap);
 	}
 
 	isInputField()
@@ -92,7 +94,7 @@ export default class ObjectFieldManager extends FieldManager
 		{
 			if (value.length !== this.fieldMap.size)
 			{
-				Module.error(this.getMessagePrefix() + "length of value to set must be equal to number of inner #fields");
+				Module.error(this.getMessagePrefix() + "length of value to set must be equal to number of inner fields");
 			}
 
 			let fields = this.fieldMap.values().toArray();
@@ -175,25 +177,37 @@ export default class ObjectFieldManager extends FieldManager
 		return this.fieldMap;
 	}
 
+	validate(outerField = undefined, tolerateEmptiness = false)
+	{
+		// super.validateMultiple darf nicht in validateInternal(...) aufgerufen werden, da sonst ein Fehler eines inneren Felds stets auch als Fehler des gesamten Tabelleneintrags gewertet würde
+		try
+		{
+			super.validateMultiple(this.fieldMap.values().toArray(), tolerateEmptiness);
+		}
+		catch (err)
+		{
+			if (err.message.startsWith("mehrere Fehler"))
+			{
+				err.message = this.getMessagePrefix() + err.message;
+			}
+			throw err;
+		}
+
+		// Die Validierung der eigenen Restriktionen soll wie bei allen anderen Feldern durchgeführt werden
+		super.validate(outerField, tolerateEmptiness);
+	}
+
 	validateInternal(outerField, tolerateEmptiness)
 	{
-		super.validateMultiple(this.fieldMap.values().toArray(), tolerateEmptiness);
 		super.validateRestrictions(this, outerField);
 	}
 
 	setFailed(isFailed, message)
 	{
-		// Tabellenobjekte haben keinen eigenen Container und signalisieren ihre Fehler daher über die Container ihre Felder
-		for (let container of this.getChildElements("." + this.entryName))
+		// Tabellenobjekte haben keinen eigenen Container und signalisieren ihre Fehler daher über ihre inneren Felder
+		for (let entry of this.fieldMap.values())
 		{
-			if (isFailed)
-			{
-				container.classList.add("failed");
-			}
-			else
-			{
-				container.classList.remove("failed");
-			}
+			entry.setFailed(isFailed, message);
 		}
 	}
 
@@ -201,7 +215,46 @@ export default class ObjectFieldManager extends FieldManager
 	{
 		event.stopPropagation(); // Muss vor eigentlicher Validierung ausgeführt werden, da diese potenziell einen Fehler wirft
 		Controller.handleChangeEvent();
-		super.validate(true);
+		this.performReactions(this);
+		this.validate(undefined, true);
+	}
+
+	performReactions(entry, outerField)
+	{
+		for (let entry of this.fieldMap.values())
+		{
+			entry.performReactions(entry, this);
+		}
+		super.performReactions(this, outerField);
+	}
+
+	isDisplayed()
+	{
+		// Tabellenobjekte haben keinen eigenen Container, daher werden die Container ihrer Felder ausgeblendet
+		for (let container of this.getChildElements("." + this.entryName))
+		{
+			if (container.style.display === "none")
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	setDisplayed(displayed)
+	{
+		// Tabellenobjekte haben keinen eigenen Container, daher werden die Container ihrer Felder ausgeblendet
+		for (let container of this.getChildElements("." + this.entryName))
+		{
+			if (displayed)
+			{
+				container.style.display = "";
+			}
+			else
+			{
+				container.style.display = "none";
+			}
+		}
 	}
 
 	isEnabled()
@@ -226,6 +279,33 @@ export default class ObjectFieldManager extends FieldManager
 		for (let field of this.fieldMap.values())
 		{
 			field.setEnabled(enabled);
+		}
+	}
+
+	isHighlighted()
+	{
+		if (this.fieldMap === undefined)	// Kommt nur während Initialisierung vor
+		{
+			return false;					// Wird am Ende des Konstruktors dieser Klasse korrigiert
+		}
+
+		// Tabellenobjekte haben keinen eigenen Container und werden daher über ihre inneren Felder hervorgehoben
+		for (let entry of this.fieldMap.values())
+		{
+			if (entry.isHighlighted())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	setHighlighted(highlighted)
+	{
+		// Tabellenobjekte haben keinen eigenen Container und werden daher über ihre inneren Felder hervorgehoben
+		for (let entry of this.fieldMap.values())
+		{
+			entry.setHighlighted(highlighted);
 		}
 	}
 }

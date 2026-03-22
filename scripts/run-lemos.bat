@@ -33,12 +33,12 @@ for %%x in (%*) do (
 	:: Dateinamen entfernen, um Pfad des Lernmoduls zu bestimmen
 	set "pfad=%%~dpx"
 
-	:: Erstellen einer Kopie der Vorlage, damit diese anschließend mit den Daten des Lernmodul ausgefüllt werden kann
+	:: Erstellen einer Kopie der Vorlage für Lernmodule (moduleTemplate), damit diese anschließend mit den Daten des Lernmodul ausgefüllt werden kann
 	echo !name!: preparing template
 	cd /d "%LWD%"
 	tar -xf "%lemos%" "%TEMPLATE%"
 
-	:: Übernehmen der hinterlegten Resourcen (falls vorhanden) in das Verzeichnis des Lernmoduls
+	:: Übernehmen der hinterlegten Ressourcen (falls vorhanden) in das Verzeichnis des Lernmoduls
 	echo !name!: preparing resources
 	if exist "!pfad!\resources\" (
 		xcopy "!pfad!\resources" "%LWD%\%TEMPLATE%\res" /e /i /q /y >nul
@@ -53,17 +53,13 @@ for %%x in (%*) do (
 	if %errorlevel% neq 0 (
 		set failedGeneration=true
 		rmdir "%LWD%\%TEMPLATE%" /s /q
+		echo.
 		goto :continue
 	)
 
-	:: Verschieben der gewählten Systembibliothek, bereinigen aller anderen (Gewünschte Version der Bibliothek wurde vorher im LeMoS-Generator zu "lib" umbenannt)
-	echo !name!: moving library
-	cd /d "%LWD%\%TEMPLATE%"
-	move libs\lib lib >nul
-	rmdir libs /s /q
-
 	:: Packen des fertigen Lernmoduls zu einer ZIP-Datei
 	echo !name!: packing archive
+	cd /d "%LWD%\%TEMPLATE%"
 	if exist "%SWD%\!name!.zip" (
 		del "%SWD%\!name!.zip" /f /q
 	)
@@ -71,8 +67,7 @@ for %%x in (%*) do (
 
 	:: Bereinigen der temporären Kopie der Vorlage
 	echo !name!: deleting template
-	cd ..
-	rmdir %TEMPLATE% /s /q
+	rmdir "%LWD%\%TEMPLATE%" /s /q
 
 	:: Erfolgsausgabe
 	echo !name!: finished "%SWD%\!name!.zip"

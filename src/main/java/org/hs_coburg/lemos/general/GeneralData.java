@@ -104,7 +104,7 @@ public class GeneralData
         }
     }
 
-    public String generatevariablesJS()
+    public String generateVariablesJS()
     {
         StringBuilder variablesJS = new StringBuilder();
         for (Variable variable : variables)

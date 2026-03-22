@@ -65,12 +65,12 @@ public class LearningModule
         }
         if (fields.size() != fields.stream().map(field -> field.id).distinct().count())
         {
-            throw new RuntimeException("LearningModule requires unique IDs for each field (inner #fields must only be unique in their context)");
+            throw new RuntimeException("LearningModule requires unique IDs for each field (inner fields must only be unique in their context)");
         }
         if (fields.stream().anyMatch(field -> field.style == Style.emptyStyle) &&
             fields.stream().anyMatch(field -> field.style != Style.emptyStyle))
         {
-            throw new RuntimeException("LearningModule requires either a style for each field (except for inner and hidden #fields) or no style for any field");
+            throw new RuntimeException("LearningModule requires either a style for each field or no style for any field");
         }
     }
 

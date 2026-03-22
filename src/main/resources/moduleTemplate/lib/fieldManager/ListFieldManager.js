@@ -4,12 +4,12 @@ import ListFieldInteractor from "../fieldInteractors/ListFieldInteractor.js";
 
 export default class ListFieldManager extends ExpandableFieldManager
 {
-	constructor(selector, fieldName, initialEntries, maxEntries, allowEmpty, datatype, restrictions)
+	constructor(selector, fieldName, initialEntries, maxEntries, allowEmpty, datatype, restrictions, reactions)
 	{
-		super(selector, fieldName, initialEntries, maxEntries, allowEmpty, datatype, restrictions);
+		super(selector, fieldName, initialEntries, maxEntries, allowEmpty, datatype, restrictions, reactions);
 
 		let firstEntrySelector = this.selector + " > .entries > .entry0 > .fieldContainer";
-		let firstEntryInteractor = new TextFieldManager(firstEntrySelector, this.fieldName, false, false, true, this.datatype, this.restrictions);
+		let firstEntryInteractor = new TextFieldManager(firstEntrySelector, this.fieldName, false, false, false, this.datatype, this.restrictions, this.reactions);
 		this.entries.push(firstEntryInteractor);
 		this.setLength(this.initialEntries);
 	}
@@ -21,7 +21,7 @@ export default class ListFieldManager extends ExpandableFieldManager
 		{
 			additionalNodeParent.removeChild(additionalNode);
 		}
-		let clone = new ListFieldManager(newSelector, this.fieldName, this.initialEntries, this.maxEntries, this.allowEmpty, this.datatype, this.restrictions);
+		let clone = new ListFieldManager(newSelector, this.fieldName, this.initialEntries, this.maxEntries, this.allowEmpty, this.datatype, this.restrictions, this.reactions);
 		clone.resetInternal();
 		return clone;
 	}
@@ -48,6 +48,26 @@ export default class ListFieldManager extends ExpandableFieldManager
 		else
 		{
 			container.classList.remove("failed");
+		}
+	}
+
+	isHighlighted()
+	{
+		// Felder die aus mehreren Elementen bestehen, werden über ihren Container hervorgehoben
+		return this.getChildElement(".entries").classList.contains("highlighted");
+	}
+
+	setHighlighted(highlighted)
+	{
+		// Felder die aus mehreren Elementen bestehen, werden über ihren Container hervorgehoben
+		let classList = this.getChildElement(".entries").classList;
+		if (highlighted && !classList.contains("highlighted"))
+		{
+			classList.add("highlighted");
+		}
+		else if (!highlighted && classList.contains("highlighted"))
+		{
+			classList.remove("highlighted")
 		}
 	}
 

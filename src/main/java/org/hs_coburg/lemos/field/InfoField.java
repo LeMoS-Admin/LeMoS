@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hs_coburg.lemos.general.Resource;
 import org.hs_coburg.lemos.module.Condition;
+import org.hs_coburg.lemos.module.Operation;
 import org.hs_coburg.lemos.util.StringHelper;
 
 import java.util.Collections;
@@ -27,9 +28,11 @@ public class InfoField extends Field
                      @JsonProperty("type") FieldType type,
                      @JsonProperty("style") Style style,
                      @JsonProperty("hidden") Boolean hidden,
+                     @JsonProperty("highlighted") Boolean highlighted,
                      @JsonProperty("allowEmpty") Boolean allowEmpty,                // ignoriert
                      @JsonProperty("datatype") FieldDatatype datatype,              // ignoriert
                      @JsonProperty("restrictions") List<Condition> restrictions,    // ignoriert
+                     @JsonProperty("reactions") List<Operation> reactions,          // ignoriert
                      @JsonProperty("text") String text,
                      @JsonProperty("resource") Resource resource,
                      @JsonProperty("resourceID") String resourceID,
@@ -37,7 +40,7 @@ public class InfoField extends Field
                      @JsonProperty("maxWidth") Integer maxWidth,
                      @JsonProperty("maxHeight") Integer maxHeight)
     {
-        super(id, name, explanation, FieldUsage.OUTPUT, type, style, hidden, true, FieldDatatype.STRING, Collections.emptyList());
+        super(id, name, explanation, FieldUsage.OUTPUT, type, style, hidden, highlighted,true, FieldDatatype.STRING, Collections.emptyList(), Collections.emptyList());
         this.text        = Objects.requireNonNullElse(text, "");
         this.contentType = Objects.requireNonNullElse(contentType, ContentType.TEXT);
 
@@ -77,7 +80,7 @@ public class InfoField extends Field
     @Override
     protected String getFieldTagTemplateHTML()
     {
-        return """
+        String template = """
                <div id='{{id}}' class='fieldContainer {{type}}' style='{{style}}'>
                  {{label}}
                  <form class='field'>
@@ -85,6 +88,7 @@ public class InfoField extends Field
                  </form>
                </div>
                """;
+        return template.replace("{{content}}", getContentHTML());
     }
 
     @Override
@@ -97,7 +101,6 @@ public class InfoField extends Field
     protected String performReplacements(String string)
     {
         return super.performReplacements(string)
-                    .replace("{{content}}", getContentHTML())
                     .replace("{{text}}", getText())
                     .replace("{{resource}}", getResource())
                     .replace("{{mediaStyle}}", getMediaStyle())
@@ -109,15 +112,15 @@ public class InfoField extends Field
         switch (contentType)
         {
             case TEXT:
-                return "<span>{{text}}</span>";
+                return "<span class='{{highlighted}}'>{{text}}</span>";
             case IMAGE:
-                return "<img src='{{resource}}' alt='{{text}}' style='{{mediaStyle}}'>";
+                return "<img class='{{highlighted}}' src='{{resource}}' alt='{{text}}' style='{{mediaStyle}}'>";
             case AUDIO:
-                return "<audio src='{{resource}}' style='{{mediaStyle}}' controls></audio>" +
-                       "<span style='display: none'>{{text}}</span>";
+                return "<audio class='{{highlighted}}' src='{{resource}}' style='{{mediaStyle}}' controls></audio>" +
+                       "<span class='{{highlighted}}' style='display: none'>{{text}}</span>";
             case VIDEO:
-                return "<video src='{{resource}}' style='{{mediaStyle}}' controls></video>" +
-                       "<span style='display: none'>{{text}}</span>";
+                return "<video class='{{highlighted}}' src='{{resource}}' style='{{mediaStyle}}' controls></video>" +
+                       "<span class='{{highlighted}}' style='display: none'>{{text}}</span>";
             default:    // Kommt nicht vor, da alle Ausprägungen von ContentType abgedeckt sind
                 return "";
         }

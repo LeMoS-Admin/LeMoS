@@ -2,9 +2,9 @@ import FieldManager from "./FieldManager.js";
 
 export default class MultilineableFieldManager extends FieldManager
 {
-	constructor(selector, fieldName, multiline, growable, allowEmpty, datatype, restrictions)
+	constructor(selector, fieldName, multiline, growable, allowEmpty, datatype, restrictions, reactions)
 	{
-		super(selector, fieldName, allowEmpty, datatype, restrictions);
+		super(selector, fieldName, allowEmpty, datatype, restrictions, reactions);
 		this.multiline = multiline;
 		this.growable = growable;
 
@@ -12,6 +12,19 @@ export default class MultilineableFieldManager extends FieldManager
 		{
 			this.getField().addEventListener("input", () => this.resetHeight());
 		}
+	}
+
+	backup()
+	{
+		// Weitere Verarbeitungsschritte (Aufteilung in Array, Konvertierung in Zahlen) vermeiden
+		return super.backup().set("value", this.getField().value);
+	}
+
+	toString()
+	{
+		return super.toString() +
+			"\n\tmultiline: " + this.multiline +
+			"\n\tgrowable: " + this.growable;
 	}
 
 	resetHeight()
@@ -42,18 +55,5 @@ export default class MultilineableFieldManager extends FieldManager
 		{
 			return this.getChildElement(".field > input");
 		}
-	}
-
-	backup()
-	{
-		// Weitere Verarbeitungsschritte (Aufteilung in Array, Konvertierung in Zahlen) vermeiden
-		return super.backup().set("value", this.getField().value);
-	}
-
-	toString()
-	{
-		return super.toString() +
-			"\n\tmultiline: " + this.multiline +
-			"\n\tgrowable: " + this.growable;
 	}
 }

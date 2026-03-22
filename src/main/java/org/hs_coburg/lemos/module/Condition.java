@@ -9,15 +9,45 @@ import java.util.Objects;
 
 public class Condition
 {
-    public final String          message;
+    public final String          errorMessage;
     public final List<Operation> terms;
 
     @JsonCreator
-    public Condition(@JsonProperty("message") String message,
+    public Condition(@JsonProperty("errorMessage") String errorMessage,
                      @JsonProperty("terms") List<Operation> terms)
     {
-        this.message = Objects.requireNonNullElse(message, "");
+        this.errorMessage = Objects.requireNonNullElse(errorMessage, "");
         this.terms   = Objects.requireNonNull(terms, "Missing required attribute 'terms'");
+    }
+
+    public String generateTransitionConditionJS(String target)
+    {
+        String template = """
+                             if(!({{terms}}))
+                             {
+                               Module.log(`Condition for transition to {{target}} not met`);
+                               {{failWithErrorMessage}}
+                             }
+                          """;
+        return performReplacements(template).replace("{{target}}", target);
+    }
+
+    public String generateFieldRestrictionJS(String fieldName)
+    {
+        String template = """
+                          if (!({{terms}}))
+                          {
+                            throw new ValidationError(`{{errorMessage}}`);
+                          }
+                          """;
+        return performReplacements(template).replace("{{fieldName}}", fieldName);
+    }
+
+    private String performReplacements(String string)
+    {
+        return string.replace("{{terms}}", generateConditionJS(terms))
+                     .replace("{{errorMessage}}", StringHelper.escape(errorMessage))
+                     .replace("{{failWithErrorMessage}}", getErrorMessageFail());
     }
 
     private static String generateConditionJS(List<Operation> terms)
@@ -44,45 +74,15 @@ public class Condition
         }
     }
 
-    public String generateTransitionConditionJS(String target)
+    private String getErrorMessageFail()
     {
-        String template = """
-                             if(!({{terms}}))
-                             {
-                               Module.log("Condition for transition to {{target}} not met");
-                               {{alertMessage}}
-                             }
-                          """;
-        return performReplacements(template).replace("{{target}}", target);
-    }
-
-    public String generateFieldRestrictionJS(String fieldName)
-    {
-        String template = """
-                          if (!({{terms}}))
-                          {
-                            throw new ValidationError(`{{message}}`);
-                          }
-                          """;
-        return performReplacements(template).replace("{{fieldName}}", fieldName);
-    }
-
-    private String performReplacements(String string)
-    {
-        return string.replace("{{terms}}", generateConditionJS(terms))
-                     .replace("{{message}}", StringHelper.escape(message))
-                     .replace("{{alertMessage}}", getAlertMesssage());
-    }
-
-    private String getAlertMesssage()
-    {
-        if (message.isEmpty())
+        if (errorMessage.isEmpty())
         {
             return "";
         }
         else
         {
-            return "Module.alert(`" + StringHelper.escape(message) + "`);";
+            return "Module.fail(`" + StringHelper.escape(errorMessage) + "`);";
         }
     }
 
@@ -90,7 +90,7 @@ public class Condition
     public String toString()
     {
         return getClass().getSimpleName() + ":" +
-               "\n\t" + "message: '" + StringHelper.get(message) + '\'' +
+               "\n\t" + "errorMessage: '" + StringHelper.get(errorMessage) + '\'' +
                "\n\t" + "terms: " + StringHelper.get(terms);
     }
 }

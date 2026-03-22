@@ -30,12 +30,12 @@ for arg in "$@"; do
 	# Dateinamen entfernen, um Pfad des Lernmoduls zu bestimmen
 	pfad=${arg%/*}
 	
-	# Erstellen einer Kopie der Vorlage, damit diese anschließend mit den Daten des Lernmodul ausgefüllt werden kann
+	# Erstellen einer Kopie der Vorlage für Lernmodule (moduleTemplate), damit diese anschließend mit den Daten des Lernmodul ausgefüllt werden kann
 	echo $name: preparing template
 	cd "$LWD"
 	unzip -q $lemos "$TEMPLATE/*"
 	
-	# Übernehmen der hinterlegten Resourcen (falls vorhanden) in das Verzeichnis des Lernmoduls
+	# Übernehmen der hinterlegten Ressourcen (falls vorhanden) in das Verzeichnis des Lernmoduls
 	echo $name: preparing resources
 	if [ -d "$pfad/resources" ]; then
 		cp -r "$pfad/resources" "$LWD/$TEMPLATE/res"
@@ -50,17 +50,13 @@ for arg in "$@"; do
 	if [ $? != 0 ]; then
 		failedGeneration=true
 		rm -r "$LWD/$TEMPLATE"
+		echo
 		continue
 	fi
 	
-	# Verschieben der gewählten Systembibliothek, bereinigen aller anderen (Gewünschte Version der Bibliothek wurde vorher im LeMoS-Generator zu "lib" umbenannt)
-	echo $name: moving library
-	cd "$LWD/$TEMPLATE"
-	mv libs/lib lib
-	rm -r libs
-	
 	# Packen des fertigen Lernmoduls zu einer ZIP-Datei, bereinigen der ausgefüllten Kopie der Vorlage
 	echo $name: packing archive
+	cd "$LWD/$TEMPLATE"
 	if [ -d "$SWD/$name.zip" ]; then
 		rm -f "$SWD/$name.zip"
 	fi
@@ -68,8 +64,7 @@ for arg in "$@"; do
 
 	# Bereinigen der temporären Kopie der Vorlage
 	echo $name: deleting template
-	cd ..
-	rm -r "$TEMPLATE"
+	rm -r "$LWD/$TEMPLATE"
 
 	# Erfolgsausgabe
 	echo $name: finished "$SWD/$name.zip"

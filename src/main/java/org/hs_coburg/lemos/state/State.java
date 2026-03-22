@@ -19,6 +19,7 @@ public class State
     public final StateType        type;
     public final List<Operation>  actions;
     public final List<Transition> transitions;
+    public final String           errorMessage;
 
     @JsonCreator
     public State(@JsonProperty("id") String id,
@@ -27,13 +28,15 @@ public class State
                  @JsonProperty("type") StateType type,
                  @JsonProperty("importance") StateImportance importance,
                  @JsonProperty("actions") List<Operation> actions,
-                 @JsonProperty("transitions") List<Transition> transitions)
+                 @JsonProperty("transitions") List<Transition> transitions,
+                 @JsonProperty("errorMessage") String errorMessage)
     {
-        this.id          = Objects.requireNonNull(id, "Missing required attribute 'id'");
-        this.name        = Objects.requireNonNullElse(name, id);
-        this.explanation = Objects.requireNonNullElse(explanation, "");
-        this.type        = Objects.requireNonNullElse(type, StateType.STATE);
-        this.transitions = Objects.requireNonNullElse(transitions, Collections.emptyList());
+        this.id           = Objects.requireNonNull(id, "Missing required attribute 'id'");
+        this.name         = Objects.requireNonNullElse(name, id);
+        this.explanation  = Objects.requireNonNullElse(explanation, "");
+        this.type         = Objects.requireNonNullElse(type, StateType.STATE);
+        this.transitions  = Objects.requireNonNullElse(transitions, Collections.emptyList());
+        this.errorMessage = Objects.requireNonNullElse(errorMessage, "");
         if (this.type == StateType.JUNCTION)
         {
             this.importance = StateImportance.ZERO;
@@ -43,15 +46,8 @@ public class State
         {
             this.importance = Objects.requireNonNullElse(importance, StateImportance.HIGH);
             this.actions    = Objects.requireNonNullElse(actions, Collections.emptyList());
-
         }
         validate();
-    }
-
-    // Statische Generierung des Funktionsnamens, da er in anderen Klassen zur Generierung eines Aufrufs benötigt wird
-    public static String generateStateFunctionCallJS(String stateID)
-    {
-        return String.format("_state_%s()", StringHelper.escape(stateID));
     }
 
     public static State findState(String stateID)
@@ -90,18 +86,20 @@ public class State
         String template = """
                           function {{functionName}}
                           {
-                            States._currentStateID = '{{id}}';
-                            States._currentStateName = '{{name_plain}}';
-                            States._currentStateExplanation = '{{explanation_plain}}';
+                            States._currentStateID = `{{id}}`;
+                            States._currentStateName = `{{name_plain}}`;
+                            States._currentStateExplanation = `{{explanation_plain}}`;
                             (() => {
                               {{actions}}
                             })();
-                            Module.log("Reached state {{id}}{{name}}{{explanation}}");
+                            Module.log(`Reached state {{id}}{{name}}{{explanation}}`);
+                            {{explanationPrint}}
                             _nextTransition = () => {
-                              States._lastStateID = '{{id}}';
-                              States._lastStateName = '{{name_plain}}';
-                              States._lastStateExplanation = '{{explanation_plain}}';
+                              States._lastStateID = `{{id}}`;
+                              States._lastStateName = `{{name_plain}}`;
+                              States._lastStateExplanation = `{{explanation_plain}}`;
                               {{transitions}}
+                              {{error}}
                             }
                             return {{importance}};
                           }
@@ -116,10 +114,12 @@ public class State
                      .replace("{{name_plain}}", StringHelper.escape(name))
                      .replace("{{explanation}}", StringHelper.escape(getExplanation()))
                      .replace("{{explanation_plain}}", StringHelper.escape(explanation))
+                     .replace("{{explanationPrint}}", getExplanationPrint())
                      .replace("{{type}}", type.asName())
                      .replace("{{importance}}", getImportance())
                      .replace("{{actions}}", Operation.generateActionJS(actions))
                      .replace("{{transitions}}", generateTransitionsJS())
+                     .replace("{{error}}", getError())
                      .replace("{{functionName}}", generateFunctionCallJS());
     }
 
@@ -147,6 +147,18 @@ public class State
         }
     }
 
+    private String getExplanationPrint()
+    {
+        if (explanation.isEmpty())
+        {
+            return "";
+        }
+        else
+        {
+            return "Module.print(`" + StringHelper.escape(explanation) + "`);";
+        }
+    }
+
     private String getImportance()
     {
         if (transitions.isEmpty())
@@ -156,6 +168,18 @@ public class State
         else
         {
             return Integer.toString(importance.asNumber());
+        }
+    }
+
+    private String getError()
+    {
+        if (errorMessage.isEmpty())
+        {
+            return "";
+        }
+        else
+        {
+            return "Module.fail(`" + StringHelper.escape(errorMessage) + "`);";
         }
     }
 

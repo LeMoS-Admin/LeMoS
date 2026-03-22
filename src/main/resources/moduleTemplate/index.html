@@ -30,6 +30,32 @@
                 margin-bottom: 24px;
             }
 
+            #noteFields div {
+                margin-top: 24px;
+                margin-bottom: 24px;
+                padding: 2px;
+            }
+            #noteFields h2 {
+                margin: 0;
+            }
+            #noteFields span {
+                margin: 0;
+            }
+            #noteFields #_alert span {
+                border: blue solid;
+            }
+            #noteFields #_fail span,
+            #noteFields #_error span {
+                border: red solid;
+            }
+            #noteFields #_alert h2 {
+                color: blue;
+            }
+            #noteFields #_fail h2,
+            #noteFields #_error h2 {
+                color: red;
+            }
+
             #main {
                 display: flex;
                 flex-wrap: wrap;
@@ -164,6 +190,9 @@
             }
 
             /*Feldelemente*/
+            #fields .highlighted {
+                border: blue solid;
+            }
             #fields .failed {
                 border: red solid;
             }
@@ -172,7 +201,8 @@
                 display: none;
             }
 
-            #fields .CheckField > .field.failed {
+            #fields .CheckField > .field.failed,
+            #fields .CheckField > .field.highlighted {
                 padding: 0 1px 1px 1px;
             }
             #fields .CheckField > .field > label,
@@ -189,7 +219,8 @@
                 row-gap: 4px;
                 column-gap: 4px;
             }
-            #fields .ListField > .entries.failed {
+            #fields .ListField > .entries.failed
+            #fields .ListField > .entries.highlighted {
                 padding: 0 1px 1px 1px;
             }
             #fields .ListField > .entries > .entry {
@@ -216,6 +247,9 @@
                 overflow-y: auto;
                 border: 1px gray solid;
             }
+            #fields .TableField > .table.highlighted {
+                border: blue solid;
+            }
             #fields .TableField > .table.failed {
                 border: red solid;
             }
@@ -224,6 +258,12 @@
                 padding: 4px;
                 border: 1px lightgray solid;
             }
+            /*#fields .TableField > .table > .entry.highlighted {*/
+            /*    border: blue solid;*/
+            /*}*/
+            /*#fields .TableField > .table > .entry.failed {*/
+            /*    border: red solid;*/
+            /*}*/
             #fields .TableField > .table > .header summary,
             #fields .TableField > .table > .header > span,
             #fields .TableField > .table > .entry span {
@@ -246,6 +286,26 @@
             <p>
                 <!--EXPLANATION-->
             </p>
+            <div id="noteFields">
+                <div id='_alert' class='fieldContainer InfoField' style='display: none;'>
+                    <h2 class='label'>Hinweis</h2>
+                    <form class='field'>
+                        <span></span>
+                    </form>
+                </div>
+                <div id='_fail' class='fieldContainer InfoField' style='display: none;'>
+                    <h2 class='label'>Fehler</h2>
+                    <form class='field'>
+                        <span></span>
+                    </form>
+                </div>
+                <div id='_error' class='fieldContainer InfoField' style='display: none;'>
+                    <h2 class='label'>Error</h2>
+                    <form class='field'>
+                        <span></span>
+                    </form>
+                </div>
+            </div>
             <div class="systemFieldContainer" id='scenarioSelector' style="width: max-content;">
                 <details class='label'>
                     <summary>Szenarioauswahl</summary>
@@ -366,13 +426,16 @@
             document.getElementById("forwardX").addEventListener("click", () => _nextState(9));
             let _history = [];
 
-            Module.setLogger(new SplitFieldManager("#protocol", "Log", true, false, "\n", true, "String", () => {}).getInteractor())
+            Module._setNoteFields(new InfoFieldManager('#_alert', 'Hinweis (note)', 'Text').getInteractor(),
+                                  new InfoFieldManager('#_fail', 'Fehler (fail)', 'Text').getInteractor(),
+                                  new InfoFieldManager('#_error', 'Error (error)', 'Text').getInteractor())
+            Module.setLogger(new SplitFieldManager("#protocol", "Log", true, false, "\n", true, "String", () => {}, () => {}).getInteractor())
             Resource._set({<!--RESOURCES-->});
             Utils._performOverwriteAndExtension();
 
-            <!--FIELD-variables-->
+            <!--FIELD-VARIABLES-->
 
-            <!--ADDITIONAL-variables-->
+            <!--ADDITIONAL-VARIABLES-->
 
             let _firstState = () =>
             {

@@ -12,7 +12,7 @@ public class LeMoS
     private static boolean printAsStructure;
     private static boolean printAsLine;
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws Exception
     {
         resetOptions();
         if (args.length < 2)
@@ -26,7 +26,7 @@ public class LeMoS
             System.exit(1);
         }
 
-        String moduleName = "Module";
+        String moduleName = "Module";   // "Module" = initialer Modul-Name, falls das Auslesen des Namens scheitert
         try
         {
             File moduleConfig = new File(args[0]).getCanonicalFile();
@@ -39,18 +39,16 @@ public class LeMoS
             printLearningModule(module, moduleName);
 
             System.out.println(moduleName + ": interpreting configuration");
-            String lemosVersion     = module.general.settings.lemosVersion;
             String webXmlContent    = ModuleGenerator.generateWebXmlContent(module);
             String indexHtmlContent = ModuleGenerator.generateIndexHtmlContent(module);
 
             System.out.println(moduleName + ": writing module");
-            ModuleWriter.writeModule(targetFolder, moduleName, lemosVersion, webXmlContent, indexHtmlContent);
+            ModuleWriter.writeModule(targetFolder, webXmlContent, indexHtmlContent);
         }
         catch (Exception e)
         {
-            System.err.println(moduleName + ": error while processing: \n" + e.getMessage());
-            e.printStackTrace(System.err);
-            throw new RuntimeException(e);
+            System.err.println(moduleName + ": error while processing:");   // Fehlermeldung wird von der Java-Runtime ausgegeben
+            throw e;    // Fehlermeldung wird weiter werfen, damit Java-Runtime einen entsprechenden Rückgabecode zurückgibt
         }
     }
 

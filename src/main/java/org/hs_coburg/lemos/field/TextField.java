@@ -3,6 +3,7 @@ package org.hs_coburg.lemos.field;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hs_coburg.lemos.module.Condition;
+import org.hs_coburg.lemos.module.Operation;
 
 import java.util.List;
 
@@ -16,14 +17,16 @@ public class TextField extends MultilineableField
                      @JsonProperty("type") FieldType type,
                      @JsonProperty("style") Style style,
                      @JsonProperty("hidden") Boolean hidden,
+                     @JsonProperty("highlighted") Boolean highlighted,
                      @JsonProperty("allowEmpty") Boolean allowEmpty,
                      @JsonProperty("datatype") FieldDatatype datatype,
                      @JsonProperty("restrictions") List<Condition> restrictions,
+                     @JsonProperty("reactions") List<Operation> reactions,
                      @JsonProperty("multiline") Boolean multiline,
                      @JsonProperty("minLines") Integer minLines,
                      @JsonProperty("maxLines") Integer maxLines)
     {
-        super(id, name, explanation, usage, type, style, hidden, allowEmpty, datatype, restrictions, multiline, minLines, maxLines);
+        super(id, name, explanation, usage, type, style, hidden, highlighted,allowEmpty, datatype, restrictions, reactions, multiline, minLines, maxLines);
     }
 
     @Override
@@ -43,7 +46,7 @@ public class TextField extends MultilineableField
     @Override
     protected String getFieldVariableTemplateJS()
     {
-        return "let {{id}} = new TextFieldManager('#{{id}}', '{{name}}', {{multiline}}, {{growable}}, {{allowEmpty}}, '{{datatype}}', () => {\n{{restrictions}}}).getInteractor();";
+        return "let {{id}} = new TextFieldManager('#{{id}}', '{{name}}', {{multiline}}, {{growable}}, {{allowEmpty}}, '{{datatype}}', () => {\n{{restrictions}}}, () => {\n{{reactions}}}).getInteractor();";
     }
 
     @Override

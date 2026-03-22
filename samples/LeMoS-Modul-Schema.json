@@ -77,10 +77,9 @@
           "properties": {
             "lemosVersion": {
               "type": "string",
-              "description": "Erwartete Version des LeMoS (Standard: 'LATEST')",
+              "description": "Leere Zeichenkette (aktuelle Version)",
               "examples": [
-                "1.0.0",
-                "LATEST"
+                "2.0.0"
               ]
             },
             "showFieldIDs": {
@@ -502,7 +501,7 @@
           },
           "name": {
             "type": "string",
-            "description": "Anzeigename (Standard: Wert von 'id')",
+            "description": "Anzeigename, wird ausschließlich in internen Ausgaben verwendet, dient der Fehlersuche (Standard: Wert von 'id')",
             "examples": [
               "Lernmodul initialisiert",
               "Länge berechnet"
@@ -510,7 +509,7 @@
           },
           "explanation": {
             "type": "string",
-            "description": "Zusätzliche Erläuterungen"
+            "description": "Erläuterungen zum Zustand, wird über Protokollfeld ausgegeben, dient der Erläuterung für den Benutzer"
           },
           "type": {
             "type": "string",
@@ -523,7 +522,7 @@
           },
           "importance": {
             "type": "string",
-            "description": "Wichtigkeit, d.h. kleiner oder großer Schritt (Standard: 'HIGH') \nBei type 'JUNCTION' nicht berücksichtigt, stattdessen stets 'ZERO'",
+            "description": "Wichtigkeit, d.h. kleiner oder großer Schritt (Standard: 'HIGH'), bei type 'JUNCTION' nicht berücksichtigt, stattdessen stets 'ZERO'",
             "enum": [
               "ZERO",
               "LOW",
@@ -532,14 +531,14 @@
           },
           "actions": {
             "type": "array",
-            "description": "Vor Zustandseintritt auszuführende Operationen \nBei type 'JUNCTION' nicht berücksichtigt, stattdessen stets leere Liste",
+            "description": "Vor Zustandseintritt auszuführende Operationen, bei type 'JUNCTION' nicht berücksichtigt, stattdessen stets leere Liste",
             "items": {
               "$ref": "#/$defs/operation"
             }
           },
           "transitions": {
             "type": "array",
-            "description": "Übergänge zu weiteren Zuständen \nHinweis: pro Zustand darf maximal ein Übergang bedingungslos sein",
+            "description": "Übergänge zu weiteren Zuständen, Hinweis: pro Zustand darf maximal ein Übergang bedingungslos sein",
             "items": {
               "type": "object",
               "description": "Einzelner Übergang zu einem anderen Zustand",
@@ -554,14 +553,14 @@
                 },
                 "name": {
                   "type": "string",
-                  "description": "Anzeigename",
+                  "description": "Anzeigename, wird ausschließlich in internen Ausgaben verwendet, dient der Fehlersuche",
                   "examples": [
                     "T1"
                   ]
                 },
                 "explanation": {
                   "type": "string",
-                  "description": "Erläuterungen zum Übergang"
+                  "description": "Erläuterungen zum Übergang, wird über Protokollfeld ausgegeben, dient der Erläuterung für den Benutzer"
                 },
                 "conditions": {
                   "type": "array",
@@ -572,6 +571,13 @@
                 }
               }
             }
+          },
+          "errorMessage": {
+            "type": "string",
+            "description": "Fehlermeldung, falls kein Übergang möglich, um Anweisungen in die Nachricht aufzunehmen, kann die ${}-Syntax von JavaScript verwendet werden",
+            "examples": [
+              "Für ${feld.getValue()} ist keine Ausführung möglich."
+            ]
           }
         }
       }
@@ -590,9 +596,12 @@
         "terms"
       ],
       "properties": {
-        "message": {
+        "errorMessage": {
           "type": "string",
-          "description": "Fehlermeldung, falls Bedingung nicht erfüllt"
+          "description": "Fehlermeldung, falls Bedingung nicht erfüllt, um Anweisungen in die Nachricht aufzunehmen, kann die ${}-Syntax von JavaScript verwendet werden",
+          "examples": [
+            "Der Inhalt des Felds lautet ${feld.getValue()}, sollte aber … lauten."
+          ]
         },
         "terms": {
           "type": "array",
@@ -690,6 +699,10 @@
           "type": "boolean",
           "description": "Feld ausblenden (Standard: false)"
         },
+        "highlighted": {
+          "type": "boolean",
+          "description": "Feld hervorheben (Standard: false)"
+        },
         "allowEmpty": {
           "type": "boolean",
           "description": "Leere Eingaben erlauben (Standard: false) \nNur bei usage INPUT berücksichtigt \nBei type INFO nicht berücksichtigt, da Infofelder für Benutzer stets unveränderlich sind \nFelder mit type CHECK gelten als leer, wenn keine Option ausgewählt ist \nFelder mit type SELECT gelten als leer, wenn eine leere Zeichenkette (bei emptyOption FALSE) bzw. die erste Option (bei emptyOption TRUE) gewählt wurde \nFelder mit type LIST oder TABLE gelten als leer, wenn alle Einträge leer sind"
@@ -705,9 +718,16 @@
         },
         "restrictions": {
           "type": "array",
-          "description": "Weitere Anforderungen an die Eingaben \nNur bei usage INPUT berücksichtigt \nBei type INFO nicht berücksichtigt, da Infofelder für Benutzer stets unveränderlich sind \nBei type SPLIT, LIST und TABLE kann die Variable \"entry\" genutzt werden, um die einzelnen Einträge zu adressieren, Bsp.: \"entry >= 0\" \uF0E0 jeder Eintrag (\"entry\") muss >= 0 sein",
+          "description": "Weitere Anforderungen an die Eingaben \nNur bei usage INPUT berücksichtigt \nBei type INFO nicht berücksichtigt, da Infofelder für Benutzer stets unveränderlich sind \nBei type SPLIT, LIST und TABLE kann die Variable \"entry\" genutzt werden, um die einzelnen Einträge zu adressieren, Bsp.: \"entry >= 0\" \uF0E0 jeder Eintrag (\"entry\") muss >= 0 sein\nEs werden stets erst die Reaktionen (reactions) durchgeführt, die Validierung, inklusive der Prüfung der Restriktionen (restrictions), erfolgt danach",
           "items": {
             "$ref": "#/$defs/condition"
+          }
+        },
+        "reactions": {
+          "type": "array",
+          "description": "Reaktionen bei Änderung der Eingabe \nNur bei usage INPUT berücksichtigt \nBei type INFO nicht berücksichtigt, da Infofelder für Benutzer stets unveränderlich sind \nBei type SPLIT, LIST und TABLE kann die Variable \"entry\" genutzt werden, um die einzelnen Einträge zu adressieren, Bsp.: \"entry >= 0\" \uF0E0 jeder Eintrag (\"entry\") muss >= 0 sein\nEs werden stets erst die Reaktionen (reactions) durchgeführt, die Validierung, inklusive der Prüfung der Restriktionen (restrictions), erfolgt danach",
+          "items": {
+            "$ref": "#/$defs/operation"
           }
         }
       }

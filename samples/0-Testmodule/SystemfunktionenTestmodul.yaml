@@ -6,7 +6,7 @@ general:
     Hinweis: Die Szenarioauswahl funktioniert hier nicht, da es für dieses Modul eigentlich kein Szenario gibt,
     die Konfiguration aber im gleichen Ordner wie die anderen Testmodule liegt, um die Ressourcen nicht doppelt speichern zu müssen.
   settings:
-    lemosVersion: 1.0.0
+    lemosVersion: 2.0.0
     showFieldIDs: true
     differentStepSizes: false
   logger:

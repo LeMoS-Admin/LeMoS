@@ -5,9 +5,9 @@ import Controller from "../internalFunctions/Controller.js";
 
 export default class ExpandableFieldManager extends FieldManager
 {
-	constructor(selector, fieldName, initialEntries, maxEntries, allowEmpty, datatype, restrictions)
+	constructor(selector, fieldName, initialEntries, maxEntries, allowEmpty, datatype, restrictions, reactions)
 	{
-		super(selector, fieldName, allowEmpty, datatype, restrictions);
+		super(selector, fieldName, allowEmpty, datatype, restrictions, reactions);
 		this.entries = [];
 		this.initialEntries = initialEntries;
 		this.maxEntries = maxEntries;
@@ -210,7 +210,7 @@ export default class ExpandableFieldManager extends FieldManager
 		if (this.getLength() <= 1)
 		{
 			// Es muss stets ein Eintrag erhalten bleiben
-			this.entries.at(0).clear();
+			this.entries.at(0).reset();			// reset() statt clear() nutzen, damit alle Eigenschaften zurückgesetzt werden (auch highlighted etc.)
 			this.entries.at(0).setDisplayed(false);
 			return;
 		}
@@ -218,7 +218,7 @@ export default class ExpandableFieldManager extends FieldManager
 		// Wählen des letzten Eintrags ohne Inhalt
 		let entryIndexToRemove = this.entries.findLastIndex(entry => entry.isEmpty());
 
-		// Wählen des letzten Eintrags, falls die anderen Verfahren keinen bestimmt haben
+		// Wählen des letzten Eintrags, falls kein leerer gefunden wurde
 		if (entryIndexToRemove === -1)
 		{
 			entryIndexToRemove = this.entries.length - 1;
@@ -229,7 +229,7 @@ export default class ExpandableFieldManager extends FieldManager
 		{
 			let curEntry = this.entries.at(k);
 			let nextEntry = this.entries.at(k + 1);
-			curEntry.setValue(nextEntry.getValue());
+			curEntry.restore(nextEntry.backup());			// Backup&Restore-System nutzen, damit alle Eigenschaften übernommen werden (auch highlighted etc.)
 		}
 
 		// Letzten Eintrag entfernen

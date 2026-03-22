@@ -3,6 +3,7 @@ package org.hs_coburg.lemos.field;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hs_coburg.lemos.module.Condition;
+import org.hs_coburg.lemos.module.Operation;
 import org.hs_coburg.lemos.util.StringHelper;
 
 import java.util.List;
@@ -20,15 +21,17 @@ public class SplitField extends MultilineableField
                       @JsonProperty("type") FieldType type,
                       @JsonProperty("style") Style style,
                       @JsonProperty("hidden") Boolean hidden,
+                      @JsonProperty("highlighted") Boolean highlighted,
                       @JsonProperty("allowEmpty") Boolean allowEmpty,
                       @JsonProperty("datatype") FieldDatatype datatype,
                       @JsonProperty("restrictions") List<Condition> restrictions,
+                      @JsonProperty("reactions") List<Operation> reactions,
                       @JsonProperty("multiline") Boolean multiline,
                       @JsonProperty("minLines") Integer minLines,
                       @JsonProperty("maxLines") Integer maxLines,
                       @JsonProperty("separator") String separator)
     {
-        super(id, name, explanation, usage, type, style, hidden, allowEmpty, datatype, restrictions, multiline, minLines, maxLines);
+        super(id, name, explanation, usage, type, style, hidden, highlighted,allowEmpty, datatype, restrictions, reactions, multiline, minLines, maxLines);
         this.separator = Objects.requireNonNullElse(separator, "");
     }
 
@@ -49,7 +52,7 @@ public class SplitField extends MultilineableField
     @Override
     protected String getFieldVariableTemplateJS()
     {
-        return "let {{id}} = new SplitFieldManager('#{{id}}', '{{name}}', {{multiline}}, {{growable}}, '{{separator}}', {{allowEmpty}}, '{{datatype}}', (entry) => {\n{{restrictions}}}).getInteractor();";
+        return "let {{id}} = new SplitFieldManager('#{{id}}', '{{name}}', {{multiline}}, {{growable}}, '{{separator}}', {{allowEmpty}}, '{{datatype}}', (entry) => {\n{{restrictions}}}, (entry) => {\n{{reactions}}}).getInteractor();";
     }
 
     @Override

@@ -28,7 +28,7 @@
             </contact>
         </contacts>
         <settings>
-            <lemosVersion>1.0.0</lemosVersion>
+            <lemosVersion>2.0.0</lemosVersion>
             <showFieldIDs>true</showFieldIDs>
             <differentStepSizes>false</differentStepSizes>
         </settings>
@@ -72,7 +72,7 @@
             <datatype>NUMBER</datatype>
             <restrictions>
                 <restriction>
-                    <message>Nur positive Zahlenwerte</message>
+                    <errorMessage>Nur positive Zahlenwerte</errorMessage>
                     <terms>
                         <operation>Number.isNaN(N.value) || N &gt;= 0</operation>
                     </terms>
@@ -89,7 +89,7 @@
             <datatype>NUMBER</datatype>
             <restrictions>
                 <restriction>
-                    <message>Nur positive Zahlenwerte</message>
+                    <errorMessage>Nur positive Zahlenwerte</errorMessage>
                     <terms>
                         <operation>Number.isNaN(Y.value) || Y &gt;= 0</operation>
                     </terms>
@@ -106,7 +106,7 @@
             <datatype>NUMBER</datatype>
             <restrictions>
                 <restriction>
-                    <message>Nur positive Zahlenwerte</message>
+                    <errorMessage>Nur positive Zahlenwerte</errorMessage>
                     <terms>
                         <operation>Number.isNaN(W.value) || W &gt;= 0</operation>
                     </terms>

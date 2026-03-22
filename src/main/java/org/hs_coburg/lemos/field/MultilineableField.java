@@ -1,6 +1,8 @@
 package org.hs_coburg.lemos.field;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hs_coburg.lemos.module.Condition;
+import org.hs_coburg.lemos.module.Operation;
 import org.hs_coburg.lemos.util.StringHelper;
 
 import java.util.List;
@@ -19,14 +21,16 @@ public abstract class MultilineableField extends Field
                                  FieldType type,
                                  Style style,
                                  Boolean hidden,
+                                Boolean highlighted,
                                  Boolean allowEmpty,
                                  FieldDatatype datatype,
                                  List<Condition> restrictions,
+                                 List<Operation> reactions,
                                  Boolean multiline,
                                  Integer minLines,
                                  Integer maxLines)
     {
-        super(id, name, explanation, usage, type, style, hidden, allowEmpty, datatype, restrictions);
+        super(id, name, explanation, usage, type, style, hidden, highlighted,allowEmpty, datatype, restrictions, reactions);
         this.multiline = Objects.requireNonNullElse(multiline, false);
         if (!this.multiline)
         {
@@ -53,11 +57,11 @@ public abstract class MultilineableField extends Field
     {
         if (multiline)
         {
-            return "<textarea name='{{id}}' {{fieldStyle}} {{enabledState}}></textarea>";
+            return "<textarea name='{{id}}' class='{{highlighted}}' {{fieldStyle}} {{enabledState}}></textarea>";
         }
         else
         {
-            return "<input name='{{id}}' type='text' {{enabledState}}>";
+            return "<input name='{{id}}' class='{{highlighted}}' type='text' {{enabledState}}>";
         }
     }
 

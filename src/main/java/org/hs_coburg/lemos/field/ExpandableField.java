@@ -1,6 +1,8 @@
 package org.hs_coburg.lemos.field;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hs_coburg.lemos.module.Condition;
+import org.hs_coburg.lemos.module.Operation;
 import org.hs_coburg.lemos.util.StringHelper;
 
 import java.util.List;
@@ -19,14 +21,16 @@ public abstract class ExpandableField extends Field
                               FieldType type,
                               Style style,
                               Boolean hidden,
+                              Boolean highlighted,
                               Boolean allowEmpty,
                               FieldDatatype datatype,
                               List<Condition> restrictions,
+                              List<Operation> reactions,
                               FieldOrientation growthDirection,
                               Integer initialEntries,
                               Integer maxEntries)
     {
-        super(id, name, explanation, usage, type, style, hidden, allowEmpty, datatype, restrictions);
+        super(id, name, explanation, usage, type, style, hidden, highlighted,allowEmpty, datatype, restrictions, reactions);
         this.growthDirection = Objects.requireNonNullElse(growthDirection, FieldOrientation.VERTICAL);
         this.initialEntries  = Objects.requireNonNullElse(initialEntries, 1);
         this.maxEntries      = Objects.requireNonNullElse(maxEntries, -1);

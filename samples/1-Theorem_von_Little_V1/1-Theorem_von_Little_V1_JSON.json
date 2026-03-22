@@ -28,7 +28,7 @@
       }
     ],
     "settings": {
-      "lemosVersion": "1.0.0",
+      "lemosVersion": "2.0.0",
       "showFieldIDs": true,
       "differentStepSizes": false
     }
@@ -72,7 +72,7 @@
       "datatype": "NUMBER",
       "restrictions": [
         {
-          "message": "Nur positive Zahlenwerte",
+          "errorMessage": "Nur positive Zahlenwerte",
           "terms": [
             "Number.isNaN(N.value) || N >= 0"
           ]
@@ -89,7 +89,7 @@
       "datatype": "NUMBER",
       "restrictions": [
         {
-          "message": "Nur positive Zahlenwerte",
+          "errorMessage": "Nur positive Zahlenwerte",
           "terms": [
             "Number.isNaN(N.value) || Y >= 0"
           ]
@@ -106,7 +106,7 @@
       "datatype": "NUMBER",
       "restrictions": [
         {
-          "message": "Nur positive Zahlenwerte",
+          "errorMessage": "Nur positive Zahlenwerte",
           "terms": [
             "Number.isNaN(N.value) || W >= 0"
           ]
@@ -128,7 +128,7 @@
           "explanation": "Übergang zur Fallunterscheidung",
           "conditions": [
             {
-              "message": "",
+              "errorMessage": "",
               "terms": [
                 "Fields.countFilled() === 3"
               ]
@@ -149,7 +149,7 @@
           "explanation": "Übergang zu Fall 1",
           "conditions": [
             {
-              "message": "",
+              "errorMessage": "",
               "terms": [
                 "Fields.areFilled(Y, W)"
               ]
@@ -162,7 +162,7 @@
           "explanation": "Übergang zu Fall 2",
           "conditions": [
             {
-              "message": "",
+              "errorMessage": "",
               "terms": [
                 "Fields.areFilled(N, W)"
               ]
@@ -175,7 +175,7 @@
           "explanation": "Übergang zu Fall 3",
           "conditions": [
             {
-              "message": "",
+              "errorMessage": "",
               "terms": [
                 "Fields.areFilled(N, Y)"
               ]

@@ -13,6 +13,9 @@ export class TestLib
 		errors.push(TestLib.#assertResult(field, null, true, () => field.setDisplayed(true).isDisplayed()));
 		errors.push(TestLib.#assertResult(field, null, false, () => field.isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, false, () => field.setEnabled(true).isEnabled()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, true, () => field.setHighlighted(true).isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.setHighlighted(false).isHighlighted()));
 
 		errors.push(TestLib.#assertValue(field, null, "Infotext"));
 		errors.push(TestLib.#assertResult(field, "", true, () => field.isEmpty()));
@@ -31,6 +34,9 @@ export class TestLib
 		errors.push(TestLib.#assertResult(field, null, true, () => field.setDisplayed(true).isDisplayed()));
 		errors.push(TestLib.#assertResult(field, null, false, () => field.isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, false, () => field.setEnabled(true).isEnabled()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, true, () => field.setHighlighted(true).isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.setHighlighted(false).isHighlighted()));
 		errors.push(TestLib.#assertValue(field, null, Resource.get("Image1")));
 
 		errors.push(TestLib.#assertResult(field, "", true, () => field.isEmpty()));
@@ -52,6 +58,9 @@ export class TestLib
 		errors.push(TestLib.#assertResult(field, null, true, () => field.setDisplayed(true).isDisplayed()));
 		errors.push(TestLib.#assertResult(field, null, false, () => field.isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, false, () => field.setEnabled(true).isEnabled()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, true, () => field.setHighlighted(true).isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.setHighlighted(false).isHighlighted()));
 		errors.push(TestLib.#assertValue(field, null, Resource.get("Audio1")));
 
 		errors.push(TestLib.#assertResult(field, "", true, () => field.isEmpty()));
@@ -73,6 +82,9 @@ export class TestLib
 		errors.push(TestLib.#assertResult(field, null, true, () => field.setDisplayed(true).isDisplayed()));
 		errors.push(TestLib.#assertResult(field, null, false, () => field.isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, false, () => field.setEnabled(true).isEnabled()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, true, () => field.setHighlighted(true).isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.setHighlighted(false).isHighlighted()));
 		errors.push(TestLib.#assertValue(field, null, Resource.get("Video1")));
 
 		errors.push(TestLib.#assertResult(field, "", true, () => field.isEmpty()));
@@ -96,6 +108,9 @@ export class TestLib
 		errors.push(TestLib.#assertResult(field, null, true, () => field.isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, false, () => field.setEnabled(false).isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, true, () => field.setEnabled(true).isEnabled()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, true, () => field.setHighlighted(true).isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.setHighlighted(false).isHighlighted()));
 		errors.push(TestLib.#assertValue(field, null, ""));
 
 		// Lesende Methoden, von String übernommen
@@ -156,6 +171,9 @@ export class TestLib
 		errors.push(TestLib.#assertResult(field, null, true, () => field.isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, false, () => field.setEnabled(false).isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, true, () => field.setEnabled(true).isEnabled()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, true, () => field.setHighlighted(true).isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.setHighlighted(false).isHighlighted()));
 		errors.push(TestLib.#assertValue(field, null, undefined));
 
 		errors.push(TestLib.#assertResult(field, undefined, ["Opt0", "Opt1", "Opt2"], () => field.getOptions()));
@@ -184,6 +202,9 @@ export class TestLib
 		errors.push(TestLib.#assertResult(field, null, true, () => field.isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, false, () => field.setEnabled(false).isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, true, () => field.setEnabled(true).isEnabled()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, true, () => field.setHighlighted(true).isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.setHighlighted(false).isHighlighted()));
 		errors.push(TestLib.#assertValue(field, null, []));
 
 		errors.push(TestLib.#assertResult(field, undefined, ["Opt0", "Opt1", "Opt2"], () => field.getOptions()));
@@ -212,6 +233,9 @@ export class TestLib
 		errors.push(TestLib.#assertResult(field, null, true, () => field.isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, false, () => field.setEnabled(false).isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, true, () => field.setEnabled(true).isEnabled()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, true, () => field.setHighlighted(true).isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.setHighlighted(false).isHighlighted()));
 		errors.push(TestLib.#assertValue(field, null, "Opt0"));
 
 		errors.push(TestLib.#assertResult(field, null, ["Opt0", "Opt1", "Opt2"], () => field.getOptions()));
@@ -238,6 +262,9 @@ export class TestLib
 		errors.push(TestLib.#assertResult(field, null, true, () => field.isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, false, () => field.setEnabled(false).isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, true, () => field.setEnabled(true).isEnabled()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, true, () => field.setHighlighted(true).isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.setHighlighted(false).isHighlighted()));
 		errors.push(TestLib.#assertValue(field, null, []));
 		errors.push(TestLib.#assertResult(field, ["", "", ""], [], () => field.getValue()));
 		errors.push(TestLib.#assertResult(field, ["", "", ""], ["", "", ""], () => field.withEmptyEntries().getValue()));
@@ -360,6 +387,9 @@ export class TestLib
 		errors.push(TestLib.#assertResult(field, null, true, () => field.isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, false, () => field.setEnabled(false).isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, true, () => field.setEnabled(true).isEnabled()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, true, () => field.setHighlighted(true).isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.setHighlighted(false).isHighlighted()));
 		errors.push(TestLib.#assertValue(field, null, []));
 		errors.push(TestLib.#assertResult(field, [["", "", ""],["", "", ""],["", "", ""]], [], () => field.getValue()));
 		errors.push(TestLib.#assertResult(field, [["", "", ""],["", "", ""],["", "", ""]], [{"Attr1": "", "Attr2": "", "Attr3": ""},{"Attr1": "", "Attr2": "", "Attr3": ""},{"Attr1": "", "Attr2": "", "Attr3": ""}], () => field.withEmptyEntries().getValue()));
@@ -496,6 +526,9 @@ export class TestLib
 		errors.push(TestLib.#assertResult(field, null, true, () => field.isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, false, () => field.setEnabled(false).isEnabled()));
 		errors.push(TestLib.#assertResult(field, null, true, () => field.setEnabled(true).isEnabled()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, true, () => field.setHighlighted(true).isHighlighted()));
+		errors.push(TestLib.#assertResult(field, null, false, () => field.setHighlighted(false).isHighlighted()));
 		errors.push(TestLib.#assertValue(field, null, {"Attr1": "", "Attr2": "", "Attr3": ""}));
 
 		// Lesende Methoden, von Map übernommen
@@ -544,7 +577,7 @@ export class TestLib
 			else
 			{
 				let caller = Error().stack.split("\n").at(1).split("/res/").at(-1).replace(")", "").trim();
-				let message = "Failed: " + testName + " at " + caller + ", message: "
+				let message = "Failed: " + testName + " at " + caller + ", errorMessage: "
 					+ "result " + Utils.objectToPrint(result) + " is not equal to expected result '" + Utils.objectToPrint(expectedResult) + "'";
 				Module.print(message);
 				return new Error(message);
@@ -553,7 +586,7 @@ export class TestLib
 		catch (err)
 		{
 			let caller = err.stack.split("\n").filter(str => str.includes("TestLib.js")).at(1).split("/res/").at(-1).replace(")", "").trim();
-			let message = "Error:  " + testName + " at " + caller + ", message: " + err.toString()
+			let message = "Error:  " + testName + " at " + caller + ", errorMessage: " + err.toString()
 				+ ", stack: \n\t\t" + err.stack.replaceAll("\n", "\n\t\t");
 			Module.print(message);
 			err.message = message;
@@ -580,7 +613,7 @@ export class TestLib
 			else
 			{
 				let caller = Error().stack.split("\n").at(1).split("/res/").at(-1).replace(")", "").trim();
-				let message = "Failed: " + testName + " at " + caller + ", message: "
+				let message = "Failed: " + testName + " at " + caller + ", errorMessage: "
 					+ "value " + Utils.objectToPrint(field).replaceAll("\n", " ").replaceAll("\t", "") + " is not equal to expected value '" + Utils.objectToPrint(expectedValue) + "'";
 				Module.print(message);
 				return new Error(message);
@@ -589,7 +622,7 @@ export class TestLib
 		catch (err)
 		{
 			let caller = err.stack.split("\n").filter(str => str.includes("TestLib.js")).at(1).split("/res/").at(-1).replace(")", "").trim();
-			let message = "Error:  " + testName + " at " + caller + ", message: " + err.toString()
+			let message = "Error:  " + testName + " at " + caller + ", errorMessage: " + err.toString()
 				+ ", stack: \n\t\t" + err.stack.replaceAll("\n", "\n\t\t");
 			Module.print(message);
 			err.message = message;

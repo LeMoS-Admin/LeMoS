@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.hs_coburg.lemos.general.Settings;
 import org.hs_coburg.lemos.module.Condition;
+import org.hs_coburg.lemos.module.Operation;
 import org.hs_coburg.lemos.util.StringHelper;
 
 import java.util.Collections;
@@ -28,9 +29,11 @@ public abstract class Field
     public final FieldType       type;
     public final Style           style;
     public final Boolean         hidden;
+    public final Boolean         highlighted;
     public final Boolean         allowEmpty;
     public final FieldDatatype   datatype;
     public final List<Condition> restrictions;
+    public final List<Operation> reactions;
 
     protected Field(String id,
                     String name,
@@ -39,9 +42,11 @@ public abstract class Field
                     FieldType type,
                     Style style,
                     Boolean hidden,
+                    Boolean highlighted,
                     Boolean allowEmpty,
                     FieldDatatype datatype,
-                    List<Condition> restrictions)
+                    List<Condition> restrictions,
+                    List<Operation> reactions)
     {
         this.id          = Objects.requireNonNull(id, "Missing required attribute 'id'");
         this.name        = Objects.requireNonNullElse(name, id);
@@ -50,6 +55,7 @@ public abstract class Field
         this.type        = Objects.requireNonNull(type, "Missing required attribute 'type'");
         this.style       = Objects.requireNonNullElse(style, Style.emptyStyle);
         this.hidden      = Objects.requireNonNullElse(hidden, false);
+        this.highlighted      = Objects.requireNonNullElse(highlighted, false);
         this.datatype    = Objects.requireNonNullElse(datatype, FieldDatatype.STRING);
 
         if (this.usage != FieldUsage.INPUT)
@@ -57,11 +63,13 @@ public abstract class Field
             // Für ein Feld, dass keine Eingaben zulässt, ergeben Eingabebeschränkungen keinen Sinn
             this.allowEmpty   = true;
             this.restrictions = Collections.emptyList();
+            this.reactions = Collections.emptyList();
         }
         else
         {
             this.allowEmpty   = Objects.requireNonNullElse(allowEmpty, false);
             this.restrictions = Objects.requireNonNullElse(restrictions, Collections.emptyList());
+            this.reactions = Objects.requireNonNullElse(reactions, Collections.emptyList());
         }
         validate();
     }
@@ -124,9 +132,11 @@ public abstract class Field
                      .replace("{{usage}}", usage.asName())
                      .replace("{{type}}", type.asName())
                      .replace("{{style}}", generateFieldStyleCSS())
+                     .replace("{{highlighted}}", getFieldHighlighting())
                      .replace("{{allowEmpty}}", Boolean.toString(allowEmpty))
                      .replace("{{datatype}}", datatype.asName())
                      .replace("{{restrictions}}", generateFieldRestrictionsJS())
+                     .replace("{{reactions}}", Operation.generateActionJS(reactions))
                      .replace("{{enabledState}}", getFieldEnabledState());
     }
 
@@ -176,6 +186,18 @@ public abstract class Field
         }
     }
 
+    private String getFieldHighlighting()
+    {
+        if (highlighted)
+        {
+            return "highlighted";
+        }
+        else
+        {
+            return "";
+        }
+    }
+
     @Override
     public String toString()
     {
@@ -186,8 +208,10 @@ public abstract class Field
                "\n\t" + "usage: " + StringHelper.get(usage) +
                "\n\t" + "style: " + StringHelper.get(style) +
                "\n\t" + "hidden: " + StringHelper.get(hidden) +
+               "\n\t" + "highlighted: " + StringHelper.get(highlighted) +
                "\n\t" + "allowEmpty: " + StringHelper.get(allowEmpty) +
                "\n\t" + "datatype: " + StringHelper.get(datatype) +
-               "\n\t" + "restrictions: " + StringHelper.get(restrictions);
+               "\n\t" + "restrictions: " + StringHelper.get(restrictions) +
+               "\n\t" + "reactions: " + StringHelper.get(reactions);
     }
 }

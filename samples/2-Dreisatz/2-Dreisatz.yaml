@@ -3,7 +3,7 @@ general:
   heading: Dreisatz
   explanation: Interaktives Modul, um den Dreisatz auszuprobieren
   settings:
-    lemosVersion: 1.0.0
+    lemosVersion: 2.0.0
 
 fields:
   - id: LS
@@ -89,7 +89,7 @@ states:
     transitions:
       - target: Z1
         conditions:
-          - message: |
+          - errorMessage: |
                       Bitte die folgenden Felder befüllen:
                       - Linker Startwert
                       - Rechter Startwert

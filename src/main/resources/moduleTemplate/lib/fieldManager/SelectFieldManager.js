@@ -4,9 +4,9 @@ import SelectFieldInteractor from "../fieldInteractors/SelectFieldInteractor.js"
 
 export default class SelectFieldManager extends FieldManager
 {
-	constructor(selector, fieldName, emptyOption, allowEmpty, restrictions)
+	constructor(selector, fieldName, emptyOption, allowEmpty, restrictions, reactions)
 	{
-		super(selector, fieldName, allowEmpty, "Ignore", restrictions);
+		super(selector, fieldName, allowEmpty, "Ignore", restrictions, reactions);
 		this.emptyOption = emptyOption;
 
 		// Grundsätzlich kümmern sich nur fundamentale Felder (ohne innere Felder) um die Events (Ausnahme: siehe ObjectFieldManager)
@@ -15,7 +15,7 @@ export default class SelectFieldManager extends FieldManager
 
 	clone(newSelector)
 	{
-		return new SelectFieldManager(newSelector, this.fieldName, this.emptyOption, this.allowEmpty, this.restrictions);
+		return new SelectFieldManager(newSelector, this.fieldName, this.emptyOption, this.allowEmpty, this.restrictions, this.reactions);
 	}
 
 	getInteractor()

@@ -3,7 +3,7 @@ general:
   heading: FAT-Dateisystem
   explanation: Finden der Blöcke einer Datei in einem FAT-Dateisystem, um die Größe der Datei zu berechnen
   settings:
-    lemosVersion: 1.0.0
+    lemosVersion: 2.0.0
 
 fields:
   - id: 'F'
@@ -88,7 +88,7 @@ states:
     transitions:
       - target: Z1
         conditions:
-          - message: |
+          - errorMessage: |
                       Bitte die folgenden Felder befüllen:
                       - FAT-Tabelle
                       - Startblock

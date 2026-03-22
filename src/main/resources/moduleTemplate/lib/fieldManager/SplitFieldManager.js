@@ -3,9 +3,9 @@ import ListFieldInteractor from "../fieldInteractors/ListFieldInteractor.js";
 
 export default class SplitFieldManager extends MultilineableFieldManager
 {
-	constructor(selector, fieldName, multiline, growable, separator, allowEmpty, datatype, restrictions)
+	constructor(selector, fieldName, multiline, growable, separator, allowEmpty, datatype, restrictions, reactions)
 	{
-		super(selector, fieldName, multiline, growable, allowEmpty, datatype, restrictions);
+		super(selector, fieldName, multiline, growable, allowEmpty, datatype, restrictions, reactions);
 		this.separator = separator;
 
 		// Grundsätzlich kümmern sich nur fundamentale Felder (ohne innere Felder) um die Events (Ausnahme: siehe ObjectFieldManager)
@@ -14,7 +14,7 @@ export default class SplitFieldManager extends MultilineableFieldManager
 
 	clone(newSelector)
 	{
-		return new SplitFieldManager(newSelector, this.fieldName, this.multiline, this.growable, this.separator, this.allowEmpty, this.datatype, this.restrictions);
+		return new SplitFieldManager(newSelector, this.fieldName, this.multiline, this.growable, this.separator, this.allowEmpty, this.datatype, this.restrictions, this.reactions);
 	}
 
 	getInteractor()
@@ -23,6 +23,16 @@ export default class SplitFieldManager extends MultilineableFieldManager
 	}
 
 	getValue(keepEmptyEntries = false)
+	{
+		let value = this.#getValueInternal(keepEmptyEntries);
+		if (this.datatype === "Integer" || this.datatype === "Number")
+		{
+			value = value.map(val => Number(val.replace(",", "."))); // Dezimaltrennzeichen anpassen (Dezimalkomma durch Dezimalpunkt ersetzen)
+		}
+		return value;
+	}
+
+	#getValueInternal(keepEmptyEntries = false)
 	{
 		let value = this.getField().value;
 		if (value === "") // Komplett leeres Feld würde bei keepEmptyEntries sonst trotzdem eine (leere) Zeile zurückgeben
@@ -36,13 +46,9 @@ export default class SplitFieldManager extends MultilineableFieldManager
 			value = value.filter(entry => entry !== "");
 		}
 
-		if (this.datatype === "Integer" || this.datatype === "Number")
-		{
-			value = value.map(val => Number(val.replace(",", "."))); // Dezimaltrennzeichen anpassen (Dezimalkomma durch Dezimalpunkt ersetzen)
-		}
-
 		return value;
 	}
+
 
 	setValue(value)
 	{
@@ -94,10 +100,17 @@ export default class SplitFieldManager extends MultilineableFieldManager
 
 	validateInternal(outerField, tolerateEmptiness)
 	{
-		for (let value of this.getValue())
+		let values = this.getValue();
+		let prints = this.#getValueInternal();
+		for (let index of values.keys())
 		{
-			this.validateDatatype(value);
-			this.validateRestrictions(value, this);
+			this.validateDatatype(values.at(index), prints.at(index));
+			this.validateRestrictions(values.at(index), this);
 		}
+	}
+
+	getPrint()
+	{
+		return String(this.#getValueInternal());	// #getValueInternal statt getValue() verwenden, um Umwandlung in Zahlen zu verhindern, damit Textrepräsentation der einzelnen Werte nicht NaN sein kann
 	}
 }

@@ -3,9 +3,9 @@ import TextFieldInteractor from "../fieldInteractors/TextFieldInteractor.js";
 
 export default class TextFieldManager extends MultilineableFieldManager
 {
-	constructor(selector, fieldName, multiline, growable, allowEmpty, datatype, restrictions)
+	constructor(selector, fieldName, multiline, growable, allowEmpty, datatype, restrictions, reactions)
 	{
-		super(selector, fieldName, multiline, growable, allowEmpty, datatype, restrictions);
+		super(selector, fieldName, multiline, growable, allowEmpty, datatype, restrictions, reactions);
 
 		// Grundsätzlich kümmern sich nur fundamentale Felder (ohne innere Felder) um die Events (Ausnahme: siehe ObjectFieldManager)
 		this.getNode().addEventListener("change", () => this.handleChangeEvent());
@@ -13,7 +13,7 @@ export default class TextFieldManager extends MultilineableFieldManager
 
 	clone(newSelector)
 	{
-		return new TextFieldManager(newSelector, this.fieldName, this.multiline, this.growable, this.allowEmpty, this.datatype, this.restrictions);
+		return new TextFieldManager(newSelector, this.fieldName, this.multiline, this.growable, this.allowEmpty, this.datatype, this.restrictions, this.reactions);
 	}
 
 	getInteractor()
@@ -65,7 +65,7 @@ export default class TextFieldManager extends MultilineableFieldManager
 
 	getPrint()
 	{
-		return "'" + super.getPrint() + "'";
+		return "'" + this.getField().value + "'";	// Umwandlung des Werts in eine Zahl durch getValue() verhindern, damit Textrepräsentation nicht NaN sein kann
 	}
 }
 

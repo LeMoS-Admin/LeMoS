@@ -3,6 +3,7 @@ package org.hs_coburg.lemos.field;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hs_coburg.lemos.module.Condition;
+import org.hs_coburg.lemos.module.Operation;
 import org.hs_coburg.lemos.util.StringHelper;
 
 import java.util.List;
@@ -21,13 +22,15 @@ public class SelectField extends Field
                        @JsonProperty("type") FieldType type,
                        @JsonProperty("style") Style style,
                        @JsonProperty("hidden") Boolean hidden,
+                       @JsonProperty("highlighted") Boolean highlighted,
                        @JsonProperty("allowEmpty") Boolean allowEmpty,
                        @JsonProperty("datatype") FieldDatatype datatype,    // Für SelectField ignoriert
                        @JsonProperty("restrictions") List<Condition> restrictions,
+                       @JsonProperty("reactions") List<Operation> reactions,
                        @JsonProperty("options") List<Option> options,
                        @JsonProperty("emptyOption") Boolean emptyOption)
     {
-        super(id, name, explanation, usage, type, style, hidden, allowEmpty, FieldDatatype.STRING, restrictions);
+        super(id, name, explanation, usage, type, style, hidden, highlighted,allowEmpty, FieldDatatype.STRING, restrictions, reactions);
         this.options     = Objects.requireNonNull(options, "Missing required attribute 'options'");
         this.emptyOption = Objects.requireNonNullElse(emptyOption, false);
     }
@@ -39,7 +42,7 @@ public class SelectField extends Field
                           <div id='{{id}}' class='fieldContainer {{usage}} {{type}}' style='{{style}}'>
                             {{label}}
                             <form class='field'>
-                              <select name='{{id}}' {{enabledState}}>
+                              <select name='{{id}}' class='{{highlighted}}' {{enabledState}}>
                               {{options}}
                               </select>
                             </form>
@@ -62,7 +65,7 @@ public class SelectField extends Field
     @Override
     protected String getFieldVariableTemplateJS()
     {
-        return "let {{id}} = new SelectFieldManager('#{{id}}', '{{name}}', {{emptyOption}}, {{allowEmpty}}, () => {\n{{restrictions}}}).getInteractor();";
+        return "let {{id}} = new SelectFieldManager('#{{id}}', '{{name}}', {{emptyOption}}, {{allowEmpty}}, () => {\n{{restrictions}}}, () => {\n{{reactions}}}).getInteractor();";
     }
 
     @Override

@@ -24,7 +24,7 @@ general:
         E-Mail: dieter.wissmann@hs-coburg.de
         Büro: 2-127
   settings:
-    lemosVersion: 1.0.0
+    lemosVersion: 2.0.0
     differentStepSizes: false
   logger:
     minWidth: 150
@@ -56,10 +56,10 @@ fields:
     type: TEXT
     allowEmpty: true
     restrictions:
-      - message: Für E-Mails (mailto) ist keine Zuständigkeit (Authority) anzugeben.
+      - errorMessage: Für E-Mails (mailto) ist keine Zuständigkeit (Authority) anzugeben.
         terms:
           - "!(Schema.value === 'mailto' && !Host.isEmpty())"
-      - message: Für ftp, http und https ist eine Zuständigkeit (Authority) zwingend erforderlich.
+      - errorMessage: Für ftp, http und https ist eine Zuständigkeit (Authority) zwingend erforderlich.
         terms:
           - "!(Schema.value !== 'mailto' && Host.isEmpty())"
     style:
@@ -75,7 +75,7 @@ fields:
     datatype: INTEGER
     allowEmpty: true
     restrictions:
-      - message: Für E-Mails (mailto) ist keine Zuständigkeit (Authority) anzugeben.
+      - errorMessage: Für E-Mails (mailto) ist keine Zuständigkeit (Authority) anzugeben.
         terms:
           - "!(Schema.value === 'mailto' && !Port.isEmpty())"
     style:
@@ -89,7 +89,7 @@ fields:
     type: TEXT
     allowEmpty: true
     restrictions:
-      - message: Für E-Mails (mailto) ist keine Zuständigkeit (Authority) anzugeben.
+      - errorMessage: Für E-Mails (mailto) ist keine Zuständigkeit (Authority) anzugeben.
         terms:
           - "!(Schema.value === 'mailto' && !UserName.isEmpty())"
     style:
@@ -103,10 +103,10 @@ fields:
     type: TEXT
     allowEmpty: true
     restrictions:
-      - message: Für E-Mails (mailto) ist keine Zuständigkeit (Authority) anzugeben.
+      - errorMessage: Für E-Mails (mailto) ist keine Zuständigkeit (Authority) anzugeben.
         terms:
           - "!(Schema.value === 'mailto' && !UserPwd.isEmpty())"
-      - message: Wenn ein Benutzerpasswort übertragen werden soll, muss auch ein Benutzername angegeben werden.
+      - errorMessage: Wenn ein Benutzerpasswort übertragen werden soll, muss auch ein Benutzername angegeben werden.
         terms:
           - "!(UserName.isEmpty() && !UserPwd.isEmpty())"
     style:
@@ -146,7 +146,7 @@ fields:
     type: TEXT
     allowEmpty: true
     restrictions:
-      - message: Für E-Mails (mailto) ist kein Fragment anzugeben.
+      - errorMessage: Für E-Mails (mailto) ist kein Fragment anzugeben.
         terms:
           - "!(Schema.value === 'mailto' && !Fragment.isEmpty())"
     style:
@@ -167,7 +167,6 @@ fields:
 states:
   - id: Z0
     name: Lernmodul initialisiert
-    explanation: Einstieg
     type: ENTRY
     actions:
       - "Module.print('Willkommen beim Lernmodul zur Bildung einer URI.')"

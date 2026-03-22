@@ -34,21 +34,23 @@ public class Transition
         if (conditions.isEmpty())
         {
             template = """
-                       Module.log("Transition to {{target}}{{name}}{{explanation}}");
-                       States._lastTransitionName = '{{name_plain}}';
-                       States._lastTransitionExplanation = '{{explanation_plain}}';
+                       Module.log(`Transition to {{target}}{{name}}{{explanation}}`);
+                       States._lastTransitionName = `{{name_plain}}`;
+                       States._lastTransitionExplanation = `{{explanation_plain}}`;
+                       {{explanationPrint}}
                        return {{stateFunctionCall}};
                        """;
         }
         else
         {
             template = """
-                       Module.log("Trying transition to {{target}}{{name}}{{explanation}}");
+                       Module.log(`Trying transition to {{target}}{{name}}{{explanation}}`);
                        {{conditions}}
                        {
-                         Module.log("Transition to {{target}}{{name}}{{explanation}}")
-                         States._lastTransitionName = '{{name_plain}}';
-                         States._lastTransitionExplanation = '{{explanation_plain}}';
+                         Module.log(`Transition to {{target}}{{name}}{{explanation}}`)
+                         States._lastTransitionName = `{{name_plain}}`;
+                         States._lastTransitionExplanation = `{{explanation_plain}}`;
+                         {{explanationPrint}}
                          return {{stateFunctionCall}};
                        }
                        """;
@@ -63,6 +65,7 @@ public class Transition
                      .replace("{{name_plain}}", StringHelper.escape(name))
                      .replace("{{explanation}}", StringHelper.escape(getExplanation()))
                      .replace("{{explanation_plain}}", StringHelper.escape(explanation))
+                     .replace("{{explanationPrint}}", getExplanationPrint())
                      .replace("{{conditions}}", generateConditionsJS())
                      .replace("{{stateFunctionCall}}", State.findState(target).generateFunctionCallJS());
     }
@@ -88,6 +91,18 @@ public class Transition
         else
         {
             return " (" + explanation + ")";
+        }
+    }
+
+    private String getExplanationPrint()
+    {
+        if (explanation.isEmpty())
+        {
+            return "";
+        }
+        else
+        {
+            return "Module.print(`" + StringHelper.escape(explanation) + "`);";
         }
     }
 

@@ -4,9 +4,9 @@ import TableFieldInteractor from "../fieldInteractors/TableFieldInteractor.js";
 
 export default class TableFieldManager extends ExpandableFieldManager
 {
-	constructor(selector, fieldName, initialEntries, maxEntries, allowEmpty, restrictions, innerFields)
+	constructor(selector, fieldName, initialEntries, maxEntries, allowEmpty, restrictions, reactions, innerFields)
 	{
-		super(selector, fieldName, initialEntries, maxEntries, allowEmpty, "Ignore", restrictions);
+		super(selector, fieldName, initialEntries, maxEntries, allowEmpty, "Ignore", restrictions, reactions);
 
 		if (innerFields instanceof ObjectFieldManager)
 		{
@@ -15,7 +15,7 @@ export default class TableFieldManager extends ExpandableFieldManager
 		}
 		else
 		{
-			this.entries.push(new ObjectFieldManager(this.selector + " > .table", this.fieldName, this.restrictions, "entry0", innerFields));
+			this.entries.push(new ObjectFieldManager(this.selector + " > .table", this.fieldName, this.restrictions, this.reactions, "entry0", innerFields));
 		}
 		this.setLength(this.initialEntries);
 	}
@@ -29,7 +29,7 @@ export default class TableFieldManager extends ExpandableFieldManager
 			additionalNodeParent.removeChild(additionalNode);
 		}
 		let firstEntryClone = this.entries.at(0).clone(newSelector + " > .table", "entry0");
-		let clone = new TableFieldManager(newSelector, this.fieldName, this.initialEntries, this.maxEntries, this.allowEmpty, this.restrictions, firstEntryClone);
+		let clone = new TableFieldManager(newSelector, this.fieldName, this.initialEntries, this.maxEntries, this.allowEmpty, this.restrictions, this.reactions, firstEntryClone);
 		clone.resetInternal();
 		return clone;
 	}
@@ -90,6 +90,26 @@ export default class TableFieldManager extends ExpandableFieldManager
 		else
 		{
 			container.classList.remove("failed");
+		}
+	}
+
+	isHighlighted()
+	{
+		// Felder die aus mehreren Elementen bestehen, werden über ihren Container hervorgehoben
+		return this.getChildElement(".table").classList.contains("highlighted");
+	}
+
+	setHighlighted(highlighted)
+	{
+		// Felder die aus mehreren Elementen bestehen, werden über ihren Container hervorgehoben
+		let classList = this.getChildElement(".table").classList;
+		if (highlighted && !classList.contains("highlighted"))
+		{
+			classList.add("highlighted");
+		}
+		else if (!highlighted && classList.contains("highlighted"))
+		{
+			classList.remove("highlighted")
 		}
 	}
 

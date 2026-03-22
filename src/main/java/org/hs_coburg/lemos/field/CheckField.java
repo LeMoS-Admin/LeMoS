@@ -3,6 +3,7 @@ package org.hs_coburg.lemos.field;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hs_coburg.lemos.module.Condition;
+import org.hs_coburg.lemos.module.Operation;
 import org.hs_coburg.lemos.util.StringHelper;
 
 import java.util.List;
@@ -21,13 +22,15 @@ public class CheckField extends Field
                       @JsonProperty("type") FieldType type,
                       @JsonProperty("style") Style style,
                       @JsonProperty("hidden") Boolean hidden,
+                      @JsonProperty("highlighted") Boolean highlighted,
                       @JsonProperty("allowEmpty") Boolean allowEmpty,
                       @JsonProperty("datatype") FieldDatatype datatype,             // ignoriert
                       @JsonProperty("restrictions") List<Condition> restrictions,
+                      @JsonProperty("reactions") List<Operation> reactions,
                       @JsonProperty("options") List<Option> options,
                       @JsonProperty("multipleCheck") Boolean multipleCheck)
     {
-        super(id, name, explanation, usage, type, style, hidden, allowEmpty, FieldDatatype.STRING, restrictions);
+        super(id, name, explanation, usage, type, style, hidden, highlighted,allowEmpty, FieldDatatype.STRING, restrictions, reactions);
         this.options       = Objects.requireNonNull(options, "Missing required attribute 'options'");
         this.multipleCheck = Objects.requireNonNullElse(multipleCheck, true);
     }
@@ -38,7 +41,7 @@ public class CheckField extends Field
         String template = """
                           <div id='{{id}}' class='fieldContainer {{usage}} {{type}}' style='{{style}}'>
                             {{label}}
-                            <form class='field'>
+                            <form class='field {{highlighted}}' >
                               {{options}}
                             </form>
                           </div>
@@ -60,7 +63,7 @@ public class CheckField extends Field
     @Override
     protected String getFieldVariableTemplateJS()
     {
-        return "let {{id}} = new CheckFieldManager('#{{id}}', '{{name}}', {{multipleCheck}}, {{allowEmpty}}, () => {\n{{restrictions}}}).getInteractor();";
+        return "let {{id}} = new CheckFieldManager('#{{id}}', '{{name}}', {{multipleCheck}}, {{allowEmpty}}, () => {\n{{restrictions}}}, () => {\n{{reactions}}}).getInteractor();";
     }
 
     @Override

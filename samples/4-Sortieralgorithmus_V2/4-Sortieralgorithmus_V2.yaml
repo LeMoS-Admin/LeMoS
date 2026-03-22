@@ -3,7 +3,7 @@ general:
   heading: Sortieralgorithmus V2
   explanation: Sortieren einer Liste von Werten durch direktes Einfügen ("Insertionsort")
   settings:
-    lemosVersion: 1.0.0
+    lemosVersion: 2.0.0
 
 fields:
   - id: 'E'
@@ -59,7 +59,7 @@ states:
     transitions:
       - target: Z1
         conditions:
-          - message: |
+          - errorMessage: |
                       Bitte die folgenden Felder befüllen:
                       - Eingabeliste
             terms:

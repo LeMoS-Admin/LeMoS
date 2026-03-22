@@ -4,9 +4,9 @@ import CheckFieldInteractor from "../fieldInteractors/CheckFieldInteractor.js";
 
 export default class CheckFieldManager extends FieldManager
 {
-	constructor(selector, fieldName, multipleCheck, allowEmpty, restrictions)
+	constructor(selector, fieldName, multipleCheck, allowEmpty, restrictions, reactions)
 	{
-		super(selector, fieldName, allowEmpty, "Ignore", restrictions);
+		super(selector, fieldName, allowEmpty, "Ignore", restrictions, reactions);
 		this.multipleCheck = multipleCheck;
 
 		// Grundsätzlich kümmern sich nur fundamentale Felder (ohne innere Felder) um die Events (Ausnahme: siehe ObjectFieldManager)
@@ -15,7 +15,7 @@ export default class CheckFieldManager extends FieldManager
 
 	clone(newSelector)
 	{
-		return new CheckFieldManager(newSelector, this.fieldName, this.multipleCheck, this.allowEmpty, this.restrictions);
+		return new CheckFieldManager(newSelector, this.fieldName, this.multipleCheck, this.allowEmpty, this.restrictions, this.reactions);
 	}
 
 	getInteractor()
@@ -128,6 +128,26 @@ export default class CheckFieldManager extends FieldManager
 		else
 		{
 			container.classList.remove("failed");
+		}
+	}
+
+	isHighlighted()
+	{
+		// Felder die aus mehreren Elementen bestehen, werden über ihren Container hervorgehoben
+		return this.getChildElement(".field").classList.contains("highlighted");
+	}
+
+	setHighlighted(highlighted)
+	{
+		// Felder die aus mehreren Elementen bestehen, werden über ihren Container hervorgehoben
+		let classList = this.getChildElement(".field").classList;
+		if (highlighted && !classList.contains("highlighted"))
+		{
+			classList.add("highlighted");
+		}
+		else if (!highlighted && classList.contains("highlighted"))
+		{
+			classList.remove("highlighted")
 		}
 	}
 }

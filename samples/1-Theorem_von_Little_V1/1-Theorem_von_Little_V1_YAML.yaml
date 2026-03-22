@@ -19,7 +19,7 @@ general:
         E-Mail: dieter.wissmann@hs-coburg.de
         Büro: 2-127
   settings:
-    lemosVersion: 1.0.0
+    lemosVersion: 2.0.0
     showFieldIDs: true
     differentStepSizes: false
 
@@ -49,7 +49,7 @@ fields:
     allowEmpty: true
     datatype: NUMBER
     restrictions:
-      - message: Nur positive Zahlenwerte, ${N.value} ist ein negativer Wert
+      - errorMessage: Nur positive Zahlenwerte, ${N.value} ist ein negativer Wert
         terms:
           - Number.isNaN(N.value) || N >= 0   # Number.isNaN() erforderlich, da Feld leer sein und Restriktionen dadurch auch bei leerem Feld geprüft werden können (konvertiert zu NaN)
   - id: "Y"
@@ -60,7 +60,7 @@ fields:
     allowEmpty: true
     datatype: NUMBER
     restrictions:
-      - message: Nur positive Zahlenwerte
+      - errorMessage: Nur positive Zahlenwerte
         terms:
           - Number.isNaN(Y.value) || Y >= 0   # Number.isNaN() erforderlich, da Feld leer sein kann und Restriktionen dadurch auch bei leerem Feld geprüft werden (konvertiert zu NaN)
   - id: "W"
@@ -71,7 +71,7 @@ fields:
     allowEmpty: true
     datatype: NUMBER
     restrictions:
-      - message: Nur positive Zahlenwerte
+      - errorMessage: Nur positive Zahlenwerte
         terms:
           - Number.isNaN(W.value) || W >= 0   # Number.isNaN() erforderlich, da Feld leer sein kann und Restriktionen dadurch auch bei leerem Feld geprüft werden (konvertiert zu NaN)
 states:
@@ -92,14 +92,13 @@ states:
         name: Z0-Z1a
         explanation: Übergang zur Fallunterscheidung mit festem Aufgabentyp
         conditions:
-          - message: "T steht auf automatisch, d.h. auf ${T.value}"
-            terms:
+          - terms:
               - T.getValue() !== "Auto"
       - target: Z1b
         name: Z0-Z1b
         explanation: Übergang zur Fallunterscheidung mit automatischem Aufgabentyp
         conditions:
-          - message: "Bitte genau 2 der 3 Textfelder befüllen"
+          - errorMessage: "Bitte genau 2 der 3 Textfelder befüllen"
             terms:
               - Fields.countFilled() === 3
   - id: Z1a
@@ -111,30 +110,30 @@ states:
         name: Z1a-Z2a
         explanation: Fester Übergang zu Fall 1
         conditions:
-          - message: ""
+          - errorMessage: ""
             terms:
               - T.getValue() === "Fall1"
-          - message: "Bitte die Felder \"Ankunftsrate\" und 'Wartezeiten' ausfüllen"
+          - errorMessage: "Bitte die Felder \"Ankunftsrate\" und 'Wartezeiten' ausfüllen"
             terms:
               - Fields.areFilled(Y, W)
       - target: Z2b
         name: Z1a-Z2b
         explanation: Fester Übergang zu Fall 2
         conditions:
-          - message: ""
+          - errorMessage: ""
             terms:
               - T.getValue() === "Fall2"
-          - message: Bitte die Felder \"Länge\" und 'Wartezeiten' ausfüllen
+          - errorMessage: Bitte die Felder \"Länge\" und 'Wartezeiten' ausfüllen
             terms:
               - Fields.areFilled(N, W)
       - target: Z2c
         name: Z1a-Z2c
         explanation: Fester Übergang zu Fall 3
         conditions:
-          - message: ""
+          - errorMessage: ""
             terms:
               - T.getValue() === "Fall3"
-          - message: Bitte die Felder "Länge" und 'Ankunftsrate' ausfüllen
+          - errorMessage: Bitte die Felder "Länge" und 'Ankunftsrate' ausfüllen
             terms:
               - Fields.areFilled(N, Y)
   - id: Z1b
@@ -146,21 +145,21 @@ states:
         name: Z1b-Z2a
         explanation: Automatischer Übergang zu Fall 1
         conditions:
-          - message: ""
+          - errorMessage: ""
             terms:
               - Fields.areFilled(Y, W)
       - target: Z2b
         name: Z1b-Z2b
         explanation: Automatischer Übergang zu Fall 2
         conditions:
-          - message: ""
+          - errorMessage: ""
             terms:
               - Fields.areFilled(N, W)
       - target: Z2c
         name: Z1b-Z2c
         explanation: Automatischer Übergang zu Fall 3
         conditions:
-          - message: ""
+          - errorMessage: ""
             terms:
               - Fields.areFilled(N, Y)
   - id: Z2a

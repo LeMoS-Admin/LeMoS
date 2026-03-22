@@ -6,7 +6,7 @@ general:
     --> Speicherabschnitte können für Prozesse allokiert und freigegeben werden<br>
     L1 = Allokation und Freigabe als Funktionen ausgelagert
   settings:
-    lemosVersion: 1.0.0
+    lemosVersion: 2.0.0
   variables:
     - name: X
   functions:
@@ -60,7 +60,7 @@ fields:
     type: TABLE
     allowEmpty: true
     restrictions:
-      - message: Bei der Allokation von Speicher ist die zu allokierende Größe anzugeben, bei der Freigabe ist keine Größe anzugeben
+      - errorMessage: Bei der Allokation von Speicher ist die zu allokierende Größe anzugeben, bei der Freigabe ist keine Größe anzugeben
         terms:
           - |
             ((entry.get('A').getValue() === 'Allokation') && !entry.get('G').isEmpty()) ||
@@ -81,7 +81,7 @@ fields:
         type: TEXT
         datatype: INTEGER
         restrictions:
-          - message: Nur positive Zahlenwerte
+          - errorMessage: Nur positive Zahlenwerte
             terms:
               - P >= 0
       - id: G
@@ -90,9 +90,14 @@ fields:
         allowEmpty: true
         datatype: INTEGER
         restrictions:
-          - message: Nur positive Zahlenwerte
+          - errorMessage: Nur positive Zahlenwerte
             terms:
               - Number.isNaN(G.value) || G.getValue() >= 0   # Number.isNaN() erforderlich, da Feld leer sein kann und Restriktionen dadurch auch bei leerem Feld geprüft werden (konvertiert zu NaN)
+    reactions:
+      - if(entry.get('A').value === 'Allokation')
+      -   entry.get('G').setEnabled(true);
+      - else if(entry.get('A').value === 'Freigabe')
+      -   entry.get('G').clear().setEnabled(false);
     style:
       row: 1
       column: 1
@@ -102,7 +107,7 @@ fields:
     type: TABLE
     allowEmpty: true
     restrictions:
-      - message: Bei der Allokation von Speicher ist die zu allokierende Größe anzugeben, bei der Freigabe ist keine Größe anzugeben
+      - errorMessage: Bei der Allokation von Speicher ist die zu allokierende Größe anzugeben, bei der Freigabe ist keine Größe anzugeben
         terms:
           - |
             ((entry.get('A').getValue() === 'Allokation') && !entry.get('G').isEmpty()) ||
@@ -123,7 +128,7 @@ fields:
         type: TEXT
         datatype: INTEGER
         restrictions:
-          - message: Nur positive Zahlenwerte
+          - errorMessage: Nur positive Zahlenwerte
             terms:
               - P >= 0
       - id: G
@@ -132,9 +137,14 @@ fields:
         allowEmpty: true
         datatype: INTEGER
         restrictions:
-          - message: Nur positive Zahlenwerte
+          - errorMessage: Nur positive Zahlenwerte
             terms:
               - Number.isNaN(G.value) || G.getValue() >= 0   # Number.isNaN() erforderlich, da Feld leer sein kann und Restriktionen dadurch auch bei leerem Feld geprüft werden (konvertiert zu NaN)
+    reactions:
+      - if(entry.get('A').value === 'Allokation')
+      - entry.get('G').setEnabled(true);
+      - else if(entry.get('A').value === 'Freigabe')
+      - entry.get('G').clear().setEnabled(false);
     style:
       row: 1
       column: 2
@@ -159,7 +169,7 @@ fields:
         usage: INPUT
         datatype: INTEGER
         restrictions:
-          - message: Zustand muss 0 (unbelegt) oder 1 (belegt) sein
+          - errorMessage: Zustand muss 0 (unbelegt) oder 1 (belegt) sein
             terms:
               - Z.equals(0) || Z.equals(1)
       - id: P
@@ -169,7 +179,7 @@ fields:
         type: TEXT
         datatype: INTEGER
         restrictions:
-          - message: Nur positive Zahlenwerte
+          - errorMessage: Nur positive Zahlenwerte
             terms:
               - P >= 0
     style:
@@ -197,7 +207,9 @@ states:
     importance: LOW
     actions:
       - X.value = W.next()
-      - if (X.value !== undefined) X.value = X.value.valueOf()
+      - "if (X.value !== undefined) {"
+      -   "X.value.setHighlighted();"
+      -   "X.value = X.value.valueOf();}"
     transitions:
       - target: Z11
         conditions:
@@ -276,7 +288,9 @@ states:
     importance: LOW
     actions:
       - X.value = E.next()
-      - if (X.value !== undefined) X.value = X.value.valueOf()
+      - "if (X.value !== undefined) {"
+      -   "X.value.setHighlighted();"
+      -   "X.value = X.value.valueOf();}"
     transitions:
       - target: Z19
       - target: Z20
