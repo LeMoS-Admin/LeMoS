@@ -1,34 +1,9 @@
-Wichtigste Änderungen in LeMoS-1.0.0:
-- Kompatibilität:
-  - Bestehende Lernmodul-Konfigurationen aufgrund verschiedener Umbenennungen und Umstrukturierungen nicht gegeben
-  - Zukünfige Versionen werden bis zur Version 1.0.0 abwärtskompatibel sein oder mit detailierten Anleitungen zur Anpassung bestehender Konfigurationen ausgeliefert
-- Strukturell
-  - Aktuallisierung der Schemata (LeMoS-Modul-Schema.json und LeMoS-Szenario-Schema.json)
-  - Aktuallisierung der LeMoS-Dokumentation (Modellierungssprache.pdf)
-  - LeMoS erlaubt nun durch optionale Parameter die Ausgabe der eingelesen Konfiguration als Struktur oder als Einzeiler (Anleitung --> LeMoS-Generator ohne Parameter aufrufen)
-- Generierung
-  - CheckField als neuen Feldtyp hinzugefügt (Ankreuzfelder --> Checkboxen und Radiobuttons)
-  - TextField zu InfoField umbenannt und um Möglichkeiten zur Einbindung von Bildern, Audios und Videos erweitert
-  - PlainField zu TextField umbenannt
-  - Feldverwendungsart ('usage') 'HIDDEN' durch Feld-Eigenschaft 'hidden' ersetzt
-  - Ermöglichung der Konfiguration von Tabellen mit inneren Feldern Feldern abweichender Feldverwendungsart (Bsp.: Output-Tabelle mit inneren Input-Feldern)
-  - Einstellungsmöglichkeiten für neues Protokollierungssystem hinzugefügt
-  - Konfigurationsmöglichkeit für globale Variablen hinzugefügt
-  - Konfigurationsmöglichkeit für eigene Funktionen hinzugefügt
-  - Konfigurationsmöglichkeit für den Import zusätzlicher Bibliotheken hinzugefügt
-  - Konfigurationsmöglichkeit zum Hinterlegen von Resourcen hinzugefügt
-- Lernmodul
-  - Umstellung auf hauptsächlich objektorientierte Systemfunktionen
-  - Vollständige Implementierung der Systemfunktionen als sogenannte Interaktoren
-  - Protokollierungssystem hinzugefügt
-  - Resourcen-Verwaltung hinzugefügt
-  - Überarbeitung der Bedienoberfläche inkl. Umstrukturierung des CSS-Codes für bessere Lesbarkeit
-  - Anpassung und Erweiterung der JavaScript-Klassen Array, Map und String
-    Dabei insbesondere Implementierung und Einbindung einer equals-Methode zum direkten Vergleich von LeMoS-Feld-Objekten mit JavaScript-Objekten
-- Konfigurationen
-  - Vollständige Konfiguration aller Aufgabenstellungen aus der Anforderungsanalyse
+Wichtigste Änderungen in LeMoS-1.0.1:
+- Anpassung der ReadMe-Dateien
+- Ergänzung des Skripts "runLeMoS.sh" um Abfrage, ob ein Resourcenordner vorhanden ist (Vermeidung einer Fehlermeldung)
 
 Ausstehende Arbeiten:
+  - Anpassung der Dateinamen (kein Camel-Case wie LeMoS)
   - Erweiterung der Konfigurationen um Protokolausgaben
   - Konfiguration eines Moduls zum Testen aller Systemfunktionen
   - Dokumentation der Systemfunktionen
@@ -44,7 +19,7 @@ Informationen zum Umgang mit dem LeMoS finden sich in folgenden Dateien:
 - "ReadMe-Softwareentwickler.txt" für Informationen zu Installation, Weitergabe und Funktionsweise des LeMoS
 
 Testen des LeMoS:
-- Für einen vollständigen Test ist zunächst die Anleitung für Verwalter der Lernplattform ("ReadMe-Plattformverwalter.txt") zu befolgen
+- Für einen vollständigen Test ist zunächst die Anleitung für Verwalter der Lernplattform ("ReadMe-Softwareentwickler.txt") zu befolgen
 - Anschließend kann das Testen bliebig oft entsprechend der Anleitung für Ersteller von Lernmodulen ("ReadMe-Lernmodulersteller.txt") ab Schritt 3 erfolgen
 - Exemplarische Testdaten finden sich in der mitgelieferten Datei "Lernmodulkonfigurationen.tar"
 - Zusätzlich können auch neue Lernmodule erstellt und getestet werden, hierfür ist die Anleitung für Ersteller von Lernmodulen ("ReadMe-Lernmodulersteller.txt") ab Schritt 1 zu befolgen

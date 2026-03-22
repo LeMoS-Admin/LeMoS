@@ -42,16 +42,16 @@ public class Resource
         }
         else
         {
-            String path = source.substring(source.indexOf("resource") + 8); // Pfad vor dem resource-Ordner abschneiden
-            path = "./res" + path;                                                    // Pfad zum resource-Ordner (res) des Lernmoduls ergänzen
-            path = path.replace("\\", "/");                          // Potenzielle Probleme durch unterschiedliche Separatoren (/ oder \) auflösen
+            String path = source.substring(source.indexOf("resources") + 9);  // Pfad vor dem resource-Ordner abschneiden
+            path = "./res" + path;                                            // Pfad zum resource-Ordner (res) des Lernmoduls ergänzen
+            path = path.replace("\\", "/");                                   // Potenzielle Probleme durch unterschiedliche Separatoren (/ oder \) auflösen
             return StringHelper.escape(path);
         }
     }
 
     public String generateResourceJS()
     {
-        String template = "{{id}}: {{source}}";
+        String template = "{{id}}: '{{source}}'";
         return template.replace("{{id}}", StringHelper.escape(id))
                        .replace("{{source}}", getSource());
     }

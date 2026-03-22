@@ -143,7 +143,7 @@ export default class Utils
 			return this;
 		};
 
-		Array.prototype.unique = function ()
+		Array.prototype.unify = function ()
 		{
 			let oldValue = Array.from(this);
 			this.length = 0;

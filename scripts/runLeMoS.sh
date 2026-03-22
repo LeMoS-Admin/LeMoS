@@ -28,9 +28,11 @@ for arg in "$@"; do
 	cd "$LWD"
 	unzip -q LeMoS*.jar "$TEMPLATE/*"
 	
-	# Übernehmen der hinterlegten Resourcen in das Verzeichnis des Lernmoduls
+	# Übernehmen der hinterlegten Resourcen (falls vorhanden) in das Verzeichnis des Lernmoduls
 	echo $name: preparing resources
-	cp -r "$pfad/resource" "$LWD/$TEMPLATE/res"
+	if [ -d "$pfad/resources" ]; then
+		cp -r "$pfad/resources" "$LWD/$TEMPLATE/res"
+	fi
 
 	# Aufruf des LeMoS-Generators zur Verarbeitung der Lernmodul-Konfiguration (Parameter: Lernmodul-Konfigurationsdatei, Zielordner)
 	echo $name: starting generator

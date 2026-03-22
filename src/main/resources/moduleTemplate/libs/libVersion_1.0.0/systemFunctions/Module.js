@@ -19,6 +19,11 @@ export default class Module
 		Module.#logger = logger;
 	}
 
+	static clearLogger()
+	{
+		Module.#logger.clear();
+	}
+
 	static log(content)
 	{
 		console.log("Debug: " + content);

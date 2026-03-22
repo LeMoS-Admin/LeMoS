@@ -280,9 +280,9 @@ export default class ListableFieldInteractor extends FieldInteractor
 		return this;
 	}
 
-	unique()
+	unify()
 	{
-		let newValue = this.getValue().unique();
+		let newValue = this.getValue().unify();
 		this.setValue(newValue);
 		return this;
 	}

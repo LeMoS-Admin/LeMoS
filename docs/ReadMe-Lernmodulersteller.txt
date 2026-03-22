@@ -2,6 +2,7 @@ Verwendung des LeMoS
 
 Vorbedingungen:
 - Java JDK21 installiert und unter der Pfad-Variable "java" erreichbar
+- Die vom Softwareentwickler gelieferten Dateien liegen entpackt im Dateisystem vor (siehe exemplarische Ordnerstruktur unter Punkt 3)
 
 Allgemeine Hinweise:
 - Zum Ausführen der Lernmodule wird ein aktueller Browser benötigt
@@ -23,11 +24,32 @@ Ablauf zur Erstellung eines Lernmoduls mit Hilfe des LeMoS:
      - Das LeMoS kann auch Fehler erkennen, die das Schema nicht erkennt, etwa wenn es nicht genau einen ENTRY-State gibt, es ist daher ratsam auch die Ausgabe des LeMoS zu betrachten
 3. Generieren des Lernmoduls
    - Ausführen des mitgelieferten Skripts "runLeMoS.sh" (Linux) bzw. "runLeMoS.bat" (Windows) an beliebiger Stelle
-   - Parameter beim Aufruf des Skripts: absoluter oder relativer Pfad der Lernmodul-Konfiguration (Angabe mehrerer Lernmodul-Konfiguration möglich)
+   - Parameter beim Aufruf des Skripts: absoluter oder relativer Pfad der Lernmodul-Konfiguration (Angabe mehrerer Lernmodul-Konfigurationen möglich)
    - Ergebnis des Skripts: ZIP-Archiv mit dem Namen der Lernmodul-Konfiguration, abgelegt am Ausführungsort des Skrips
    - Beispiel:
-     - Aufruf:   ../LeMoSystem/runLeMoS.sh ../Lernmodulkonfigurationen/1-Theorem_von_Little_V1/1-Theorem_von_Little_V1.yaml
-     - Ergebnis: 1-Theorem_von_Little_V1.zip
+     - Ordnerstruktur:
+       - Lernmodule
+         - LeMoSystem
+           - LeMoS-<version>.jar (z.B. LeMoS-1.0.0.jar)	// Vom Softwareentwickler des LeMoS bereitzustellen
+           - runLeMoS.sh				// Vom Softwareentwickler des LeMoS bereitzustellen
+           - runLeMoS.bat				// Vom Softwareentwickler des LeMoS bereitzustellen
+         - Lernmodulkonfigurationen
+           - Modellierungssprache.pdf			// Vom Softwareentwickler des LeMoS bereitzustellen
+           - LeMoS-Modul-Schema.json			// Vom Softwareentwickler des LeMoS bereitzustellen
+           - LeMoS-Szenario-Schema.json			// Vom Softwareentwickler des LeMoS bereitzustellen
+           - 1-Theorem_von_Little_V1
+             - 1-Theorem_von_Little_V1.yaml
+             - scenarios (Optional)
+               - 1-Theorem_von_Little_V1-S1.yaml
+               - 1-Theorem_von_Little_V1-S2.yaml
+               - 1-Theorem_von_Little_V1-S3.yaml
+               - ...
+             - resources (Optional)
+               - ...
+           - ...
+         - Zielordner
+     - Aufruf im Zielordner:   ../LeMoSystem/runLeMoS.sh ../Lernmodulkonfigurationen/1-Theorem_von_Little_V1/1-Theorem_von_Little_V1.yaml
+     - Ergebnis im Zielordner: 1-Theorem_von_Little_V1.zip
    - Für weitere Informationen zur Verwendung des LeMoS: Skript ohne Parameter aufrufen
 4. Bereitstellen des Lernmoduls
    - Lokales Testen des generierten Lernmoduls in mindestens einer der folgenden Varianten:
