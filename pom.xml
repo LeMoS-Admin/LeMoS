@@ -46,7 +46,7 @@
                         <index>true</index>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>org.hs_coburg.lemos.LeMoS</mainClass>
+                            <mainClass>lemos.LeMoS</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
