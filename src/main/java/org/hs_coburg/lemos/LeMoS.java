@@ -36,9 +36,9 @@ public class LeMoS
                     {
                         String scenarioPath = scenarioFile.getAbsolutePath();
                         System.out.println("Reading scenario configuration: " + scenarioPath);
-                        extension = scenarioPath.substring(scenarioPath.lastIndexOf("."));
-                        om        = getObjectMapper(extension).findAndRegisterModules();
-                        Scenario scenario = om.readValue(scenarioFile, Scenario.class);
+                        String       scenarioExtension = scenarioPath.substring(scenarioPath.lastIndexOf("."));
+                        ObjectMapper scenarioOM        = getObjectMapper(scenarioExtension).findAndRegisterModules();
+                        Scenario     scenario          = scenarioOM.readValue(scenarioFile, Scenario.class);
                         module.scenarios.add(scenario);
                     }
                 }
