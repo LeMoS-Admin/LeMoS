@@ -61,7 +61,7 @@ public class Condition
         String template = """
                           if (!({{terms}}))
                           {
-                            throw new ValidationError("{{message}}");
+                            throw new ValidationError(`{{message}}`);
                           }
                           """;
         return performReplacements(template).replace("{{fieldName}}", fieldName);
@@ -82,7 +82,7 @@ public class Condition
         }
         else
         {
-            return "Module.alert('" + StringHelper.escape(message) + "');";
+            return "Module.alert(`" + StringHelper.escape(message) + "`);";
         }
     }
 

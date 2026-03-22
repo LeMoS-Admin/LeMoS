@@ -2,6 +2,7 @@ package org.hs_coburg.lemos.general;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hs_coburg.lemos.module.LearningModule;
 import org.hs_coburg.lemos.util.StringHelper;
 
 import java.util.Collections;
@@ -10,8 +11,6 @@ import java.util.Objects;
 
 public class GeneralData
 {
-    private static GeneralData currentGeneralData;
-
     public final String         heading;
     public final String         explanation;
     public final List<String>   sources;
@@ -35,22 +34,21 @@ public class GeneralData
                        @JsonProperty("imports") List<Import> imports,
                        @JsonProperty("resources") List<Resource> resources)
     {
-        this.heading       = Objects.requireNonNull(escapeHeading(heading), "Missing required attribute 'heading'");
-        this.explanation   = Objects.requireNonNullElse(explanation, "");
-        this.sources       = Objects.requireNonNullElse(sources, Collections.emptyList());
-        this.contacts      = Objects.requireNonNullElse(contacts, Collections.emptyList());
-        this.settings      = Objects.requireNonNullElse(settings, new Settings(null, null, null));
-        this.logger        = Objects.requireNonNullElse(logger, new Logger(null, null, null));
-        this.variables     = Objects.requireNonNullElse(variables, Collections.emptyList());
-        this.functions     = Objects.requireNonNullElse(functions, Collections.emptyList());
-        this.imports       = Objects.requireNonNullElse(imports, Collections.emptyList());
-        this.resources     = Objects.requireNonNullElse(resources, Collections.emptyList());
-        currentGeneralData = this;
+        this.heading     = Objects.requireNonNull(escapeHeading(heading), "Missing required attribute 'heading'");
+        this.explanation = Objects.requireNonNullElse(explanation, "");
+        this.sources     = Objects.requireNonNullElse(sources, Collections.emptyList());
+        this.contacts    = Objects.requireNonNullElse(contacts, Collections.emptyList());
+        this.settings    = Objects.requireNonNullElse(settings, new Settings(null, null, null));
+        this.logger      = Objects.requireNonNullElse(logger, new Logger(null, null, null));
+        this.variables   = Objects.requireNonNullElse(variables, Collections.emptyList());
+        this.functions   = Objects.requireNonNullElse(functions, Collections.emptyList());
+        this.imports     = Objects.requireNonNullElse(imports, Collections.emptyList());
+        this.resources   = Objects.requireNonNullElse(resources, Collections.emptyList());
     }
 
     public static GeneralData get()
     {
-        return currentGeneralData;
+        return LearningModule.get().general;
     }
 
     private String escapeHeading(String heading)

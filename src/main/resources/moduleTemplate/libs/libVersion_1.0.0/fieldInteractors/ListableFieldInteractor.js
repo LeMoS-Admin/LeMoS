@@ -9,14 +9,14 @@ export default class ListableFieldInteractor extends FieldInteractor
 	{
 		super(fieldManager);
 		this.restartIterator();
-		this.keepEmptyEntries = keepEmptyEntries;
+		this._keepEmptyEntries = keepEmptyEntries;
 	}
 
 	_backup()
 	{
 		let backup = super._backup();
 		backup.set("iteratorPosition", this.#iteratorPosition);
-		// this.keepEmptyEntries muss nicht gesichert werden, da der Wert nur in temporären Instanzen true und ansonsten stets false ist
+		// this._keepEmptyEntries muss nicht gesichert werden, da der Wert nur in temporären Instanzen true und ansonsten stets false ist
 		return backup;
 	}
 
@@ -36,6 +36,20 @@ export default class ListableFieldInteractor extends FieldInteractor
 
 	withEmptyEntries() {}
 
+	valueOf()
+	{
+		// Ermöglicht implizite Umwandlung des Felds in einen Wert
+		// Hinweis: direkter Zugriff auf getValue()-Methode der FieldManager, damit auch Tabellen durch JS-Objekte repräsentiert werden (this.getValue() ist überschrieben)
+		return this._fieldManager.getValue(this._keepEmptyEntries);
+	}
+
+	toString()
+	{
+		// Ermöglicht implizite Umwandlung des Felds in einen String
+		// Hinweis: direkter Zugriff auf getValue()-Methode der FieldManager, damit auch Tabellen durch JS-Objekte repräsentiert werden (this.getValue() ist überschrieben)
+		return String(this._fieldManager.getValue(this._keepEmptyEntries));
+	}
+
 	setValue(value)
 	{
 		super.setValue(value);
@@ -50,25 +64,13 @@ export default class ListableFieldInteractor extends FieldInteractor
 	}
 
 // Lesende Methoden
-	at(index)
-	{
-		return this.getValue().at(index);
-	}
+	at(index) { return this.getValue().at(index);}
 
-	entries()
-	{
-		return this.getValue().entries();
-	}
+	entries() { return this.getValue().entries();}
 
-	every(callbackFn)
-	{
-		return this.getValue().every(callbackFn);
-	}
+	every(callbackFn) { return this.getValue().every(callbackFn);}
 
-	find(callbackFn)
-	{
-		return this.getValue().find(callbackFn);
-	}
+	find(callbackFn) { return this.getValue().find(callbackFn);}
 
 	findIndex(callbackFn)
 	{

@@ -2,6 +2,7 @@ package org.hs_coburg.lemos.state;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hs_coburg.lemos.module.LearningModule;
 import org.hs_coburg.lemos.module.Operation;
 import org.hs_coburg.lemos.util.StringHelper;
 
@@ -53,8 +54,29 @@ public class State
         return String.format("_state_%s()", StringHelper.escape(stateID));
     }
 
+    public static State findState(String stateID)
+    {
+        State state = LearningModule.get().states.stream().filter(s -> s.id.equals(stateID)).findFirst().orElse(null);
+        if (state != null)
+        {
+            return state;
+        }
+        else
+        {
+            throw new RuntimeException("No state with id " + stateID + " found");
+        }
+    }
+
     private void validate()
     {
+        if (id.matches(".*\\s.*"))
+        {
+            throw new RuntimeException("IDs of states must not contain whitespaces");
+        }
+        if (id.startsWith("_"))
+        {
+            throw new RuntimeException("IDs of states must not start with underscores");
+        }
         if (transitions.stream()
                        .filter(t -> t.conditions.isEmpty())
                        .count() > 1)
@@ -68,11 +90,17 @@ public class State
         String template = """
                           function {{functionName}}
                           {
+                            States._currentStateID = '{{id}}';
+                            States._currentStateName = '{{name_plain}}';
+                            States._currentStateExplanation = '{{explanation_plain}}';
                             (() => {
                               {{actions}}
                             })();
                             Module.log("Reached state {{id}}{{name}}{{explanation}}");
                             _nextTransition = () => {
+                              States._lastStateID = '{{id}}';
+                              States._lastStateName = '{{name_plain}}';
+                              States._lastStateExplanation = '{{explanation_plain}}';
                               {{transitions}}
                             }
                             return {{importance}};
@@ -85,12 +113,14 @@ public class State
     {
         return string.replace("{{id}}", StringHelper.escape(id))
                      .replace("{{name}}", StringHelper.escape(getName()))
+                     .replace("{{name_plain}}", StringHelper.escape(name))
                      .replace("{{explanation}}", StringHelper.escape(getExplanation()))
+                     .replace("{{explanation_plain}}", StringHelper.escape(explanation))
                      .replace("{{type}}", type.asName())
                      .replace("{{importance}}", getImportance())
                      .replace("{{actions}}", Operation.generateActionJS(actions))
                      .replace("{{transitions}}", generateTransitionsJS())
-                     .replace("{{functionName}}", generateStateFunctionCallJS(id));
+                     .replace("{{functionName}}", generateFunctionCallJS());
     }
 
     private String getName()
@@ -167,6 +197,11 @@ public class State
                                  """);
         }
         return transitionsJS.toString();
+    }
+
+    public String generateFunctionCallJS()
+    {
+        return String.format("_state_%s()", StringHelper.escape(id));
     }
 
     @Override

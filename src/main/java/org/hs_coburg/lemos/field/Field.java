@@ -63,6 +63,19 @@ public abstract class Field
             this.allowEmpty   = Objects.requireNonNullElse(allowEmpty, false);
             this.restrictions = Objects.requireNonNullElse(restrictions, Collections.emptyList());
         }
+        validate();
+    }
+
+    private void validate()
+    {
+        if (id.matches(".*\\s.*"))
+        {
+            throw new RuntimeException("IDs of fields must not contain whitespaces");
+        }
+        if (id.startsWith("_"))
+        {
+            throw new RuntimeException("IDs of fields must not start with underscores");
+        }
     }
 
     public final String generateFieldTagHTML()

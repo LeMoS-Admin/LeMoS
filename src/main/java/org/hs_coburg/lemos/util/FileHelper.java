@@ -14,8 +14,16 @@ public class FileHelper
 
     public static String getExtension(File file)
     {
-        String fileName = file.getName();
-        return fileName.substring(fileName.lastIndexOf("."));
+        String fileName         = file.getName();
+        int    startOfExtension = fileName.lastIndexOf('.');
+        if (startOfExtension == -1)
+        {
+            return "";
+        }
+        else
+        {
+            return fileName.substring(startOfExtension);
+        }
     }
 
     public static String readResource(String resource) throws IOException

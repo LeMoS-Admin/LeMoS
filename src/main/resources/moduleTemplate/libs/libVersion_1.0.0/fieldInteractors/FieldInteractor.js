@@ -43,14 +43,12 @@ export default class FieldInteractor
 	valueOf()
 	{
 		// Ermöglicht implizite Umwandlung des Felds in einen Wert
-		// Hinweis: direkter Zugriff auf getValue()-Methode der FieldManager, damit auch Tabellen durch JS-Objekte repräsentiert werden (this.getValue() ist überschrieben)
 		return this._fieldManager.getValue();
 	}
 
 	toString()
 	{
 		// Ermöglicht implizite Umwandlung des Felds in einen String
-		// Hinweis: direkter Zugriff auf getValue()-Methode der FieldManager, damit auch Tabellen durch JS-Objekte repräsentiert werden (this.getValue() ist überschrieben)
 		return String(this._fieldManager.getValue());
 	}
 

@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=../../LeMoS-Szenario-Schema.json
+scenario:
+  id: "S1"
+  name: "Szenario 1"
+  explanation: "Sieben minus Fünf"
+  initialization:
+    - "M.value = 7"
+    - "S.value = 5"

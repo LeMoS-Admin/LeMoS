@@ -18,7 +18,7 @@ export default class TableFieldInteractor extends ListableFieldInteractor
 	getValue()
 	{
 		return this._fieldManager
-				   .getEntries(this.keepEmptyEntries)
+				   .getEntries(this._keepEmptyEntries)
 				   .map(obj => obj.getInteractor());
 	}
 

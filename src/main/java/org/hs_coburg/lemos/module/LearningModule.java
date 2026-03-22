@@ -19,6 +19,8 @@ import java.util.Objects;
 @JsonIgnoreProperties("$schema")
 public class LearningModule
 {
+    private static LearningModule currentLearningModule;
+
     public final GeneralData    general;
     public final List<Field>    fields;
     public final List<State>    states;
@@ -30,11 +32,17 @@ public class LearningModule
                           @JsonProperty("fields") List<Field> fields,
                           @JsonProperty("states") List<State> states)
     {
-        this.general   = Objects.requireNonNull(general, "Missing required attribute 'general'");
-        this.fields    = Objects.requireNonNull(fields, "Missing required attribute 'fields'");
-        this.states    = Objects.requireNonNull(states, "Missing required attribute 'states'");
-        this.scenarios = new LinkedList<>();
+        currentLearningModule = this;
+        this.general          = Objects.requireNonNull(general, "Missing required attribute 'general'");
+        this.fields           = Objects.requireNonNull(fields, "Missing required attribute 'fields'");
+        this.states           = Objects.requireNonNull(states, "Missing required attribute 'states'");
+        this.scenarios        = new LinkedList<>();
         validate();
+    }
+
+    public static LearningModule get()
+    {
+        return currentLearningModule;
     }
 
     private void validate()

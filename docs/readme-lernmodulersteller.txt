@@ -17,9 +17,10 @@ Ablauf zur Erstellung eines Lernmoduls mithilfe des LeMoS:
    - Übertragen des Konzepts in eine strukturierte Sprache (XML, YAML oder JSON)
    - Dokumentation der Struktur nachlesbar in: Modellierungssprache.pdf
    - Dokumentation der zur Verfügung stehenden Systemfunktionen nachlesbar in: Systemfunktionen.pdf
-   - Zur Unterstützung können außerdem folgende Schemata verwendet werden:
-     - "LeMoS-Modul-Schema.json" für die Konfiguration des Lernmodul
-     - "LeMoS-Szenario-Schema.json" für die Konfiguration der Lernmodul-Szenarien
+   - Zur Unterstützung können außerdem folgende Dokumente/Schemata verwendet werden:
+     - Einführung in die Erstellung eines Lernmoduls im LeMoS: ErsteSchritte.pdf
+     - Schema "LeMoS-Modul-Schema.json" für die Konfiguration des Lernmodul
+     - Schema "LeMoS-Szenario-Schema.json" für die Konfiguration der Lernmodul-Szenarien
    - Hinweis: das LeMoS validiert nicht gegen diese Schemata, daraus ergibt sich folgendes:
      - Sollte ein Fehler im Schema vorliegen, sodass etwas fälschlicherweise als inkorrekt klassifiziert wird, kann das LeMoS die Konfiguration ggf. dennoch verarbeiten
      - Das LeMoS kann auch Fehler erkennen, die das Schema nicht erkennt, etwa wenn es nicht genau einen ENTRY-State gibt, es ist daher ratsam auch die Ausgabe des LeMoS zu betrachten
@@ -35,6 +36,7 @@ Ablauf zur Erstellung eines Lernmoduls mithilfe des LeMoS:
            - run-lemos.sh				// Vom Softwareentwickler des LeMoS bereitzustellen
            - run-lemos.bat				// Vom Softwareentwickler des LeMoS bereitzustellen
          - Lernmodulkonfigurationen
+           - ErsteSchritte.pdf				// Vom Softwareentwickler des LeMoS bereitzustellen
            - Modellierungssprache.pdf			// Vom Softwareentwickler des LeMoS bereitzustellen
            - Systemfunktionen.pdf			// Vom Softwareentwickler des LeMoS bereitzustellen
            - LeMoS-Modul-Schema.json			// Vom Softwareentwickler des LeMoS bereitzustellen

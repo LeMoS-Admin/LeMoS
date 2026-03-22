@@ -2,6 +2,7 @@ Weitergabe des LeMoS
 
 Zur reinen Verwendung des LeMoS weiterzugebende Dateien:
 - readme-lernmodulersteller.txt (Name beliebig anpassbar, sollte aber ggf. in "readme.txt" ebenfalls geändert werden)
+- ErsteSchritte.pdf (Name beliebig anpassbar, sollte aber ggf. in "readme-lernmodulersteller.txt" ebenfalls geändert werden)
 - Modellierungssprache.pdf (Name beliebig anpassbar, sollte aber ggf. in "readme-lernmodulersteller.txt" ebenfalls geändert werden)
 - Systemfunktionen.pdf (Name beliebig anpassbar, sollte aber ggf. in "readme-lernmodulersteller.txt" ebenfalls geändert werden)
 - run-lemos.bat (Name beliebig anpassbar, sollte aber in "readme-lernmodulersteller.txt" ebenfalls geändert werden)

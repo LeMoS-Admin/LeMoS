@@ -11,7 +11,7 @@ export default class Utils
 	// weswegen sie auch nur einmalig beim Aufruf des Lernmoduls zu verwenden ist.
 	// Hinweis: zusätzlich zu den zu überschreibenden Methoden werden an dieser Stelle auch einige weitere Methoden ergänzt.
 
-	static _performOverwrite()
+	static _performOverwriteAndExtension()
 	{
 		Utils.#overwriteArray();
 		Utils.#extendArray();
@@ -43,6 +43,7 @@ export default class Utils
 			}
 			// Ende des Übernommenen
 
+			// Anwenden der eigenen equals()-Funktion
 			for (let index = fromIndex; index < this.length; index++)
 			{
 				if (Utils.equals(this.at(index), searchElement))
@@ -70,6 +71,7 @@ export default class Utils
 			}
 			// Ende des Übernommenen
 
+			// Anwenden der eigenen equals()-Funktion
 			for (let index = fromIndex; index >= 0; index--)
 			{
 				if (Utils.equals(this.at(index), searchElement))
@@ -247,66 +249,8 @@ export default class Utils
 
 	static equals(obj1, obj2)
 	{
-		if (obj1 instanceof FieldInteractor)
-		{
-			// Direkter Zugriff auf getValue()-Methode des FieldManagers, um Überschreibungen durch FieldInteractors zu umgehen
-			obj1 = obj1._fieldManager.getValue();
-			if (typeof obj1 === "number")
-			{
-				// Falls das Feld eine Zahl zurückgeliefert hat, muss diese zum Vergleich wieder zu einem String umgewandelt werden
-				obj1 = obj1.toString();
-			}
-		}
-		else if (obj1 instanceof FieldManager)
-		{
-			obj1 = obj1.getValue();
-			if (typeof obj1 === "number")
-			{
-				// Falls das Feld eine Zahl zurückgeliefert hat, muss diese zum Vergleich wieder zu einem String umgewandelt werden
-				obj1 = obj1.toString();
-			}
-		}
-		else if (typeof obj1 === "object" && Object.getPrototypeOf(obj1) === Object.prototype)
-		{
-			// Objekte, die via {}-Operator initialisiert wurden, werden zu Maps umgewandelt
-			// Hinweis: die Bedingung ist bei allen Objekten wahr, die eine direkte Instanz (ohne Vererbung) von Object sind
-			obj1 = new Map(Object.entries(obj1));
-		}
-		else if (typeof obj1 === "boolean" || typeof obj1 === "number" || typeof obj1 === "bigint")
-		{
-			// Konvertierung in String wird insbesondere bei Zahlen benötigt, da beispielsweise "0" === 0 sonst nicht wahr ist
-			obj1 = obj1.toString();
-		}
-		if (obj2 instanceof FieldInteractor)
-		{
-			// Direkter Zugriff auf getValue()-Methode des FieldManagers, um Überschreibungen durch FieldInteractors zu umgehen
-			obj2 = obj2._fieldManager.getValue();
-			if (typeof obj2 === "number")
-			{
-				// Falls das Feld eine Zahl zurückgeliefert hat, muss diese zum Vergleich wieder zu einem String umgewandelt werden
-				obj2 = obj2.toString();
-			}
-		}
-		else if (obj2 instanceof FieldManager)
-		{
-			obj2 = obj2.getValue();
-			if (typeof obj2 === "number")
-			{
-				// Falls das Feld eine Zahl zurückgeliefert hat, muss diese zum Vergleich wieder zu einem String umgewandelt werden
-				obj2 = obj2.toString();
-			}
-		}
-		else if (typeof obj2 === "object" && Object.getPrototypeOf(obj2) === Object.prototype)
-		{
-			// Objekte, die via {}-Operator initialisiert wurden, werden zu Maps umgewandelt
-			// Hinweis: die Bedingung ist bei allen Objekten wahr, die eine direkte Instanz (ohne Vererbung) von Object sind
-			obj2 = new Map(Object.entries(obj2));
-		}
-		else if (typeof obj2 === "boolean" || typeof obj2 === "number" || typeof obj2 === "bigint")
-		{
-			// Konvertierung in String wird insbesondere bei Zahlen benötigt, da beispielsweise "0" === 0 sonst nicht wahr ist
-			obj2 = obj2.toString();
-		}
+		obj1 = Utils.#convertToComparable(obj1);
+		obj2 = Utils.#convertToComparable(obj2);
 
 		// Verschiedene JS-Datentypen rekursiv prüfen
 		if (obj1 instanceof Map && obj2 instanceof Map)
@@ -335,6 +279,41 @@ export default class Utils
 		{
 			return obj1 === obj2;
 		}
+	}
+
+	static #convertToComparable(obj)
+	{
+		if (obj instanceof FieldInteractor)
+		{
+			// Direkter Zugriff auf getValue()-Methode des FieldManagers, um Überschreibungen durch FieldInteractors zu umgehen
+			obj = obj._fieldManager.getValue();
+			if (typeof obj === "number")
+			{
+				// Falls das Feld eine Zahl zurückgeliefert hat, muss diese zum Vergleich wieder zu einem String umgewandelt werden
+				obj = obj.toString();
+			}
+		}
+		else if (obj instanceof FieldManager)
+		{
+			obj = obj.getValue();
+			if (typeof obj === "number")
+			{
+				// Falls das Feld eine Zahl zurückgeliefert hat, muss diese zum Vergleich wieder zu einem String umgewandelt werden
+				obj = obj.toString();
+			}
+		}
+		else if (typeof obj === "object" && Object.getPrototypeOf(obj) === Object.prototype)
+		{
+			// Objekte, die via {}-Operator initialisiert wurden, werden zu Maps umgewandelt
+			// Hinweis: die Bedingung ist bei allen Objekten wahr, die eine direkte Instanz (ohne Vererbung) von Object sind
+			obj = new Map(Object.entries(obj));
+		}
+		else if (typeof obj === "boolean" || typeof obj === "number" || typeof obj === "bigint")
+		{
+			// Konvertierung in String wird insbesondere bei Zahlen benötigt, da beispielsweise "0" === 0 sonst nicht wahr ist
+			obj = obj.toString();
+		}
+		return obj;
 	}
 
 	static objectToPrint(obj)

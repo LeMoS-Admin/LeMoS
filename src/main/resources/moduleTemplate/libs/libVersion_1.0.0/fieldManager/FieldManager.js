@@ -163,7 +163,7 @@ export default class FieldManager
 
 	validateDatatype(value = this.getValue())
 	{
-		if (!this.isEmpty() && !this.#datatypeCorrect(value)) // Vorherige Prüfung, ob leer, um keine Fehler durch leere Zahlen zu erzugen
+		if (!this.isEmpty() && !this.#datatypeCorrect(value)) // Vorherige Prüfung, ob leer, um keine Fehler durch leere Zahlen zu erzeugen
 		{
 			throw new ValidationError("Wert '" + value + "' ist kein " + this.datatype);
 		}

@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=../LeMoS-Modul-Schema.json
+general:
+  heading: "Subtraktion"
+  explanation: "Minuend minus Subtrahend ergibt die Differenz"
+  sources:
+    - "Grundlagen der Mathematik"
+    - "Internet"
+  contacts:
+    - name: "Professor Max Mustermann"
+      purpose: "Fachliche Fragen"
+      data:
+        Telefon: "01234 567-890"
+        E-Mail: "max@mustermann.de"
+        Büro: "0-815"
+  settings:
+    lemosVersion: "1.0.0"
+fields:
+  - id: "M"
+    name: "Minuend"
+    explanation: "Linker Ausgangswert zur Bildung der Differenz"
+    type: TEXT
+    datatype: NUMBER
+    restrictions:
+      - message: "Nur positive Zahlenwerte, ${M.value} ist negativ"
+        terms:
+          - "M >= 0"
+    style:
+      row: 1
+      column: 1
+  - id: "S"
+    name: "Subtrahend"
+    explanation: "Rechter Ausgangswert zur Bildung der Differenz"
+    type: TEXT
+    datatype: NUMBER
+    restrictions:
+      - message: "Nur positive Zahlenwerte, ${S.value} ist negativ"
+        terms:
+          - "S >= 0"
+    style:
+      row: 1
+      column: 2
+  - id: "D"
+    name: "Differenz"
+    explanation: "Resultat der Subtraktion der beiden Ausgangswerte"
+    type: TEXT
+    usage: OUTPUT
+    style:
+      row: 2
+      column: 1
+      width: 2
+states:
+  - id: "Z0"
+    name: "Einstiegszustand"
+    type: ENTRY
+    transitions:
+      - target: "Z1"
+  - id: "Z1"
+    name: "Differenz berechnet"
+    actions:
+      - "D.value = M - S"

@@ -89,7 +89,7 @@ fields:
         restrictions:
           - message: Nur positive Zahlenwerte
             terms:
-              - Number.isNaN(P.value) || P >= 0   # Number.isNaN() erforderlich, da Restriktionen auch bei leerem Feld geprüft werden (konvertiert zu NaN)
+              - P >= 0
       - id: G
         name: Größe
         type: TEXT
@@ -98,7 +98,7 @@ fields:
         restrictions:
           - message: Nur positive Zahlenwerte
             terms:
-              - Number.isNaN(G.value) || G.getValue() >= 0   # Number.isNaN() erforderlich, da Restriktionen auch bei leerem Feld geprüft werden (konvertiert zu NaN)
+              - Number.isNaN(G.value) || G.getValue() >= 0   # Number.isNaN() erforderlich, da Feld leer sein kann und Restriktionen dadurch auch bei leerem Feld geprüft werden (konvertiert zu NaN)
     style:
       row: 1
       column: 1
@@ -131,7 +131,7 @@ fields:
         restrictions:
           - message: Nur positive Zahlenwerte
             terms:
-              - Number.isNaN(P.value) || P >= 0   # Number.isNaN() erforderlich, da Restriktionen auch bei leerem Feld geprüft werden (konvertiert zu NaN)
+              - P >= 0
       - id: G
         name: Größe
         type: TEXT
@@ -140,7 +140,7 @@ fields:
         restrictions:
           - message: Nur positive Zahlenwerte
             terms:
-              - Number.isNaN(G.value) || G.getValue() >= 0   # Number.isNaN() erforderlich, da Restriktionen auch bei leerem Feld geprüft werden (konvertiert zu NaN)
+              - Number.isNaN(G.value) || G.getValue() >= 0   # Number.isNaN() erforderlich, da Feld leer sein kann und Restriktionen dadurch auch bei leerem Feld geprüft werden (konvertiert zu NaN)
     style:
       row: 1
       column: 2
@@ -177,7 +177,7 @@ fields:
         restrictions:
           - message: Nur positive Zahlenwerte
             terms:
-              - Number.isNaN(P.value) || P >= 0   # Number.isNaN() erforderlich, da Restriktionen auch bei leerem Feld geprüft werden (konvertiert zu NaN)
+              - P >= 0
     style:
       row: 2
       column: 1

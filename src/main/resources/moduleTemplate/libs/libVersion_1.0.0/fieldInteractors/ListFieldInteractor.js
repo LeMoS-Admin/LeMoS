@@ -14,7 +14,7 @@ export default class ListFieldInteractor extends ListableFieldInteractor
 
 	getValue()
 	{
-		return this._fieldManager.getValue(this.keepEmptyEntries);
+		return this._fieldManager.getValue(this._keepEmptyEntries);
 	}
 
 	minimum()

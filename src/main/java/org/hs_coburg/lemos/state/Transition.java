@@ -35,6 +35,8 @@ public class Transition
         {
             template = """
                        Module.log("Transition to {{target}}{{name}}{{explanation}}");
+                       States._lastTransitionName = '{{name_plain}}';
+                       States._lastTransitionExplanation = '{{explanation_plain}}';
                        return {{stateFunctionCall}};
                        """;
         }
@@ -45,6 +47,8 @@ public class Transition
                        {{conditions}}
                        {
                          Module.log("Transition to {{target}}{{name}}{{explanation}}")
+                         States._lastTransitionName = '{{name_plain}}';
+                         States._lastTransitionExplanation = '{{explanation_plain}}';
                          return {{stateFunctionCall}};
                        }
                        """;
@@ -56,9 +60,11 @@ public class Transition
     {
         return string.replace("{{target}}", StringHelper.escape(target))
                      .replace("{{name}}", StringHelper.escape(getName()))
+                     .replace("{{name_plain}}", StringHelper.escape(name))
                      .replace("{{explanation}}", StringHelper.escape(getExplanation()))
+                     .replace("{{explanation_plain}}", StringHelper.escape(explanation))
                      .replace("{{conditions}}", generateConditionsJS())
-                     .replace("{{stateFunctionCall}}", State.generateStateFunctionCallJS(target));
+                     .replace("{{stateFunctionCall}}", State.findState(target).generateFunctionCallJS());
     }
 
     private String getName()

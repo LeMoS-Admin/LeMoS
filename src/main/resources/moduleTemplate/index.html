@@ -307,13 +307,13 @@
                 </div>
             </details>
             <div class='buttons'>
-                <button id="backwardX" class="backwardButton">|&lt;</button>
-                <button id="backward2" class="backwardButton" style="<!--BIG-STEP-ENABLING-->">&lt;&lt;</button>
-                <button id="backward1" class="backwardButton">&lt;</button>
+                <button class="backwardButton" id="backwardX">|&lt;</button>
+                <button class="backwardButton" id="backward2" style="<!--BIG-STEP-ENABLING-->">&lt;&lt;</button>
+                <button class="backwardButton" id="backward1">&lt;</button>
                 <button id="reset">O</button>
-                <button id="forward1" class="forwardButton">&gt;</button>
-                <button id="forward2" class="forwardButton" style="<!--BIG-STEP-ENABLING-->">&gt;&gt;</button>
-                <button id="forwardX" class="forwardButton">&gt;|</button>
+                <button class="forwardButton" id="forward1">&gt;</button>
+                <button class="forwardButton" id="forward2" style="<!--BIG-STEP-ENABLING-->">&gt;&gt;</button>
+                <button class="forwardButton" id="forwardX">&gt;|</button>
             </div>
         </section>
         <hr>
@@ -344,6 +344,7 @@
             import Module from "./lib/systemFunctions/Module.js";
             import Fields from "./lib/systemFunctions/Fields.js";
             import Resource from "./lib/systemFunctions/Resource.js";
+            import States from "./lib/systemFunctions/States.js";
             import Utils from "./lib/systemFunctions/Utils.js";
             import GlobalVariable from "./lib/GlobalVariable.js";
             import ValidationError from "./lib/ValidationError.js";
@@ -367,7 +368,7 @@
 
             Module.setLogger(new SplitFieldManager("#protocol", "Log", true, false, "\n", true, "String", () => {}).getInteractor())
             Resource._set({<!--RESOURCES-->});
-            Utils._performOverwrite();
+            Utils._performOverwriteAndExtension();
 
             <!--FIELD-variables-->
 
@@ -402,6 +403,7 @@
 
             function _resetSteps()
             {
+                States._reset();                    // Zurücksetzen der bisher gespeicherten Werte
                 _firstState();                      // Neustarten des Lernmoduls beim Start-Zustand
                 _history.length = 0;                // Zurücksetzen der bisher gespeicherten Historie
                 _saveStepToHistory(9);              // Aktuellen Zustand speichern, damit zur Ausgangssituation mit den eingegebenen Werten zurückgekehrt werden kann (9 = höchste Wichtigkeit, um Zustand unüberspringbar zu machen)
@@ -442,6 +444,7 @@
                         break;
                     }
                 }
+                States._stepCount = _history.length - 1; // Der Einstiegszustand soll nicht mitgezählt werden
                 Scroller.scrollToSavedPosition();
             }
 
@@ -469,6 +472,7 @@
                 // Wiederherstellen des gespeicherten Backups
                 Scroller.saveCurrentScrollPosition("#stepSelector");
                 _loadStepFromHistory(historyEntryIndex);
+                States._stepCount = _history.length - 1; // Der Einstiegszustand soll nicht mitgezählt werden
                 Scroller.scrollToSavedPosition();
             }
 

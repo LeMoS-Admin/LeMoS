@@ -25,7 +25,7 @@
         },
         "name": {
           "type": "string",
-          "description": "Anzeigename in Szenario-Auswahl, z.B. 'Länge gesucht' (Standard: Wert von 'id)",
+          "description": "Anzeigename in Szenarioauswahl, z.B. 'Länge gesucht' (Standard: Wert von 'id)",
           "examples": [
             "Szenario 1"
           ]
