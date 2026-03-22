@@ -21,6 +21,15 @@ public class Function
         this.name           = Objects.requireNonNull(name, "Missing required attribute 'name'");
         this.parameters     = Objects.requireNonNullElse(parameters, Collections.emptyList());
         this.implementation = Objects.requireNonNull(implementation, "Missing required attribute 'implementation'");
+        validate();
+    }
+
+    private void validate()
+    {
+        if (name.startsWith("_"))
+        {
+            throw new RuntimeException("Names of functions must not start with underscores");
+        }
     }
 
     public String generateFunctionJS()

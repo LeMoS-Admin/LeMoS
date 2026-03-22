@@ -22,10 +22,15 @@ public class Variable
         this.value          = Objects.requireNonNullElse(value, "");
         this.initialisation = Objects.requireNonNullElse(initialisation, new Operation(""));
         this.isConstant     = Objects.requireNonNullElse(isConstant, false);
+        validate();
     }
 
     private void validate()
     {
+        if (name.startsWith("_"))
+        {
+            throw new RuntimeException("Names of variables must not start with underscores");
+        }
         if (!value.isEmpty() && !initialisation.operation.isEmpty())
         {
             throw new RuntimeException("Combination of the attributes 'value' and 'initialisation' is not allowed");
@@ -38,7 +43,7 @@ public class Variable
 
     public String generateVariableJS()
     {
-        String template = "let {{name}} = new GlobalVariable('{{name}}', {{content}}, {{isConstant}})";
+        String template = "let {{name}} = new GlobalVariable('{{name}}', {{content}}, {{isConstant}});";
         return template.replace("{{name}}", name)
                        .replace("{{content}}", getContent())
                        .replace("{{isConstant}}", Boolean.toString(isConstant));
