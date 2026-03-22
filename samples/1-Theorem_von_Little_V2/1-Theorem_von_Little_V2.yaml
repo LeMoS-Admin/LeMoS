@@ -19,7 +19,7 @@ general:
         E-Mail: erika@mustermann.de
         Büro: 0-815b
   settings:
-    lemosVersion: 2.0.0
+    lemosVersion: 2.1.0
     showFieldIDs: true
 
 fields:

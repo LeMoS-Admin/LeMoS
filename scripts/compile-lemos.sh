@@ -4,6 +4,10 @@ echo Compiling LeMoS
 # Arbeitsverzeichnis auf den Speicherort des Skripts wechseln
 cd "$(dirname "$0")"
 
+# Bereinigen der alten LeMoS-Versionen
+rm -f lemos*.jar
+
+
 # Kompilieren des LeMoS
 ./mvnw clean package
 

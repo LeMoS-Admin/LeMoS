@@ -38,7 +38,7 @@ public class GeneralData
         this.explanation = Objects.requireNonNullElse(explanation, "");
         this.sources     = Objects.requireNonNullElse(sources, Collections.emptyList());
         this.contacts    = Objects.requireNonNullElse(contacts, Collections.emptyList());
-        this.settings    = Objects.requireNonNullElse(settings, new Settings(null, null, null));
+        this.settings    = Objects.requireNonNullElse(settings, new Settings(null, null, null, null));
         this.logger      = Objects.requireNonNullElse(logger, new Logger(null, null, null));
         this.variables   = Objects.requireNonNullElse(variables, Collections.emptyList());
         this.functions   = Objects.requireNonNullElse(functions, Collections.emptyList());

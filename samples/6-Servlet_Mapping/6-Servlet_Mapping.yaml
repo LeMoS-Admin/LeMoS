@@ -4,7 +4,7 @@ general:
   explanation: Erstellen eines Konfigurationseintrags, um eine URL auf eine Webressource zu mappen
   settings:
     differentStepSizes: false
-    lemosVersion: 2.0.0
+    lemosVersion: 2.1.0
 
 fields:
   - id: LOCP

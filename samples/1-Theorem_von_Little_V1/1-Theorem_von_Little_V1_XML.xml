@@ -28,7 +28,7 @@
             </contact>
         </contacts>
         <settings>
-            <lemosVersion>2.0.0</lemosVersion>
+            <lemosVersion>2.1.0</lemosVersion>
             <showFieldIDs>true</showFieldIDs>
             <differentStepSizes>false</differentStepSizes>
         </settings>

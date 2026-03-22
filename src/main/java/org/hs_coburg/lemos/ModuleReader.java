@@ -97,6 +97,7 @@ public class ModuleReader
                 case "1.2.3":
                     steps.append("- replace usages of attribute 'message' (Condition) with attribute 'errorMessage'\n");
                 case "2.0.0":
+                case "2.1.0":
                     // TODO bei neuer Version: neue Versionsnummer und (falls nötig) Kompatibilitätsmaßnahmen ergänzen
                     break;
                 default:
@@ -104,7 +105,7 @@ public class ModuleReader
             }
             if (!steps.isEmpty())
             {
-                String currentVersion = "2.0.0"; // TODO bei neuer Version: neue Versionsnummer eintragen
+                String currentVersion = "2.1.0"; // TODO bei neuer Version: neue Versionsnummer eintragen
                 steps.append("- replace value '").append(lemosVersion).append("' for attribute 'lemosVersion' (Settings) with value '").append(currentVersion).append("'");
                 throw new IllegalArgumentException(moduleName + ": configured LeMoS-Version '" + lemosVersion + "' is not fully compatible with current version '" + currentVersion + "'.\n" +
                                                    "Please perform the following actions in the given order to regain compatibility:\n" + steps);

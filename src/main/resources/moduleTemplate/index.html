@@ -219,7 +219,7 @@
                 row-gap: 4px;
                 column-gap: 4px;
             }
-            #fields .ListField > .entries.failed
+            #fields .ListField > .entries.failed,
             #fields .ListField > .entries.highlighted {
                 padding: 0 1px 1px 1px;
             }
@@ -433,6 +433,8 @@
             Resource._set({<!--RESOURCES-->});
             Utils._performOverwriteAndExtension();
 
+            <!--SETTINGS-->
+
             <!--FIELD-VARIABLES-->
 
             <!--ADDITIONAL-VARIABLES-->
@@ -467,6 +469,7 @@
             function _resetSteps()
             {
                 States._reset();                    // Zurücksetzen der bisher gespeicherten Werte
+                Module.clearOutputs();              // Entfernen der bisherigen Ausgaben
                 _firstState();                      // Neustarten des Lernmoduls beim Start-Zustand
                 _history.length = 0;                // Zurücksetzen der bisher gespeicherten Historie
                 _saveStepToHistory(9);              // Aktuellen Zustand speichern, damit zur Ausgangssituation mit den eingegebenen Werten zurückgekehrt werden kann (9 = höchste Wichtigkeit, um Zustand unüberspringbar zu machen)
@@ -545,8 +548,10 @@
                 let historyEntry = new Map();
                 historyEntry.set("stepSize", stepSize);
                 historyEntry.set("nextTransition", _nextTransition);
+                historyEntry.set("statesBackup", States._backup());
                 historyEntry.set("variablesBackup", Controller.backupVariables());
                 historyEntry.set("fieldBackup", Controller.backupFields());
+                historyEntry.set("outputNumber", Module._outputNumber);
                 _history.push(historyEntry);
             }
 
@@ -554,8 +559,10 @@
             {
                 // Laden und wiederherstellen eines Backups
                 let historyEntry = _history.at(index);
+                Module._outputNumber = historyEntry.get("outputNumber");
                 Controller.restoreFields(historyEntry.get("fieldBackup"));
                 Controller.restoreVariables(historyEntry.get("variablesBackup"));
+                States._restore(historyEntry.get("statesBackup"));
                 _nextTransition = historyEntry.get("nextTransition");
                 // Abschneiden der zurückgegangenen Einträge, behalten des Aktuellen (Ende des _history-Arrays vorziehen)
                 _history.length = index + 1;

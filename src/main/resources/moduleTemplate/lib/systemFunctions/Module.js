@@ -3,6 +3,8 @@ import Scroller from "../internalFunctions/Scroller.js";
 
 export default class Module
 {
+	static _outputNumber = 1;
+	static #numberedOutput = undefined;
 	static #alert = undefined;
 	static #fail = undefined;
 	static #error = undefined;
@@ -12,6 +14,11 @@ export default class Module
 	{
 		// Error-Handler registrieren
 		window.addEventListener("error", errorEvent => Module.#printError(errorEvent.error));
+	}
+
+	static _setNumberedOutput(numberedOutput)
+	{
+		Module.#numberedOutput = numberedOutput;
 	}
 
 	static _setNoteFields(alert, fail, error)
@@ -26,12 +33,19 @@ export default class Module
 		Module.#logger = logger.withEmptyEntries();	// Leere Zeilen sollen im Logger stets erhalten bleiben
 	}
 
+	static clearOutputs()
+	{
+		Module.clearLogger();
+		Module.clearNoteFields();
+	}
+
 	static clearLogger()
 	{
+		Module._outputNumber = 1;
 		Module.#logger.clear();
 	}
 
-	static clearNoteField()
+	static clearNoteFields()
 	{
 		Module.#alert._reset();
 		Module.#fail._reset();
@@ -45,6 +59,10 @@ export default class Module
 
 	static print(content)
 	{
+		if (Module.#numberedOutput)
+		{
+			content = Module._outputNumber++ + ". " + content;
+		}
 		console.log("Info:  " + content);
 		Module.#logger.push(content);
 	}

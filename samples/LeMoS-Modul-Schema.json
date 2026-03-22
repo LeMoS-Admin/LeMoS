@@ -77,14 +77,18 @@
           "properties": {
             "lemosVersion": {
               "type": "string",
-              "description": "Leere Zeichenkette (aktuelle Version)",
+              "description": "Erwartete Version des LeMoS (Standard: Leere Zeichenkette = aktuelle Version)\n Dient der Überprüfung, ob die Konfiguration mit der verwendeten LeMoS-Version kompatibel ist",
               "examples": [
-                "2.0.0"
+                "2.1.0"
               ]
             },
             "showFieldIDs": {
               "type": "boolean",
-              "description": "Zusätzliche Beschriftung der Felder mit ihrer ID (Standard: false)"
+              "description": "IDs der Felder zusätzlich zu ihrem Namen anzeigen (Standard: false)"
+            },
+            "numberedOutput": {
+              "type": "boolean",
+              "description": "Ausgaben im Protokollfeld nummerieren (Standard: false)"
             },
             "differentStepSizes": {
               "type": "boolean",
@@ -126,8 +130,16 @@
                 "description": "Eindeutiger Name"
               },
               "value": {
+                "type": "string",
+                "description": "Initialer Wert\n Stets als Zeichenkette interpretiert, für andere Datentypen sollte 'initialisation' verwendet werden\n Kombinationen von 'value' und 'initialization' sind nicht zulässig\n Wenn 'value' und 'initialization' leer sind, wird die Variable als 'undefined' initialisiert\n Wenn die Variable als Konstante dient ('isConstant' = 'true'), muss entweder 'value' oder 'initialization' konfiguriert sein"
+              },
+              "initialisation": {
                 "$ref": "#/$defs/operation",
-                "description": "Initialer Wert (Standard: leer = undefined), muss konfiguriert werden wenn die Variable als Konstante dient (isConstant = true)"
+                "description": "Initiale Operation\n Kombinationen von 'value' und 'initialization' sind nicht zulässig\n Wenn 'value' und 'initialization' leer sind, wird die Variable als 'undefined' initialisiert\n Wenn die Variable als Konstante dient ('isConstant' = 'true'), muss entweder 'value' oder 'initialization' konfiguriert sein",
+                "examples": [
+                  "7",
+                  "getInitValue()"
+                ]
               },
               "isConstant": {
                 "type": "boolean",
@@ -233,7 +245,7 @@
                   },
                   "text": {
                     "type": "string",
-                    "description": "Anzuzeigender Inhalt oder Alternativtext"
+                    "description": "Anzuzeigender Inhalt oder Alternativtext, kann HTML-Code enthalten, um so einzelne Textteile farblich hervorzuheben"
                   },
                   "resource": {
                     "$ref": "#/$defs/resource",

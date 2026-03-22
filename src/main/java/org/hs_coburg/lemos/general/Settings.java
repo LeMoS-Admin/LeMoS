@@ -10,21 +10,30 @@ public class Settings
 {
     public final String  lemosVersion;
     public final Boolean showFieldIDs;
+    public final Boolean numberedOutput;
     public final Boolean differentStepSizes;
 
     @JsonCreator
     public Settings(@JsonProperty("lemosVersion") String lemosVersion,
                     @JsonProperty("showFieldIDs") Boolean showFieldIDs,
+                    @JsonProperty("numberedOutput") Boolean numberedOutput,
                     @JsonProperty("differentStepSizes") Boolean differentStepSizes)
     {
         this.lemosVersion       = Objects.requireNonNullElse(lemosVersion, "");
         this.showFieldIDs       = Objects.requireNonNullElse(showFieldIDs, false);
+        this.numberedOutput     = Objects.requireNonNullElse(numberedOutput, false);
         this.differentStepSizes = Objects.requireNonNullElse(differentStepSizes, true);
     }
 
     public static Settings get()
     {
         return GeneralData.get().settings;
+    }
+
+    public String generateSettingsJS()
+    {
+        String template = "Module._setNumberedOutput({{numberedOutput}});";
+        return template.replace("{{numberedOutput}}", Boolean.toString(numberedOutput));
     }
 
     @Override

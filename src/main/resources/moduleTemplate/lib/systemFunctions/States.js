@@ -23,6 +23,34 @@ export default class States
 		States._lastTransitionExplanation = undefined;
 	}
 
+	static _backup()
+	{
+		let backup = new Map();
+		backup.set("stepCount", States._stepCount);
+		backup.set("currentStateID", States._currentStateID);
+		backup.set("currentStateName", States._currentStateName);
+		backup.set("currentStateExplanation", States._currentStateExplanation);
+		backup.set("lastStateID", States._lastStateID);
+		backup.set("lastStateName", States._lastStateName);
+		backup.set("lastStateExplanation", States._lastStateExplanation);
+		backup.set("lastTransitionName", States._lastTransitionName);
+		backup.set("lastTransitionExplanation", States._lastTransitionExplanation);
+		return backup;
+	}
+
+	static _restore(backup)
+	{
+		States._stepCount = backup.get("stepCount");
+		States._currentStateID = backup.get("currentStateID");
+		States._currentStateName = backup.get("currentStateName");
+		States._currentStateExplanation = backup.get("currentStateExplanation");
+		States._lastStateID = backup.get("lastStateID");
+		States._lastStateName = backup.get("lastStateName");
+		States._lastStateExplanation = backup.get("lastStateExplanation");
+		States._lastTransitionName = backup.get("lastTransitionName");
+		States._lastTransitionExplanation = backup.get("lastTransitionExplanation");
+	}
+
 	static getStepCount()
 	{
 		return States._stepCount;

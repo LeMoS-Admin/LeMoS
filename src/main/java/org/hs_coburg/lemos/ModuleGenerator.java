@@ -41,6 +41,7 @@ public class ModuleGenerator
                      .replace("<!--CONTACTS-->", general.generateContactsHTML())
                      .replace("<!--BIG-STEP-ENABLING-->", general.generateBigStepEnabledStateCSS())
                      .replace("<!--ADDITIONAL-IMPORTS-->", general.generateImportsJS())
+                     .replace("<!--SETTINGS-->", general.settings.generateSettingsJS())
                      .replace("<!--RESOURCES-->", general.generateResourcesJS())
                      .replace("<!--ADDITIONAL-VARIABLES-->", general.generateVariablesJS())
                      .replace("<!--SPECIAL-FUNCTIONS-->", general.generateFunctionsJS());

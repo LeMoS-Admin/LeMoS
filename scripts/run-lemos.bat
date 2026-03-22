@@ -67,6 +67,7 @@ for %%x in (%*) do (
 
 	:: Bereinigen der temporären Kopie der Vorlage
 	echo !name!: deleting template
+	cd "%LWD%"
 	rmdir "%LWD%\%TEMPLATE%" /s /q
 
 	:: Erfolgsausgabe

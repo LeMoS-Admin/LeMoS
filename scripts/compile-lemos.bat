@@ -1,8 +1,14 @@
 @echo off
 echo Compiling LeMoS
 
-set "oldDir=%cd%"			& :: Arbeitsverzeichnis auf den Speicherort des Skripts wechseln
+:: Arbeitsverzeichnis auf den Speicherort des Skripts wechseln
+set "oldDir=%cd%"
 cd /d "%~dp0"
+
+:: Bereinigen der alten LeMoS-Versionen
+for %%f in (lemos*.jar) do (
+	del "%%f"
+)
 
 :: Kompilieren des LeMoS
 call mvnw.cmd clean package

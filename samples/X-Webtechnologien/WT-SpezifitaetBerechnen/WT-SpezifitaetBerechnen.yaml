@@ -22,7 +22,7 @@ general:
         E-Mail: dieter.wissmann@hs-coburg.de
         Büro: 2-127
   settings:
-    lemosVersion: 2.0.0
+    lemosVersion: 2.1.0
     differentStepSizes: false
   logger:
     minWidth: 150
@@ -86,10 +86,6 @@ states:
       - "Module.print('')"
     transitions:
       - target: Z1
-        conditions:
-          - errorMessage: "Bitte gib einen CSS-Selektor in das dafür vorgesehene Feld ein oder lade ein Szenario."
-            terms:
-              - "!S.isEmpty()"
   - id: Z1
     name: Selektor normalisiert
     actions:

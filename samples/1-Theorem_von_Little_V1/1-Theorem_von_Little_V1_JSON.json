@@ -28,7 +28,7 @@
       }
     ],
     "settings": {
-      "lemosVersion": "2.0.0",
+      "lemosVersion": "2.1.0",
       "showFieldIDs": true,
       "differentStepSizes": false
     }

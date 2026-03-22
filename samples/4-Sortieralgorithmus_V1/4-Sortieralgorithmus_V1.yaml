@@ -3,7 +3,7 @@ general:
   heading: Sortieralgorithmus V1
   explanation: Sortieren einer Liste von Werten durch direktes Auswählen ("Selectionsort")
   settings:
-    lemosVersion: 2.0.0
+    lemosVersion: 2.1.0
 
 fields:
   - id: 'E'

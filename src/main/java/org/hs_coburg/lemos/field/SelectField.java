@@ -30,7 +30,7 @@ public class SelectField extends Field
                        @JsonProperty("options") List<Option> options,
                        @JsonProperty("emptyOption") Boolean emptyOption)
     {
-        super(id, name, explanation, usage, type, style, hidden, highlighted,allowEmpty, FieldDatatype.STRING, restrictions, reactions);
+        super(id, name, explanation, usage, type, style, hidden, highlighted, allowEmpty, FieldDatatype.STRING, restrictions, reactions);
         this.options     = Objects.requireNonNull(options, "Missing required attribute 'options'");
         this.emptyOption = Objects.requireNonNullElse(emptyOption, false);
     }
@@ -43,7 +43,7 @@ public class SelectField extends Field
                             {{label}}
                             <form class='field'>
                               <select name='{{id}}' class='{{highlighted}}' {{enabledState}}>
-                              {{options}}
+                                {{options}}
                               </select>
                             </form>
                           </div>
