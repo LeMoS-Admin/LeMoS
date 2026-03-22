@@ -1,6 +1,9 @@
-name: Länge gesucht
-description: Y und W gegeben, N gesucht
-comment: Fall 1
-initialization:
-  - Y = 0.5
-  - W = 4
+# yaml-language-server: $schema=../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S1
+  name: Szenario 1
+  explanation: Länge gesucht
+  initialization:
+    - T.setValue('Fall1')
+    - Y.setValue(0.5)
+    - W.setValue(4)

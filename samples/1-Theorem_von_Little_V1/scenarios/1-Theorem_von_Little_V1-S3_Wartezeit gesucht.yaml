@@ -1,6 +1,9 @@
-name: Wartezeit gesucht
-description: N und Y gegeben, W gesucht
-comment: Fall 3
-initialization:
-  - N = 1
-  - Y = 5
+# yaml-language-server: $schema=../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S3
+  name: Szenario 3
+  explanation: Wartezeit gesucht
+  initialization:
+    - T.setValue('Fall3')
+    - N.setValue(1)
+    - Y.setValue(5)

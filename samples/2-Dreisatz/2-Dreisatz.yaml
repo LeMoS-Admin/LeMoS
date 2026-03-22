@@ -1,0 +1,128 @@
+# yaml-language-server: $schema=../LeMoS-Modul-Schema.json
+general:
+  heading: Dreisatz
+  explanation: Interaktives Modul, um den Dreisatz auszuprobieren
+  config:
+    differentStepSizes: true
+    showFieldIDs: false
+
+fields:
+  - id: LS
+    name: Linker Startwert
+    explanation: Ausgangswert für den der Endwert bekannt ist
+    type: PLAIN
+    usage: INPUT
+    datatype: NUMBER
+    style:
+      row: 1
+      column: 1
+      width: 2
+  - id: RS
+    name: Rechter Startwert
+    explanation: Ausgangswert für den der Endwert unbekannt ist
+    type: PLAIN
+    usage: INPUT
+    datatype: NUMBER
+    style:
+      row: 1
+      column: 3
+      width: 2
+  - id: T
+    name: Teiler
+    explanation: Gemeinsamer Teiler, um auf jeweiligen Zwischenwert zu kommen
+    type: PLAIN
+    usage: TEMP
+    style:
+      row: 2
+      column: 2
+      width: 2
+  - id: LZ
+    name: Linker Zwischenwert
+    explanation: Zwischenwert für den der Endwert bekannt ist
+    type: PLAIN
+    usage: TEMP
+    style:
+      row: 3
+      column: 1
+      width: 2
+  - id: RZ
+    name: Rechter Zwischenwert
+    explanation: Zwischenwert für den der Endwert unbekannt ist
+    type: PLAIN
+    usage: TEMP
+    style:
+      row: 3
+      column: 3
+      width: 2
+  - id: F
+    name: Faktor
+    explanation: Gemeinsamer Faktor, um auf den jeweiligen Endwert zu kommen
+    type: PLAIN
+    usage: TEMP
+    style:
+      row: 4
+      column: 2
+      width: 2
+  - id: LE
+    name: Linker Endwert
+    explanation: Gegebender Endwert
+    type: PLAIN
+    usage: INPUT
+    datatype: NUMBER
+    style:
+      row: 5
+      column: 1
+      width: 2
+  - id: RE
+    name: Rechter Endwert
+    explanation: Gesuchter Endwert
+    type: PLAIN
+    usage: OUTPUT
+    style:
+      row: 5
+      column: 3
+      width: 2
+    
+states:
+  - id: Z0
+    name: Lernmodul initialisiert
+    type: ENTRY
+    transitions:
+      - target: Z1
+        conditions:
+          - message: |
+                      Bitte die folgenden Felder befüllen:
+                      - Linker Startwert
+                      - Rechter Startwert
+                      - Linker Endwert
+            terms:
+              - Module.filled(LS, RS, LE)
+  - id: Z1
+    name: Teiler berechnet
+    importance: LOW
+    actions:
+      - T.setValue(LS.getValue())
+    transitions:
+      - target: Z2
+  - id: Z2
+    name: Linker und Rechter Zwischenwert berechnet
+    importance: HIGH
+    actions:
+      - LZ.setValue(LS.getValue() / T.getValue())
+      - RZ.setValue(RS.getValue() / T.getValue())
+    transitions:
+      - target: Z3
+  - id: Z3
+    name: Faktor berechnet
+    importance: LOW
+    actions:
+      - F.setValue(LE.getValue())
+    transitions:
+      - target: Z4
+  - id: Z4
+    name: Rechter Endwert berechnet
+    importance: HIGH
+    actions:
+      - RE.setValue(RZ.getValue() * F.getValue())
+
+    

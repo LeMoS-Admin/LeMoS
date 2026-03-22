@@ -11,105 +11,163 @@ import java.util.Objects;
 
 public class State
 {
-    public final String           name;
-    public final String           description;
-    public final String           comment;
-    public final StateImportance  importance;
-    public final StateType        type;
-    public final List<Operation>  action;
-    public final List<Transition> transitions;
+	public final String           id;
+	public final String           name;
+	public final String           explanation;
+	public final StateImportance  importance;
+	public final StateType        type;
+	public final List<Operation>  actions;
+	public final List<Transition> transitions;
 
-    @JsonCreator
-    public State(@JsonProperty("name") String name,
-                 @JsonProperty("description") String description,
-                 @JsonProperty("comment") String comment,
-                 @JsonProperty("importance") StateImportance importance,
-                 @JsonProperty("type") StateType type,
-                 @JsonProperty("action") List<Operation> action,
-                 @JsonProperty("transitions") List<Transition> transitions)
-    {
-        this.name        = Objects.requireNonNull(name, "Missing required attribute 'name'");
-        this.description = Objects.requireNonNullElse(description, name);
-        this.comment     = Objects.requireNonNullElse(comment, "");
-        this.importance  = Objects.requireNonNullElse(importance, StateImportance.HIGH);
-        this.type        = Objects.requireNonNullElse(type, StateType.STATE);
-        this.action      = Objects.requireNonNullElse(action, Collections.emptyList());
-        this.transitions = Objects.requireNonNullElse(transitions, Collections.emptyList());
-        validate();
-    }
+	@JsonCreator
+	public State(@JsonProperty("id") String id,
+				 @JsonProperty("name") String name,
+				 @JsonProperty("explanation") String explanation,
+				 @JsonProperty("type") StateType type,
+				 @JsonProperty("importance") StateImportance importance,
+				 @JsonProperty("actions") List<Operation> actions,
+				 @JsonProperty("transitions") List<Transition> transitions)
+	{
+		this.id          = Objects.requireNonNull(id, "Missing required attribute 'id'");
+		this.name        = Objects.requireNonNullElse(name, id);
+		this.explanation = Objects.requireNonNullElse(explanation, "");
+		this.type        = Objects.requireNonNullElse(type, StateType.STATE);
+		this.actions     = Objects.requireNonNullElse(actions, Collections.emptyList());
+		this.transitions = Objects.requireNonNullElse(transitions, Collections.emptyList());
+		if (this.type == StateType.ENTRY)
+		{
+			this.importance = StateImportance.HIGH;
+		}
+		else if (this.type == StateType.JUNCTION)
+		{
+			this.importance = StateImportance.ZERO;
+		}
+		else
+		{
+			this.importance = Objects.requireNonNullElse(importance, StateImportance.HIGH);
 
-    public static String getStateCall(String stateName)
-    {
-        return String.format("_state_%s()", stateName);
-    }
+		}
+		validate();
+	}
 
-    private void validate()
-    {
-        if (!transitions.isEmpty() &&
-            transitions.stream().filter(t -> t.condition.terms.isEmpty()).count() > 1)
-        {
-            throw new RuntimeException("Only one transition per org.hs_coburg.lemos.state can be unconditionally");
-        }
-    }
+	// Statische Generierung des Funktionsnamens, da er in anderen Klassen zur Generierung eines Aufrufs benötigt wird
+	public static String generateStateFunctionCallJS(String stateID)
+	{
+		return String.format("_state_%s()", StringHelper.escape(stateID));
+	}
 
-    public String asJavaScriptFunction()
-    {
-        StringBuilder builder = new StringBuilder("function ");
-        builder.append(getStateCall(name)).append("{\n");
-        builder.append("//alert('").append(name).append("');\n");
-        builder.append("//alert('").append(description).append("');\n");
-        for (Operation operation : action)
-        {
-            builder.append(operation.asJavaScriptOperation()).append(";\n");
-        }
+	private void validate()
+	{
+		if (!transitions.isEmpty() &&
+			transitions.stream()
+					   .filter(t -> t.conditions.isEmpty())
+					   .count() > 1)
+		{
+			throw new RuntimeException("Only one transition per state can be unconditionally");
+		}
+	}
 
-        builder.append("_nextTransition = () => {\n");
-        builder.append("//alert('Übergang')\n");
-        Transition defaultTransition = null;
-        for (Transition transition : transitions)
-        {
-            if (transition.condition.terms.isEmpty())
-            {
-                defaultTransition = transition;
-                break;
-            }
-            builder.append(transition.asJavaScriptOperation());
-        }
-        if (defaultTransition != null)
-        {
-            // defaultTransition muss der letzte Übergang sein
-            builder.append(defaultTransition.asJavaScriptOperation());
-        }
-        else
-        {
-            // Wenn es keine defaultTransition gibt, wird -1 zurückgebeten (kein Übergang möglich)
-            builder.append("return -1\n");
-        }
-        builder.append("}\n");
+	public String generateStateFunctionJS()
+	{
+		String template = """
+						  function {{functionName}}
+						  {
+						    console.log("Reached state {{id}}{{name}}{{explanation}}");
+						    {{actions}}
+						    _nextTransition = () => {
+						      {{transitions}}
+						    }
+						    return {{importance}};
+						  }
+						  """;
+		return performReplacements(template);
+	}
 
-        if (type == StateType.JUNCTION)
-        {
-            builder.append("return 0;\n");
-        }
-        else
-        {
-            builder.append("return ").append(importance.asNumber()).append(";\n");
-        }
+	private String performReplacements(String string)
+	{
+		return string.replace("{{id}}", StringHelper.escape(id))
+					 .replace("{{name}}", StringHelper.escape(getName()))
+					 .replace("{{explanation}}", StringHelper.escape(getExplanation()))
+					 .replace("{{type}}", type.asName())
+					 .replace("{{importance}}", Integer.toString(importance.asNumber()))
+					 .replace("{{actions}}", Operation.generateActionJS(actions))
+					 .replace("{{transitions}}", generateTransitionsJS())
+					 .replace("{{functionName}}", generateStateFunctionCallJS(id));
+	}
 
-        builder.append("}\n");
+	private String getName()
+	{
+		if (name.isEmpty())
+		{
+			return "";
+		}
+		else
+		{
+			return ": " + name;
+		}
+	}
 
-        return builder.toString();
-    }
+	private String getExplanation()
+	{
+		if (explanation.isEmpty())
+		{
+			return "";
+		}
+		else
+		{
+			return " (" + explanation + ")";
+		}
+	}
 
-    @Override
-    public String toString()
-    {
-        return type.asName() +
-               "\n\t" + "name: '" + StringHelper.get(name) + '\'' +
-               "\n\t" + "description: '" + StringHelper.get(description) + '\'' +
-               "\n\t" + "comment: '" + StringHelper.get(comment) + '\'' +
-               "\n\t" + "importance: " + StringHelper.get(importance) +
-               "\n\t" + "action: " + StringHelper.get(action) +
-               "\n\t" + "transitions: " + StringHelper.get(transitions);
-    }
+	private String generateTransitionsJS()
+	{
+		if (transitions.isEmpty())
+		{
+			return """
+				   console.log("No further transitions, learning module is completed");
+				   return -1;
+				   """;
+		}
+
+		StringBuilder transitionsJS     = new StringBuilder();
+		Transition    defaultTransition = null;
+		for (Transition transition : transitions)
+		{
+			if (transition.conditions.isEmpty())
+			{
+				// Unbedingter Übergang muss am Schluss stehen
+				defaultTransition = transition;
+				break;
+			}
+			transitionsJS.append(transition.generateTransitionJS());
+		}
+
+		// Festlegen des Verhaltens im Fall, dass keiner der bedingten Übergänge (Transitions) erfolgen konnte (ELSE-Fall)
+		if (defaultTransition != null)
+		{
+			// Falls ein unbedingter Übergang definiert wurde, wird er nun ELSE-Fall ergänzt
+			transitionsJS.append(defaultTransition.generateTransitionJS());
+		}
+		else
+		{
+			// Falls kein unbedingter Übergang definiert wurde, wird als ELSE-Fall '-1' zurückgegeben (kein Übergang möglich)
+			transitionsJS.append("""
+								 console.log("No suitable transition, staying in current state");
+								 return -1;
+								 """);
+		}
+		return transitionsJS.toString();
+	}
+
+	@Override
+	public String toString()
+	{
+		return type.asName() +
+			   "\n\t" + "id: '" + StringHelper.get(id) + '\'' +
+			   "\n\t" + "name: '" + StringHelper.get(name) + '\'' +
+			   "\n\t" + "explanation: '" + StringHelper.get(explanation) + '\'' +
+			   "\n\t" + "importance: " + StringHelper.get(importance) +
+			   "\n\t" + "action: " + StringHelper.get(actions) +
+			   "\n\t" + "transitions: " + StringHelper.get(transitions);
+	}
 }

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LeMoS-Szenario-Schema",
+  "type": "object",
+  "description": "Schema zur Konfiguration von Szenarien für Lernmodule, die vom LeMoS verarbeitet werden sollen.",
+  "additionalProperties": false,
+  "required": [
+    "scenario"
+  ],
+  "properties": {
+    "scenario": {
+      "type": "object",
+      "description": "Einzelnes Szenario eines Lernmoduls",
+      "additionalProperties": false,
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Eindeutige Identifikation, z.B. 'S1'"
+        },
+        "name": {
+          "type": "string",
+          "description": "Anzeigename in Szenario-Auswahl, z.B. 'Länge gesucht' (Standard: 'id)"
+        },
+        "explanation": {
+          "type": "string",
+          "description": "Zusätzliche Erläuterungen"
+        },
+        "initialization": {
+          "type": "array",
+          "description": "Operationen zum Initialisieren des Szenarios",
+          "items": {
+            "$ref": "LeMoS-Modul-Schema.json/#/$defs/operation"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S1
+  name: Szenario 1
+  initialization:
+    - LW.setValue([3, 2, 7, 8, 4])
+    - LN.setValue([10, 12, 12, 8, 15, 15])

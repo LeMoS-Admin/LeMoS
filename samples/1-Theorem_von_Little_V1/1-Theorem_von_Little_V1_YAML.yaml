@@ -1,115 +1,178 @@
+# yaml-language-server: $schema=../LeMoS-Modul-Schema.json
 general:
   heading: Theorem von Little
   explanation: Nutzen Sie das Lernmodul, um die Formel des Theorems von Little anzuwenden.
   sources:
     - Skript von Herr Professor Wißmann
-  contact:
-    name: Professor Dr. Dieter Wißmann
-    mail: dieter.wißmann@hs-coburg.de
+    - Internet
+  contacts:
+    - name: Professor Dr. Dieter Wißmann
+      purpose: Fachliche Fragen
+      data:
+        Telefon: 09561 317-152
+        E-Mail: dieter.wissmann@hs-coburg.de
+        Büro: 2-127
+    - name: Professor Dr. Dieter Wißmann
+      purpose: Technische Fragen
+      data:
+        Telefon: 09561 317-152
+        E-Mail: dieter.wissmann@hs-coburg.de
+        Büro: 2-127
   config:
     libraryVersion: 1.0.0
-    showFieldNames: true
+    showFieldIDs: true
     differentStepSizes: false
+
 fields:
-  - name: "N"
-    description: Länge
-    comment: Durchschnittliche Länge der Warteschlange
-    usage: INPUT
+  - id: "T"
+    name: "Aufgabentyp"
+    explanation: "Auswahl, welche Variante der Formel genutzt werden soll"
+    type: SELECTOR
+    options:
+      - id: Auto
+        name: Automatisch
+        explanation: Berechnung des leer gelassenen Felds
+      - id: Fall1
+        name: Länge gesucht
+        explanation: Y und W gegeben, N gesucht
+      - id: Fall2
+        name: Ankunftsrate gesucht
+        explanation: N und W gegeben, Y gesucht
+      - id: Fall3
+        name: Wartezeit gesucht
+        explanation: N und Y gegeben, W gesucht
+  - id: "N"
+    name: Länge
+    explanation: Durchschnittliche Länge der Warteschlange
     type: PLAIN
+    usage: INPUT
+    allowEmpty: true
     datatype: NUMBER
     restrictions:
       - message: Nur positive Zahlenwerte
         terms:
           - N >= 0
-    size: 10
-    position:
-      xAxis: 1
-      yAxis: 1
-  - name: "Y"
-    description: Ankunftsrate
-    comment: Durchschnittliche Ankunftsrate neuer Einträge
-    usage: INPUT
+  - id: "Y"
+    name: Ankunftsrate
+    explanation: Durchschnittliche Ankunftsrate neuer Einträge
     type: PLAIN
+    usage: INPUT
+    allowEmpty: true
     datatype: NUMBER
     restrictions:
       - message: Nur positive Zahlenwerte
         terms:
           - Y >= 0
-    size: 10
-    position:
-      xAxis: 1
-      yAxis: 2
-  - name: "W"
-    description: Wartezeit
-    comment: Durchschnittliche Wartezeit eines Eintrags
-    usage: INPUT
+  - id: "W"
+    name: Wartezeit
+    explanation: Durchschnittliche Wartezeit eines Eintrags
     type: PLAIN
+    usage: INPUT
+    allowEmpty: true
     datatype: NUMBER
     restrictions:
       - message: Nur positive Zahlenwerte
         terms:
           - W >= 0
-    size: 10
-    position:
-      xAxis: 1
-      yAxis: 3
 states:
-  - name: Z0
-    description: Lernmodul initialisiert
-    comment: Einstieg
-    type: ENTRY_POINT
-    action:
-    transitions:
-      - target: Z1
-        comment: Übergang zur Fallunterscheidung
-        condition:
-          name: B1
-          terms:
-            - List.length(Module.filled()) == 2
-  - name: Z1
-    description: Welche Felder?
-    comment: Fallunterscheidung
-    type: JUNCTION
+  - id: Z0
+    name: Lernmodul initialisiert
+    explanation: Einstieg
+    type: ENTRY
     transitions:
       - target: Z1a
-        comment: Übergang zu Fall 1
-        condition:
-          name: B1a
-          terms:
-            - Module.filled(Y, W)
+        name: Z0-Z1a
+        explanation: Übergang zur Fallunterscheidung mit festem Aufgabentyp
+        conditions:
+          - message: ""
+            terms:
+              - T.getValue() !== "Auto"
       - target: Z1b
-        comment: Übergang zu Fall 2
-        condition:
-          name: B1b
-          terms:
-            - Module.filled(N, W)
-      - target: Z1c
-        comment: Übergang zu Fall 3
-        condition:
-          name: B1c
-          terms:
-            - Module.filled(N, Y)
-  - name: Z1a
-    description: N berechnet
-    comment: "Fall 1: Y und W gegeben, N gesucht"
-    importance: HIGH
-    type: STATE
-    action:
-        - N = Y * W
+        name: Z0-Z1b
+        explanation: Übergang zur Fallunterscheidung mit automatischem Aufgabentyp
+        conditions:
+          - message: "Bitte genau 2 der 3 Textfelder befüllen"
+            terms:
+              - List.length(Module.filled()) === 3
+  - id: Z1a
+    name: Welcher Aufgabentyp?
+    explanation: Fallunterscheidung bei festem Aufgabentyp
+    type: JUNCTION
     transitions:
-  - name: Z1b
-    description: Y berechnet
-    comment: "Fall 2: N und W gegeben, Y gesucht"
-    importance: HIGH
-    type: STATE
-    action:
-      - Y = N / W
+      - target: Z2a
+        name: Z1a-Z2a
+        explanation: Fester Übergang zu Fall 1
+        conditions:
+          - message: ""
+            terms:
+              - T.getValue() === "Fall1"
+          - message: "Bitte die Felder \"Ankunftsrate\" und 'Wartezeiten' ausfüllen"
+            terms:
+              - Module.filled(Y, W)
+      - target: Z2b
+        name: Z1a-Z2b
+        explanation: Fester Übergang zu Fall 2
+        conditions:
+          - message: ""
+            terms:
+              - T.getValue() === "Fall2"
+          - message: Bitte die Felder \"Länge\" und 'Wartezeiten' ausfüllen
+            terms:
+              - Module.filled(N, W)
+      - target: Z2c
+        name: Z1a-Z2c
+        explanation: Fester Übergang zu Fall 3
+        conditions:
+          - message: ""
+            terms:
+              - T.getValue() === "Fall3"
+          - message: Bitte die Felder "Länge" und 'Ankunftsrate' ausfüllen
+            terms:
+              - Module.filled(N, Y)
+  - id: Z1b
+    name: Welche Felder?
+    explanation: Fallunterscheidung bei automatischem Aufgabentyp
+    type: JUNCTION
     transitions:
-  - name: Z1c
-    description: W berechnet
-    comment: "Fall 3: N und Y gegeben, W gesucht"
-    importance: HIGH
+      - target: Z2a
+        name: Z1b-Z2a
+        explanation: Automatischer Übergang zu Fall 1
+        conditions:
+          - message: ""
+            terms:
+              - Module.filled(Y, W)
+      - target: Z2b
+        name: Z1b-Z2b
+        explanation: Automatischer Übergang zu Fall 2
+        conditions:
+          - message: ""
+            terms:
+              - Module.filled(N, W)
+      - target: Z2c
+        name: Z1b-Z2c
+        explanation: Automatischer Übergang zu Fall 3
+        conditions:
+          - message: ""
+            terms:
+              - Module.filled(N, Y)
+  - id: Z2a
+    name: N berechnet
+    explanation: "Fall 1: Y und W gegeben, N gesucht"
     type: STATE
-    action:
-      - W = N / Y
-    transitions:
+    importance: HIGH
+    actions:
+      - N.setValue(Y.getValue() * W.getValue())
+  - id: Z2b
+    name: Y berechnet
+    explanation: "Fall 2: N und W gegeben, Y gesucht"
+    type: STATE
+    importance: HIGH
+    actions:
+      - Y.setValue(N.getValue() / W.getValue())
+  - id: Z2c
+    name: W berechnet
+    explanation: "Fall 3: N und Y gegeben, W gesucht"
+    type: STATE
+    importance: HIGH
+    actions:
+      - W.setValue(N.getValue() / Y.getValue())

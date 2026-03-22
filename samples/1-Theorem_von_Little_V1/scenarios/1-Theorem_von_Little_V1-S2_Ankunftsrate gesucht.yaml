@@ -1,6 +1,9 @@
-name: Ankunftsrate gesucht
-description: N und W gegeben, Y gesucht
-comment: Fall 2
-initialization:
-  - N = 3
-  - W = 12
+# yaml-language-server: $schema=../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S2
+  name: Szenario 2
+  explanation: Ankunftsrate gesucht
+  initialization:
+    - T.setValue('Fall2')
+    - N.setValue(3)
+    - W.setValue(12)

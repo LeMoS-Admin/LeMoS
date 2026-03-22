@@ -10,7 +10,7 @@ if [[ $# == 0 ]]
 then
 	echo "Bitte mindestens eine Lernmodul-Konfiguration (YAML-, JSON- oder XML-Datei) als absoluten oder relativen Pfad angeben."
 	echo "Konfigurationen von Lernmodul-Szenarien (YAML-, JSON- oder XML-Datei) sind nicht anzugeben, sie werden am Speicherort der Lernmodul-Konfiguration im Unterordner 'scenarios' erwartet."
-	echo "Bei erfolgreicher Ausführung werden die generierten Lernmodule wird am Aufrufort dieses Skripts als Webarchiv (war-Datei) unter dem Namen der Lernmodul-Konfiguration abgelegt."
+	echo "Bei erfolgreicher Ausführung werden die generierten Lernmodule wird am Aufrufort dieses Skripts als ZIP-Datei unter dem Namen der Lernmodul-Konfiguration abgelegt."
 	exit 1
 fi
 
@@ -35,13 +35,13 @@ for arg in "$@"; do
 	mv libs/lib lib
 	rm -r libs
 	
-	# Packen des fertigen Lernmoduls zu einem Webarchiv (war-Datei), bereinigen der ausgefüllten Kopie der Vorlage
+	# Packen des fertigen Lernmoduls zu einer ZIP-Datei, bereinigen der ausgefüllten Kopie der Vorlage
 	echo $name: packing archive
-	rm -f "$SWD/$name.war"
-	zip -r -q "$SWD/$name.war" *
+	rm -f "$SWD/$name.zip"
+	zip -r -q "$SWD/$name.zip" *
 	cd ..
 	rm -r "$TEMPLATE"
 
-	echo $name: finished "$SWD/$name.war"
+	echo $name: finished "$SWD/$name.zip"
 done
 exit 0

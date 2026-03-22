@@ -1,0 +1,124 @@
+# yaml-language-server: $schema=../LeMoS-Modul-Schema.json
+general:
+  heading: Theorem von Little
+  explanation: Nutzen Sie das Lernmodul, um die Formel des Theorems von Little auf eine Liste von Werten anzuwenden.
+  sources:
+    - Skript von Herr Professor Wißmann
+    - Internet
+  contacts:
+    - name: Professor Dr. Dieter Wißmann
+      purpose: Fachliche Fragen
+      data:
+        Telefon: 09561 317-152
+        E-Mail: dieter.wissmann@hs-coburg.de
+        Büro: 2-127
+    - name: Professor Dr. Dieter Wißmann
+      purpose: Technische Fragen
+      data:
+        Telefon: 09561 317-152
+        E-Mail: dieter.wissmann@hs-coburg.de
+        Büro: 2-127
+  config:
+    libraryVersion: 1.0.0
+    showFieldIDs: true
+    differentStepSizes: true
+
+fields:
+  - id: LW
+    name: Wartezeiten
+    explanation: Wartezeiten verschiedener Prozesse
+    usage: INPUT
+    type: LIST
+    allowEmpty: true
+    datatype: INTEGER
+    minEntryWidth: 5
+    style:
+      row: 1
+      column: 1
+      width: 3
+    restrictions:
+      - message: Nur positive Zahlenwerte
+        terms:
+          - entry >= 0
+    growthDirection: HORIZONTAL
+    initialEntries: 7
+    maxEntries: -1
+  - id: LN
+    name: Warteschlangenlängen
+    explanation: Warteschlangenlängen verschiedener Zeitpunkte
+    usage: INPUT
+    type: LIST
+    allowEmpty: true
+    datatype: INTEGER
+    minEntryWidth: 5
+    style:
+      row: 1
+      column: 4
+      width: 3
+    restrictions:
+      - message: Nur positive Zahlenwerte
+        terms:
+          - entry >= 0
+    growthDirection: HORIZONTAL
+    initialEntries: 7
+    maxEntries: -1
+  - id: "W"
+    name: Mittlere Wartezeit
+    explanation: Durchschnittliche Wartezeit der Wartenden
+    type: PLAIN
+    usage: OUTPUT
+    style:
+      row: 2
+      column: 1
+      width: 2
+  - id: "N"
+    name: Mittlere Länge
+    explanation: Durchschnittliche Länge der Warteschlange
+    type: PLAIN
+    usage: OUTPUT
+    style:
+      row: 2
+      column: 3
+      width: 2
+  - id: "Y"
+    name: Ankunftsrate
+    explanation: Ankunftsrate von neuen Wartenden
+    type: PLAIN
+    usage: OUTPUT
+    style:
+      row: 2
+      column: 5
+      width: 2
+
+states:
+  - id: Z0
+    name: Lernmodul initialisiert
+    explanation: Einstieg
+    type: ENTRY
+    transitions:
+      - target: Z1
+        name: B1
+        explanation: Wenn LW und LN gesetzt sind, kann zu Z1 übergegangen werden
+        conditions:
+          - message: Bitte die beiden Eingabefelder mit je mindestens einem Wert befüllen
+            terms:
+            - Module.filled(LW, LN)
+  - id: Z1
+    name: W und N berechnet
+    explanation: Durchschnittliche Wartezeit (W) und durchschnittliche Warteschlangenlänge (N) berechnet
+    type: STATE
+    importance: LOW
+    actions:
+      - W.setValue(List.average(LW))
+      - N.setValue(List.average(LN))
+    transitions:
+      - target: Z2
+        explanation: Bedingungsloser Übergang zu Z2
+
+  - id: Z2
+    name: Y berechnet
+    explanation: Ankunftsrate von neuen Wartenden mit umgestellter Formel (Y = N / W) berechnet
+    type: STATE
+    importance: HIGH
+    actions:
+      - Y.setValue(N.getValue() / W.getValue())

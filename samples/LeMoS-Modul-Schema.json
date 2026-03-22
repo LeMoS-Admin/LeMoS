@@ -1,0 +1,549 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LeMoS-Modul-Schema",
+  "type": "object",
+  "description": "Schema zur Konfiguration von Lernmodulen, die vom LeMoS verarbeitet werden sollen.",
+  "additionalProperties": false,
+  "required": [
+    "general",
+    "fields",
+    "states"
+  ],
+  "properties": {
+    "general": {
+      "type": "object",
+      "description": "Allgemeine Angaben",
+      "additionalProperties": false,
+      "required": [
+        "heading"
+      ],
+      "properties": {
+        "heading": {
+          "type": "string",
+          "description": "Überschrift des Lernmoduls",
+          "pattern": "[^<>]*"
+        },
+        "explanation": {
+          "type": "string",
+          "description": "Erklärungen zum Lerninhalt"
+        },
+        "sources": {
+          "type": "array",
+          "description": "Quellen zur weiteren Recherche",
+          "items": {
+            "type": "string",
+            "description": "Einzelne Quelle zur weiteren Recherche"
+          }
+        },
+        "contacts": {
+          "type": "array",
+          "description": "Ansprechpartner für Fragen",
+          "items": {
+            "type": "object",
+            "description": "Einzelner Ansprechpartner für Fragen",
+            "additionalProperties": false,
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name des Kontakts"
+              },
+              "purpose": {
+                "type": "string",
+                "description": "Zuständigkeit des Kontakts (für welche Fragen)"
+              },
+              "data": {
+                "type": "object",
+                "description": "Beliebige Kontaktangaben",
+                "required": [],
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "examples": [
+                  "Phone: 0123 456789",
+                  "Mail: max@mustermann.de",
+                  "Office: 0-815"
+                ]
+              }
+            }
+          }
+        },
+        "config": {
+          "type": "object",
+          "description": "Konfiguration des Lernmoduls",
+          "additionalProperties": false,
+          "required": [],
+          "properties": {
+            "libraryVersion": {
+              "type": "string",
+              "description": "Verwendete Version der Systembibliothek (Standard: 'LATEST')",
+              "examples": [
+                "1.0.0",
+                "LATEST"
+              ]
+            },
+            "showFieldIDs": {
+              "type": "boolean",
+              "description": "Zusätzliche Beschriftung der Felder mit ihrem Variablennamen (Standard: 'true')"
+            },
+            "differentStepSizes": {
+              "type": "boolean",
+              "description": "Verschiedene Schrittweiten freischalten (Standard: 'false')"
+            }
+          }
+        }
+      }
+    },
+    "fields": {
+      "type": "array",
+      "description": "Ein-/Ausgabefelder",
+      "items": {
+        "oneOf": [
+          {
+            "$comment": "TextField",
+            "description": "Textfeld – Statische Darstellung eines zu konfigurierenden Texts",
+            "unevaluatedProperties": false,
+            "allOf": [
+              {
+                "$ref": "#/$defs/generalField"
+              },
+              {
+                "$ref": "#/$defs/multilinableField"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "type"
+                ],
+                "properties": {
+                  "type": {
+                    "$ref": "#/$defs/generalFieldTypeDefinition",
+                    "enum": [
+                      "TEXT"
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "$comment": "PlainField",
+            "description": "Einfaches Feld – Eingabe und Verarbeitung als genau ein Wert",
+            "unevaluatedProperties": false,
+            "allOf": [
+              {
+                "$ref": "#/$defs/generalField"
+              },
+              {
+                "$ref": "#/$defs/multilinableField"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "type"
+                ],
+                "properties": {
+                  "type": {
+                    "$ref": "#/$defs/generalFieldTypeDefinition",
+                    "enum": [
+                      "PLAIN"
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "$comment": "SplitField",
+            "description": "Aufgeteiltes Feld – Eingabe als genau ein Wert, Verarbeitung als Liste (aufgeteilt nach zu konfigurierendem Trennzeichen)",
+            "unevaluatedProperties": false,
+            "allOf": [
+              {
+                "$ref": "#/$defs/generalField"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "type"
+                ],
+                "properties": {
+                  "type": {
+                    "$ref": "#/$defs/generalFieldTypeDefinition",
+                    "enum": [
+                      "SPLIT"
+                    ]
+                  },
+                  "separator": {
+                    "type": "string",
+                    "description": "Trennzeichen, an dem die Eingabe aufzuteilen ist (Standard: leere Zeichenkette = Aufteilung nach jedem Zeichen)"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "$comment": "SelectorField",
+            "description": "Auswahlfeld – Eingabe durch Auswahl aus vorgegebenen Werten, Verarbeitung als ein Wert",
+            "unevaluatedProperties": false,
+            "allOf": [
+              {
+                "$ref": "#/$defs/generalField"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "type",
+                  "options"
+                ],
+                "properties": {
+                  "type": {
+                    "$ref": "#/$defs/generalFieldTypeDefinition",
+                    "enum": [
+                      "SELECTOR"
+                    ]
+                  },
+                  "options": {
+                    "type": "array",
+                    "description": "Zur Auswahl stehende Optionen",
+                    "items": {
+                      "type": "string",
+                      "description": "Einzelne Option"
+                    }
+                  },
+                  "emptyOption": {
+                    "type": "boolean",
+                    "description": "Erste Option als leer interpretieren (Standard: false)"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "$comment": "ListField",
+            "description": "Listenfeld – Eingabe und Verarbeitung als Liste von Werten dynamischer Anzahl",
+            "unevaluatedProperties": false,
+            "allOf": [
+              {
+                "$ref": "#/$defs/generalField"
+              },
+              {
+                "$ref": "#/$defs/expandableField"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "type"
+                ],
+                "properties": {
+                  "type": {
+                    "$ref": "#/$defs/generalFieldTypeDefinition",
+                    "enum": [
+                      "LIST"
+                    ]
+                  },
+                  "minEntryWidth": {
+                    "type": "integer",
+                    "description": "Minimale Breite der einzelnen Einträge, nur bei growthDirection 'HORIZONTAL' berücksichtigt (Standard: -1 = unbegrenzt)"
+                  },
+                  "allowWrap": {
+                    "type": "boolean",
+                    "description": "Zeilenumbruch, falls Felder nicht mehr in Zeile passen, nur bei growthDirection 'HORIZONTAL' berücksichtigt (Standard: false)"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "$comment": "TableField",
+            "description": "Tabellenfeld – Eingabe der Werte als Einträge einer Tabelle, Verarbeitung als Liste von Objekten mit zu konfigurierenden Attributen",
+            "unevaluatedProperties": false,
+            "allOf": [
+              {
+                "$ref": "#/$defs/generalField"
+              },
+              {
+                "$ref": "#/$defs/expandableField"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "type",
+                  "innerFields"
+                ],
+                "properties": {
+                  "type": {
+                    "$ref": "#/$defs/generalFieldTypeDefinition",
+                    "enum": [
+                      "TABLE"
+                    ]
+                  },
+                  "innerFields": {
+                    "$ref": "#/properties/fields"
+                  },
+                  "minColumnWidth": {
+                    "type": "integer",
+                    "description": "Minimale Breite der Tabellenspalten, nicht mit 'minColumnWidths' kombinierbar (Standard: -1 = unbegrenzt)"
+                  },
+                  "minColumnWidths": {
+                    "type": "array",
+                    "description": "Minimale Breiten der Tabellenspalten, nicht mit 'minColumnWidth' kombinierbar, \nBei growthDirection VERTICAL sind stets so viele Werte wie innere Felder anzugeben, \nBei growthDirection HORIZONTAL sind stets 2 Werte (für Kopf und Rest) anzugeben \n(Standard: Leere Liste = unbegrenzt)",
+                    "items": {
+                      "type": "integer",
+                      "description": "Einzelne minimale Tabellenspaltenbreite"
+                    }
+                  },
+                  "relativeColumnWidths": {
+                    "type": "array",
+                    "description": "Relative Breiten der Tabellenspalten, wenn erforderlich werden Spalten unabhängig von dieser Konfiguration dynamisch verbreitert, \nBei growthDirection VERTICAL sind stets so viele Werte wie innere Felder anzugeben, \nBei growthDirection HORIZONTAL sind stets 2 Werte (für Kopf und Rest) anzugeben \n(Standard: Leere Liste = alle gleich)",
+                    "items": {
+                      "type": "integer",
+                      "description": "Einzelne relative Tabellenspaltenbreite"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "states": {
+      "type": "array",
+      "description": "Zustandsgraph",
+      "items": {
+        "type": "object",
+        "description": "Einzelner Zustand des Zustandsgraphen",
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Eindeutige Identifikation, muss gültiger JavaScript-Variablenname sein, darf nicht mit einem Unterstrich beginnen, z.B. 'Z0'"
+          },
+          "name": {
+            "type": "string",
+            "description": "Anzeigename, z.B. 'N berechnet' (Standard: Wert von 'id')"
+          },
+          "explanation": {
+            "type": "string",
+            "description": "Zusätzliche Erläuterungen"
+          },
+          "type": {
+            "type": "string",
+            "description": "Art des Zustands (Standard: 'STATE')",
+            "enum": [
+              "ENTRY",
+              "STATE",
+              "JUNCTION"
+            ]
+          },
+          "importance": {
+            "type": "string",
+            "description": "Wichtigkeit, d.h. kleiner oder großer Schritt, nur bei type 'STATE' berücksichtigt (Standard: 'HIGH')",
+            "enum": [
+              "ZERO",
+              "LOW",
+              "HIGH"
+            ]
+          },
+          "actions": {
+            "type": "array",
+            "description": "Vor Zustandseintritt auszuführende Operationen",
+            "items": {
+              "$ref": "#/$defs/operation"
+            }
+          },
+          "transitions": {
+            "type": "array",
+            "description": "Übergänge zu weiteren Zuständen",
+            "items": {
+              "type": "object",
+              "description": "Einzelner Übergang zu einem anderen Zustand",
+              "additionalProperties": false,
+              "required": [
+                "target"
+              ],
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "description": "ID des Zielzustands des Übergangs"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Anzeigename, z.B. 'T1'"
+                },
+                "explanation": {
+                  "type": "string",
+                  "description": "Erläuterungen zum Übergang"
+                },
+                "conditions": {
+                  "type": "array",
+                  "description": "Zu erfüllende Bedingungen",
+                  "items": {
+                    "$ref": "#/$defs/condition"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "generalFieldTypeDefinition": {
+      "type": "string",
+      "description": "Eingabeart"
+    },
+    "generalField": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Eindeutige Identifikation, muss gültiger JavaScript-Variablenname sein, darf nicht mit einem Unterstrich beginnen, z.B. 'N'"
+        },
+        "name": {
+          "type": "string",
+          "description": "Anzeigename, z.B. 'Länge' (Standard: Wert von 'id')"
+        },
+        "explanation": {
+          "type": "string",
+          "description": "Zusätzliche Erläuterungen (Standard: Wert von 'name')"
+        },
+        "usage": {
+          "type": "string",
+          "description": "Verwendungsart (Standard: 'INPUT')",
+          "enum": [
+            "INPUT",
+            "TEMP",
+            "OUTPUT",
+            "HIDDEN"
+          ]
+        },
+        "style": {
+          "type": "object",
+          "description": "Rasterbasierte Position und Größe (alle Felder eines Lernmoduls werden in einem gemeinsamen Raster angeordnet.) \nDie Position (row + column) entspricht der oberen linken Ecke des Lernmodulfelds. \nDie Größe (width + height) entspricht der Anzahl der nach rechts bzw. unten eingenommenen Rasterfelder und sollte entsprechend bei der Position des nächsten Felds berücksichtigt werden. \nBeispiel: Lernmodulfeld 1 hat folgende Attribute: row=1, column=1, width=2, height=3 --> Lernmodulfeld 2 kann horizontal erst bei row+height=4 oder vertikal erst bei oder column+width=3 folgen.",
+          "additionalProperties": false,
+          "required": [
+            "row",
+            "column"
+          ],
+          "properties": {
+            "row": {
+              "type": "integer",
+              "description": "Zeile im Raster, beginnend bei 1"
+            },
+            "column": {
+              "type": "integer",
+              "description": "Spalte im Raster, beginnend bei 1"
+            },
+            "width": {
+              "type": "integer",
+              "description": "Breite in Rasterfeldern (Standard: 1)"
+            },
+            "height": {
+              "type": "integer",
+              "description": "Höhe in Rasterfeldern (Standard: 1)"
+            }
+          }
+        },
+        "allowEmpty": {
+          "type": "boolean",
+          "description": "Leere Eingaben erlauben, nur bei usage INPUT berücksichtigt, bei type TEXT nie berücksichtigt (Standard: false)"
+        },
+        "datatype": {
+          "type": "string",
+          "description": "Datentyp der Eingaben, nur bei usage INPUT berücksichtigt, bei type TEXT, SELECTOR und TABLE nie berücksichtigt (Standard: 'STRING')",
+          "enum": [
+            "INTEGER",
+            "NUMBER",
+            "STRING"
+          ]
+        },
+        "restrictions": {
+          "type": "array",
+          "description": "Anforderungen an die Eingaben, nur bei usage INPUT berücksichtigt, bei type TEXT nie berücksichtigt",
+          "items": {
+            "$ref": "#/$defs/condition"
+          }
+        }
+      }
+    },
+    "multilinableField": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "multiline": {
+          "type": "boolean",
+          "description": "Mehrzeiliges Feld (Standard: false)"
+        },
+        "minLines": {
+          "type": "integer",
+          "description": "Minimale Zeilenanzahl von Einträgen, nur bei multiline 'true' berücksichtigt, nicht mit fixLines kombinierbar (Standard: 1)"
+        },
+        "maxLines": {
+          "type": "integer",
+          "description": "Maximale Zeilenanzahl, muss mindestens 'minLines' entsprechen, nur bei multiline 'true' berücksichtigt, nicht mit fixLines kombinierbar (Standard: -1 = unbegrenzt)"
+        },
+        "fixLines": {
+          "type": "integer",
+          "description": "Feste Zeilenanzahl, nur bei multiline 'true' berücksichtigt, nicht mit minLines und/oder maxLines kombinierbar (Standard: -1 = unbegrenzt)"
+        }
+      }
+    },
+    "expandableField": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "growthDirection": {
+          "type": "string",
+          "description": "Wachstumsrichtung, d.h. werden Zeilen oder Spalten ergänzt? (Standard: 'VERTICAL')",
+          "enum": [
+            "HORIZONTAL",
+            "VERTICAL"
+          ]
+        },
+        "initialEntries": {
+          "type": "integer",
+          "description": "Initiale Anzahl von Einträgen (Standard: 1)"
+        },
+        "maxEntries": {
+          "type": "integer",
+          "description": "Maximale Anzahl von Einträgen, muss mindestens 'initialEntries' entsprechen (Standard: -1 = unbegrenzt)"
+        }
+      }
+    },
+    "condition": {
+      "type": "object",
+      "description": "Einzelne Anforderung an die Eingabe",
+      "additionalProperties": false,
+      "required": [
+        "terms"
+      ],
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "Fehlermeldung, falls Bedingung nicht erfüllt"
+        },
+        "terms": {
+          "type": "array",
+          "description": "Zu erfüllende Teilbedingungen",
+          "items": {
+            "$ref": "#/$defs/operation"
+          }
+        }
+      }
+    },
+    "operation": {
+      "type": "string",
+      "description": "Einzelner Befehl in JavaScript-Syntax (kann Operatoren, System- und Spezialfunktionen nutzen)"
+    }
+  }
+}

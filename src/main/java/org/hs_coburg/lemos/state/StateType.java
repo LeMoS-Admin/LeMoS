@@ -2,19 +2,19 @@ package org.hs_coburg.lemos.state;
 
 public enum StateType
 {
-    ENTRY_POINT("EntryPoint"),
-    STATE("State"),
-    JUNCTION("Junction");
+	ENTRY("Entry"),
+	STATE("State"),
+	JUNCTION("Junction");
 
-    private final String normalCase;
+	private final String normalCase;
 
-    StateType(String normalCase)
-    {
-        this.normalCase = normalCase;
-    }
+	StateType(String normalCase)
+	{
+		this.normalCase = normalCase;
+	}
 
-    public String asName()
-    {
-        return normalCase;
-    }
+	public String asName()
+	{
+		return normalCase;
+	}
 }

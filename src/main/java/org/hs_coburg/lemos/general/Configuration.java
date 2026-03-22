@@ -8,25 +8,33 @@ import java.util.Objects;
 
 public class Configuration
 {
-    public final String  libraryVersion;
-    public final Boolean showFieldNames;
-    public final Boolean differentStepSizes;
+	private static Configuration currentConfiguration;
+	public final   String        libraryVersion;
+	public final   Boolean       showFieldIDs;
+	public final   Boolean       differentStepSizes;
 
-    @JsonCreator
-    public Configuration(@JsonProperty("libraryVersion") String libraryVersion,
-                         @JsonProperty("showFieldNames") Boolean showFieldNames,
-                         @JsonProperty("differentStepSizes") Boolean differentStepSizes)
-    {
-        this.libraryVersion     = Objects.requireNonNullElse(libraryVersion, "LATEST");
-        this.showFieldNames     = Objects.requireNonNullElse(showFieldNames, true);
-        this.differentStepSizes = Objects.requireNonNullElse(differentStepSizes, false);
-    }
+	@JsonCreator
+	public Configuration(@JsonProperty("libraryVersion") String libraryVersion,
+						 @JsonProperty("showFieldIDs") Boolean showFieldIDs,
+						 @JsonProperty("differentStepSizes") Boolean differentStepSizes)
+	{
+		this.libraryVersion     = Objects.requireNonNullElse(libraryVersion, "LATEST");
+		this.showFieldIDs       = Objects.requireNonNullElse(showFieldIDs, true);
+		this.differentStepSizes = Objects.requireNonNullElse(differentStepSizes, false);
+		currentConfiguration    = this;
+	}
 
-    @Override
-    public String toString()
-    {
-        return "Configuration:" +
-               "\n\t" + "showFieldNames: " + StringHelper.get(showFieldNames) +
-               "\n\t" + "differentStepSizes: " + StringHelper.get(differentStepSizes);
-    }
+	public static Configuration get()
+	{
+		return currentConfiguration;
+	}
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + ":" +
+			   "\n\t" + "libraryVersion: " + StringHelper.get(libraryVersion) +
+			   "\n\t" + "showFieldIDs: " + StringHelper.get(showFieldIDs) +
+			   "\n\t" + "differentStepSizes: " + StringHelper.get(differentStepSizes);
+	}
 }

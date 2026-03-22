@@ -5,24 +5,41 @@
         <explanation>Nutzen Sie das Lernmodul, um die Formel des Theorems von Little anzuwenden.</explanation>
         <sources>
             <source>Skript von Herr Professor Wißmann</source>
+            <source>Internet</source>
         </sources>
-        <contact>
-            <name>Professor Dr. Dieter Wißmann</name>
-            <mail>dieter.wißmann@hs-coburg.de</mail>
-        </contact>
+        <contacts>
+            <contact>
+                <name>Professor Dr. Dieter Wißmann</name>
+                <purpose>Fachliche Fragen</purpose>
+                <data>
+                    <Telefon>09561 317-152</Telefon>
+                    <E-Mail>dieter.wissmann@hs-coburg.de</E-Mail>
+                    <Büro>2-127</Büro>
+                </data>
+            </contact>
+            <contact>
+                <name>Professor Dr. Dieter Wißmann</name>
+                <purpose>Technische Fragen</purpose>
+                <data>
+                    <Telefon>09561 317-152</Telefon>
+                    <E-Mail>dieter.wissmann@hs-coburg.de</E-Mail>
+                    <Büro>2-127</Büro>
+                </data>
+            </contact>
+        </contacts>
         <config>
             <libraryVersion>1.0.0</libraryVersion>
-            <showFieldNames>true</showFieldNames>
+            <showFieldIDs>true</showFieldIDs>
             <differentStepSizes>false</differentStepSizes>
         </config>
     </general>
     <fields>
         <field>
-            <name>N</name>
-            <description>Länge</description>
-            <comment>Durchschnittliche Länge der Warteschlange</comment>
-            <usage>INPUT</usage>
+            <id>N</id>
+            <name>Länge</name>
+            <explanation>Durchschnittliche Länge der Warteschlange</explanation>
             <type>PLAIN</type>
+            <usage>INPUT</usage>
             <datatype>NUMBER</datatype>
             <restrictions>
                 <restriction>
@@ -32,18 +49,17 @@
                     </terms>
                 </restriction>
             </restrictions>
-            <size>10</size>
-            <position>
-                <xAxis>1</xAxis>
-                <yAxis>1</yAxis>
-            </position>
+            <style>
+                <row>1</row>
+                <column>1</column>
+            </style>
         </field>
         <field>
-            <name>Y</name>
-            <description>Ankunftsrate</description>
-            <comment>Durchschnittliche Ankunftsrate neuer Einträge</comment>
-            <usage>INPUT</usage>
+            <id>Y</id>
+            <name>Ankunftsrate</name>
+            <explanation>Durchschnittliche Ankunftsrate neuer Einträge</explanation>
             <type>PLAIN</type>
+            <usage>INPUT</usage>
             <datatype>NUMBER</datatype>
             <restrictions>
                 <restriction>
@@ -53,18 +69,17 @@
                     </terms>
                 </restriction>
             </restrictions>
-            <size>10</size>
-            <position>
-                <xAxis>1</xAxis>
-                <yAxis>2</yAxis>
-            </position>
+            <style>
+                <row>2</row>
+                <column>1</column>
+            </style>
         </field>
         <field>
-            <name>W</name>
-            <description>Wartezeit</description>
-            <comment>Durchschnittliche Wartezeit eines Eintrags</comment>
-            <usage>INPUT</usage>
+            <id>W</id>
+            <name>Wartezeit</name>
+            <explanation>Durchschnittliche Wartezeit eines Eintrags</explanation>
             <type>PLAIN</type>
+            <usage>INPUT</usage>
             <datatype>NUMBER</datatype>
             <restrictions>
                 <restriction>
@@ -74,103 +89,114 @@
                     </terms>
                 </restriction>
             </restrictions>
-            <size>10</size>
-            <position>
-                <xAxis>1</xAxis>
-                <yAxis>3</yAxis>
-            </position>
+            <style>
+                <row>3</row>
+                <column>1</column>
+            </style>
         </field>
     </fields>
     <states>
         <state>
-            <name>Z0</name>
-            <description>Lernmodul initialisiert</description>
-            <comment>Einstieg</comment>
-            <type>ENTRY_POINT</type>
-            <!--Keine Aktion-->
+            <id>Z0</id>
+            <name>Lernmodul initialisiert</name>
+            <explanation>Einstieg</explanation>
+            <type>ENTRY</type>
+            <!--Keine
+            Aktion-->
             <transitions>
                 <transition>
                     <target>Z1</target>
-                    <comment>Übergang zur Fallunterscheidung</comment>
-                    <condition>
-                        <name>B1</name>
-                        <terms>
-                            <operation>List.length(Module.filled()) == 2</operation>
-                        </terms>
-                    </condition>
+                    <name>B1</name>
+                    <explanation>Übergang zur Fallunterscheidung</explanation>
+                    <conditions>
+                        <condition>
+                            <terms>
+                                <operation>List.length(Module.filled()) === 2</operation>
+                            </terms>
+                        </condition>
+                    </conditions>
                 </transition>
             </transitions>
         </state>
         <state>
-            <name>Z1</name>
-            <description>Welche Felder?</description>
-            <comment>Fallunterscheidung</comment>
+            <id>Z1</id>
+            <name>Welche Felder?</name>
+            <explanation>Fallunterscheidung</explanation>
             <type>JUNCTION</type>
             <transitions>
                 <transition>
                     <target>Z1a</target>
-                    <comment>Übergang zu Fall 1</comment>
-                    <condition>
-                        <name>B1a</name>
-                        <terms>
-                            <operation>Module.filled(Y, W)</operation>
-                        </terms>
-                    </condition>
+                    <name>B1a</name>
+                    <explanation>Übergang zu Fall 1</explanation>
+                    <conditions>
+                        <condition>
+                            <terms>
+                                <operation>Module.filled(Y, W)</operation>
+                            </terms>
+                        </condition>
+                    </conditions>
                 </transition>
                 <transition>
                     <target>Z1b</target>
-                    <comment>Übergang zu Fall 2</comment>
-                    <condition>
-                        <name>B1b</name>
-                        <terms>
-                            <operation>Module.filled(N, W)</operation>
-                        </terms>
-                    </condition>
+                    <name>B1b</name>
+                    <explanation>Übergang zu Fall 2</explanation>
+                    <conditions>
+                        <condition>
+                            <terms>
+                                <operation>Module.filled(N, W)</operation>
+                            </terms>
+                        </condition>
+                    </conditions>
                 </transition>
                 <transition>
                     <target>Z1c</target>
-                    <comment>Übergang zu Fall 3</comment>
-                    <condition>
-                        <name>B1c</name>
-                        <terms>
-                            <operation>Module.filled(N, Y)</operation>
-                        </terms>
-                    </condition>
+                    <name>B1c</name>
+                    <explanation>Übergang zu Fall 3</explanation>
+                    <conditions>
+                        <condition>
+                            <terms>
+                                <operation>Module.filled(N, Y)</operation>
+                            </terms>
+                        </condition>
+                    </conditions>
                 </transition>
             </transitions>
         </state>
         <state>
-            <name>Z1a</name>
-            <description>N berechnet</description>
-            <comment>Fall 1: Y und W gegeben, N gesucht</comment>
-            <importance>HIGH</importance>
+            <id>Z1a</id>
+            <name>N berechnet</name>
+            <explanation>Fall 1: Y und W gegeben, N gesucht</explanation>
             <type>STATE</type>
-            <action>
-                <operation>N = Y * W</operation>
-            </action>
-            <!--Kein Übergang (Endzustand)-->
+            <importance>HIGH</importance>
+            <actions>
+                <operation>N.setValue(Y * W)</operation>
+            </actions>
+            <!--Kein
+            Übergang (Endzustand)-->
         </state>
         <state>
-            <name>Z1b</name>
-            <description>Y berechnet</description>
-            <comment>Fall 2: N und W gegeben, Y gesucht</comment>
-            <importance>HIGH</importance>
+            <id>Z1b</id>
+            <name>Y berechnet</name>
+            <explanation>Fall 2: N und W gegeben, Y gesucht</explanation>
             <type>STATE</type>
-            <action>
-                <operation>Y = N / W</operation>
-            </action>
-            <!--Kein Übergang (Endzustand)-->
+            <importance>HIGH</importance>
+            <actions>
+                <operation>Y.setValue(N / W)</operation>
+            </actions>
+            <!--Kein
+            Übergang (Endzustand)-->
         </state>
         <state>
-            <name>Z1c</name>
-            <description>W berechnet</description>
-            <comment>Fall 3: N und Y gegeben, W gesucht</comment>
-            <importance>HIGH</importance>
+            <id>Z1c</id>
+            <name>W berechnet</name>
+            <explanation>Fall 3: N und Y gegeben, W gesucht</explanation>
             <type>STATE</type>
-            <action>
-                <operation>W = N / Y</operation>
-            </action>
-            <!--Kein Übergang (Endzustand)-->
+            <importance>HIGH</importance>
+            <actions>
+                <operation>W.setValue(N / Y)</operation>
+            </actions>
+            <!--Kein
+            Übergang (Endzustand)-->
         </state>
     </states>
 </module>

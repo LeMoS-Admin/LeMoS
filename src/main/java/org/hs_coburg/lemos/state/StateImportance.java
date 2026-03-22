@@ -2,18 +2,19 @@ package org.hs_coburg.lemos.state;
 
 public enum StateImportance
 {
-    LOW(1),
-    HIGH(2);
+	ZERO(0),
+	LOW(1),
+	HIGH(2);
 
-    private final int importance;
+	private final int importance;
 
-    StateImportance(int importance)
-    {
-        this.importance = importance;
-    }
+	StateImportance(int importance)
+	{
+		this.importance = importance;
+	}
 
-    public int asNumber()
-    {
-        return importance;
-    }
+	public int asNumber()
+	{
+		return importance;
+	}
 }

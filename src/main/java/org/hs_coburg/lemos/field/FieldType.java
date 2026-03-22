@@ -2,9 +2,22 @@ package org.hs_coburg.lemos.field;
 
 public enum FieldType
 {
-    PLAIN,
-    SPLIT,
-    LIST,
-    SELECTOR,
-    TABLE;
+	TEXT("TextField"),
+	PLAIN("PlainField"),
+	SPLIT("SplitField"),
+	SELECTOR("SelectorField"),
+	LIST("ListField"),
+	TABLE("TableField");
+
+	private final String name;
+
+	FieldType(String name)
+	{
+		this.name = name;
+	}
+
+	public String asName()
+	{
+		return name;
+	}
 }

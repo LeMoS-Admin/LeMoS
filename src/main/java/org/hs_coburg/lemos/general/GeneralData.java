@@ -10,34 +10,81 @@ import java.util.Objects;
 
 public class GeneralData
 {
-    public final String        heading;
-    public final String        explanation;
-    public final List<String>  sources;
-    public final Contact       contact;
-    public final Configuration config;
+	public final String        heading;
+	public final String        explanation;
+	public final List<String>  sources;
+	public final List<Contact> contacts;
+	public final Configuration config;
 
-    @JsonCreator
-    public GeneralData(@JsonProperty("heading") String heading,
-                       @JsonProperty("explanation") String explanation,
-                       @JsonProperty("sources") List<String> sources,
-                       @JsonProperty("contact") Contact contact,
-                       @JsonProperty("config") Configuration config)
-    {
-        this.heading     = Objects.requireNonNull(heading, "Missing required attribute 'heading'");
-        this.explanation = Objects.requireNonNullElse(explanation, "");
-        this.sources     = Objects.requireNonNullElse(sources, Collections.emptyList());
-        this.contact     = Objects.requireNonNullElse(contact, new Contact(null));
-        this.config      = Objects.requireNonNullElse(config, new Configuration(null, null, null));
-    }
+	@JsonCreator
+	public GeneralData(@JsonProperty("heading") String heading,
+					   @JsonProperty("explanation") String explanation,
+					   @JsonProperty("sources") List<String> sources,
+					   @JsonProperty("contacts") List<Contact> contacts,
+					   @JsonProperty("config") Configuration config)
+	{
+		this.heading     = Objects.requireNonNull(heading, "Missing required attribute 'heading'");
+		this.explanation = Objects.requireNonNullElse(explanation, "");
+		this.sources     = Objects.requireNonNullElse(sources, Collections.emptyList());
+		this.contacts    = Objects.requireNonNullElse(contacts, Collections.emptyList());
+		this.config      = Objects.requireNonNullElse(config, new Configuration(null, null, null));
+	}
 
-    @Override
-    public String toString()
-    {
-        return "GeneralData:" +
-               "\n\t" + "heading: '" + StringHelper.get(heading) + '\'' +
-               "\n\t" + "explanation: '" + StringHelper.get(explanation) + '\'' +
-               "\n\t" + "sources: " + StringHelper.get(sources) +
-               "\n\t" + "contact: " + StringHelper.get(contact) +
-               "\n\t" + "config: " + StringHelper.get(config);
-    }
+	public String generateSourcesHTML()
+	{
+		if (sources.isEmpty())
+		{
+			return "Keine Quellen hinterlegt";
+		}
+
+		StringBuilder sourcesHTML = new StringBuilder();
+		String        template    = "<li>{{source}}</li>\n";
+
+		sourcesHTML.append("<ul>");
+		for (String source : sources)
+		{
+			sourcesHTML.append(template.replace("{{source}}", source));
+		}
+		sourcesHTML.append("</ul>");
+
+		return sourcesHTML.toString();
+	}
+
+	public String generateContactsHTML()
+	{
+		if (contacts.isEmpty())
+		{
+			return "Keine Kontakte hinterlegt";
+		}
+
+		StringBuilder contactsHTML = new StringBuilder();
+		for (Contact contact : contacts)
+		{
+			contactsHTML.append(contact.generateContactHTML());
+		}
+		return contactsHTML.toString();
+	}
+
+	public String generateBigStepEnabledStateCSS()
+	{
+		if (config.differentStepSizes)
+		{
+			return "";
+		}
+		else
+		{
+			return "display: none;";
+		}
+	}
+
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + ":" +
+			   "\n\t" + "heading: '" + StringHelper.get(heading) + '\'' +
+			   "\n\t" + "explanation: '" + StringHelper.get(explanation) + '\'' +
+			   "\n\t" + "sources: " + StringHelper.get(sources) +
+			   "\n\t" + "contacts: " + StringHelper.get(contacts) +
+			   "\n\t" + "config: " + StringHelper.get(config);
+	}
 }
