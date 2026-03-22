@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=../../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S1
+  explanation: "#main .content > ul li:first-child a:hover"
+  initialization:
+    - S.setValue("#main .content > ul li:first-child a:hover")

@@ -13,6 +13,16 @@ export default class FieldInteractor
 		}
 	}
 
+	get value()
+	{
+		return this.getValue();
+	}
+
+	set value(value)
+	{
+		return this.setValue(value);
+	}
+
 	_backup()
 	{
 		return this._fieldManager.backup();
@@ -41,17 +51,7 @@ export default class FieldInteractor
 	{
 		// Ermöglicht implizite Umwandlung des Felds in einen String
 		// Hinweis: direkter Zugriff auf getValue()-Methode der FieldManager, damit auch Tabellen durch JS-Objekte repräsentiert werden (this.getValue() ist überschrieben)
-		return this._fieldManager.getValue().toString();
-	}
-
-	get value()
-	{
-		return this.getValue();
-	}
-
-	set value(value)
-	{
-		return this.setValue(value);
+		return String(this._fieldManager.getValue());
 	}
 
 	getValue()

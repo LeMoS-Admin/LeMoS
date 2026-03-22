@@ -1,0 +1,621 @@
+# yaml-language-server: $schema=../../LeMoS-Modul-Schema.json
+general:
+  heading: Boxmodelle vergleichen
+  explanation: |
+    Alle Elemente einer Webseite haben eine Box, die unter anderem ihre Umrandung und den Abstand zu anderen Boxen definiert.<br>
+    Konkret besteht jede Box neben dem Inhalt aus drei Schichten, von innen nach außen lauten diese 'padding' (Innenabstand), 'border' (Rahmendicke), 'margin' (Außenabstand).<br>
+    <br>
+    Der Außenabstand jedoch kein fester Teil der Box, er ist eher wie ein minimaler Abstand zu anderen Boxen zu verstehen.<br>
+    Bei zwei nebeneinander liegenden Boxen werden die Außenabstände daher nicht addiert, sondern lediglich der größere Wert als Abstand eingehalten.<br>
+    <br>
+    Für die Auswirkung der beiden anderen Schichten gibt es hingegen zwei verschiedene Modelle: 'content-box' und 'border-box'.<br>
+    Die 'content-box' ist das Standardverhalten und berechnet die tatsächliche Größe der Box wie folgt: 
+    Gesamtgröße = Eingestellte Größe + Innenabstand + Rahmendicke, für die Größe des eigentlichen Inhalts gilt somit: Inhalt = Eingestellte Größe<br>
+    Bei dem alternativen Modell 'border-box' inkludiert die angegebene Größe der Box den Innenabstand und die Rahmendicke, somit gilt: 
+    Gesamtgröße = Eingestellte Größe, die Größe des eigentlichen Inhalts berechnet sich somit wie folgt: Inhalt = Eingestellte Größe - Innenabstand - Rahmendicke<br>
+    <br>
+    Um diese Unterschiede greifbarer zu machen, ermöglicht dieses Lernmodul den interaktiven Vergleich der beiden Modelle.
+  sources:
+    - Webtechnologien-Skript zu CSS
+    - <a href=https://developer.mozilla.org/de/docs/Learn_web_development/Core/Styling_basics/Box_model' target="_blank">Online-Dokumentation</a>
+  contacts:
+    - name: Professor Dr. Dieter Wißmann
+      purpose: Fachliche Fragen
+      data:
+        Telefon: 09561 317-152
+        E-Mail: dieter.wissmann@hs-coburg.de
+        Büro: 2-127
+    - name: Professor Dr. Dieter Wißmann
+      purpose: Technische Fragen
+      data:
+        Telefon: 09561 317-152
+        E-Mail: dieter.wissmann@hs-coburg.de
+        Büro: 2-127
+  settings:
+    lemosVersion: 1.0.0
+    differentStepSizes: false
+  logger:
+    minWidth: 120
+      
+fields:
+  - id: Typ
+    name: Aufgabentyp
+    explanation: |
+      Für den Vergleich der Box-Modelle gibt es zwei Herangehensweisen: <br>
+      - Eingestellte Größe ist gegeben: die eingestellten Abmessungen der Boxen sind gegeben, somit sind die resultierenden Inhalts- und Boxgrößen zu berechnen. <br>
+      - Größe des Inhalts ist gegeben: die Soll-Größe des Inhalts ist gegeben, somit sind die dafür einzustellenden Abmessungen sowie die resultierenden Boxgrößen zu berechnen. <br>
+      - Größe der Boxen ist gegeben: die Soll-Größe der Box ist gegeben, somit sind die dafür einzustellenden Abmessungen sowie die resultierenden Inhaltsgrößen zu berechnen.
+    type: SELECT
+    options:
+      - id: Einstellwerte
+        name: Eingestellte Größe ist gegeben
+      - id: Inhaltswerte
+        name: Größe des Inhalts ist gegeben
+      - id: Boxwerte
+        name: Größe der Boxen ist gegeben
+    style:
+      row: 1
+      column: 1
+      width: 4
+  - id: B
+    name: Breite
+    explanation: |
+      Bei Aufgabentyp 'Eingestellte Größe ist gegeben': über width-Attribut eingestellte Breite der Boxen (in Pixeln)
+      Bei Aufgabentyp 'Größe des Inhalts ist gegeben': Soll-Breite des Inhalts (in Pixeln)
+      Bei Aufgabentyp 'Größe der Boxen ist gegeben': Soll-Breite der Boxen (in Pixeln)
+    type: TEXT
+    datatype: INTEGER
+    style:
+      row: 2
+      column: 1
+      width: 2
+  - id: H
+    name: Höhe
+    explanation: |
+      Bei Aufgabentyp 'Eingestellte Größe ist gegeben': über height-Attribut eingestellte Höhe der Boxen (in Pixeln)
+      Bei Aufgabentyp 'Größe des Inhalts ist gegeben': Soll-Höhe des Inhalts (in Pixeln)
+      Bei Aufgabentyp 'Größe der Boxen ist gegeben': Soll-Höhe der Boxen (in Pixeln)
+    type: TEXT
+    datatype: INTEGER
+    style:
+      row: 2
+      column: 3
+      width: 2
+  - id: MT
+    name: Oberer Außenabstand
+    explanation: "CSS-Attribut: margin-top"
+    type: TEXT
+    datatype: INTEGER
+    style:
+      row: 1
+      column: 7
+      width: 2
+  - id: BT
+    name: Obere Rahmendicke
+    explanation: "CSS-Attribut: border-top"
+    type: TEXT
+    datatype: INTEGER
+    style:
+      row: 2
+      column: 7
+      width: 2
+  - id: PT
+    name: Oberer Innenabstand
+    explanation: "CSS-Attribut: padding-top"
+    type: TEXT
+    datatype: INTEGER
+    style:
+      row: 3
+      column: 7
+      width: 2
+  - id: ML
+    name: Linker Außenabstand
+    explanation: "CSS-Attribut: margin-left"
+    type: TEXT
+    datatype: INTEGER
+    style:
+      row: 4
+      column: 1
+      width: 2
+  - id: BL
+    name: Linke Rahmendicke
+    explanation: "CSS-Attribut: border-left"
+    type: TEXT
+    datatype: INTEGER
+    style:
+      row: 4
+      column: 3
+      width: 2
+  - id: PL
+    name: Linker Innenabstand
+    explanation: "CSS-Attribut: padding-left"
+    type: TEXT
+    datatype: INTEGER
+    style:
+      row: 4
+      column: 5
+      width: 2
+  - id: MR
+    name: Rechter Außenabstand
+    explanation: "CSS-Attribut: margin-right"
+    type: TEXT
+    datatype: INTEGER
+    style:
+      row: 4
+      column: 13
+      width: 2
+  - id: BR
+    name: Rechte Rahmendicke
+    explanation: "CSS-Attribut: border-right"
+    type: TEXT
+    datatype: INTEGER
+    style:
+      row: 4
+      column: 11
+      width: 2
+  - id: PR
+    name: Rechter Innenabstand
+    explanation: "CSS-Attribut: padding-right"
+    type: TEXT
+    datatype: INTEGER
+    style:
+      row: 4
+      column: 9
+      width: 2
+  - id: MB
+    name: Unterer Außenabstand
+    explanation: "CSS-Attribut: margin-bottom"
+    type: TEXT
+    datatype: INTEGER
+    style:
+      row: 7
+      column: 7
+      width: 2
+  - id: BB
+    name: Untere Rahmendicke
+    explanation: "CSS-Attribut: border-bottom"
+    type: TEXT
+    datatype: INTEGER
+    style:
+      row: 6
+      column: 7
+      width: 2
+  - id: PB
+    name: Unterer Innenabstand
+    explanation: "CSS-Attribut: padding-bottom"
+    type: TEXT
+    datatype: INTEGER
+    style:
+      row: 5
+      column: 7
+      width: 2
+  - id: CBox
+    name: Content-Box
+    explanation: "Hinweis: bei Content-Boxen entspricht die Einstellbreite stets der Boxbreite."
+    type: INFO
+    style:
+      row: 8
+      column: 1
+      width: 6
+  - id: CBox_EB
+    name: Einstellbreite
+    explanation: Breite, die über das width-Attribut einzustellen wäre
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 9
+      column: 1
+      width: 3
+  - id: CBox_EH
+    name: Einstellhöhe
+    explanation: Höhe, die über das height-Attribut einzustellen wäre
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 9
+      column: 4
+      width: 3
+  - id: CBox_IB
+    name: Inhaltsbreite
+    explanation: Breite, die dem Inhalt der Box tatsächlich zur Verfügung steht
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 10
+      column: 1
+      width: 3
+  - id: CBox_IH
+    name: Inhaltshöhe
+    explanation: Höhe, die dem Inhalt der Box tatsächlich zur Verfügung steht
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 10
+      column: 4
+      width: 3
+  - id: CBox_BB
+    name: Boxbreite
+    explanation: Breite, die die eigentliche Box (das heißt exklusive Außenabständen) hat
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 11
+      column: 1
+      width: 3
+  - id: CBox_BH
+    name: Boxhöhe
+    explanation: Breite, die die eigentliche Box (das heißt exklusive Außenabständen) hat
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 11
+      column: 4
+      width: 3
+  - id: CBox_GB
+    name: Gesamtbreite
+    explanation: Breite, die die Box auf der Webseite mindestens benötigt (das heißt inklusive Außenabständen)
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 12
+      column: 1
+      width: 3
+  - id: CBox_GH
+    name: Gesamthöhe
+    explanation: Höhe, die die Box auf der Webseite mindestens benötigt (das heißt inklusive Außenabständen)
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 12
+      column: 4
+      width: 3
+  - id: CBox_WB
+    name: Webseitenbreite für zwei Boxen
+    explanation: Breite, die die Webseite mindestens haben muss, damit zwei dieser Boxen nebeneinander passen
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 13
+      column: 1
+      width: 3
+  - id: CBox_WH
+    name: Webseitenhöhe für zwei Boxen
+    explanation: Höhe, die die Webseite mindestens haben muss, damit zwei dieser Boxen übereinander passen
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 13
+      column: 4
+      width: 3
+  - id: BBox
+    name: Border-Box
+    type: INFO
+    explanation: "Hinweis: bei Border-Boxen entspricht die Einstellbreite stets der Inhaltsbreite."
+    style:
+      row: 8
+      column: 9
+      width: 6
+  - id: BBox_EB
+    name: Einstellbreite
+    explanation: Breite, die über das width-Attribut einzustellen wäre
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 9
+      column: 9
+      width: 3
+  - id: BBox_EH
+    name: Einstellhöhe
+    explanation: Höhe, die über das height-Attribut einzustellen wäre
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 9
+      column: 12
+      width: 3
+  - id: BBox_IB
+    name: Inhaltsbreite
+    explanation: Breite, die dem Inhalt der Box tatsächlich zur Verfügung steht
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 10
+      column: 9
+      width: 3
+  - id: BBox_IH
+    name: Inhaltshöhe
+    explanation: Höhe, die dem Inhalt der Box tatsächlich zur Verfügung steht
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 10
+      column: 12
+      width: 3
+  - id: BBox_BB
+    name: Boxbreite
+    explanation: Breite, die die eigentliche Box (das heißt exklusive Außenabständen) hat
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 11
+      column: 9
+      width: 3
+  - id: BBox_BH
+    name: Boxhöhe
+    explanation: Breite, die die eigentliche Box (das heißt exklusive Außenabständen) hat
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 11
+      column: 12
+      width: 3
+  - id: BBox_GB
+    name: Gesamtbreite
+    explanation: Breite, die die Box auf der Webseite mindestens benötigt (das heißt inklusive Außenabständen)
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 12
+      column: 9
+      width: 3
+  - id: BBox_GH
+    name: Gesamthöhe
+    explanation: Höhe, die die Box auf der Webseite mindestens benötigt (das heißt inklusive Außenabständen)
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 12
+      column: 12
+      width: 3
+  - id: BBox_WB
+    name: Webseitenbreite für zwei Boxen
+    explanation: Breite, die die Webseite mindestens haben muss, damit zwei dieser Boxen nebeneinander passen
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 13
+      column: 9
+      width: 3
+  - id: BBox_WH
+    name: Webseitenhöhe für zwei Boxen
+    explanation: Höhe, die die Webseite mindestens haben muss, damit zwei dieser Boxen übereinander passen
+    type: TEXT
+    datatype: INTEGER
+    usage: OUTPUT
+    style:
+      row: 13
+      column: 12
+      width: 3
+
+states:
+  - id: Z0
+    name: Lernmodul initialisiert
+    explanation: Einstieg
+    type: ENTRY
+    actions:
+      - "Module.print('Willkommen beim Lernmodul zum Vergleich der Boxmodelle.')"
+      - "Module.print('Bitte konfiguriere folgende Werte oder lade ein Szenario:')"
+      - "Module.print('- Aufgabentyp')"
+      - "Module.print('- Breite (abhängig vom Aufgabentyp)')"
+      - "Module.print('- Höhe (abhängig vom Aufgabentyp)')"
+      - "Module.print('- Außenabstände (alle Seiten)')"
+      - "Module.print('- Rahmendicken (alle Seiten)')"
+      - "Module.print('- Innenabstände (alle Seiten)')"
+    transitions:
+      - target: Z1
+        conditions:
+          - message: |
+              `Bitte konfiguriere folgende Werte oder lade ein Szenario:
+              - Breite (abhängig vom Aufgabentyp)
+              - Höhe (abhängig vom Aufgabentyp)
+              - Außenabstände (alle Seiten)
+              - Rahmendicken (alle Seiten)
+              - Innenabstände (alle Seiten)`
+            terms:
+              - Fields.allFilled()
+  - id: Z1
+    name: Aufgabentyp?
+    type: JUNCTION
+    transitions:
+      - target: Z1a
+        conditions:
+          - terms:
+              - Typ.equals("Einstellwerte")
+      - target: Z1b
+        conditions:
+          - terms:
+              - Typ.equals("Inhaltswerte")
+      - target: Z1c
+        conditions:
+          - terms:
+              - Typ.equals("Boxwerte")
+
+# Aufgabentyp 'Einstellwerte'
+  - id: Z1a
+    name: Aufgabentyp 'Einstellwerte' – Einstellgrößen übernommen
+    actions:
+      - "Module.print('Die Einstellgrößen sind gegeben und werden daher lediglich übernommen.')"
+      - CBox_EB.value = B
+      - CBox_EH.value = H
+      - BBox_EB.value = B
+      - BBox_EH.value = H
+      - "Module.print('')"
+    transitions:
+      - target: Z2a
+  - id: Z2a
+    name: Aufgabentyp 'Einstellwerte' – Inhaltsgrößen berechnet
+    actions:
+      - "Module.print('Die Inhaltsgrößen für Content-Boxen berechnen sich wie folgt:')"
+      - "Module.print('Inhaltsbreite = Einstellbreite - Linke Rahmendicke - Linker Innenabstand - Inhaltsbreite - Rechte Rahmendicke - Rechter Innenabstand')"
+      - "Module.print(`Inhaltsbreite = ${CBox_EB} - ${BL} - ${PL} - ${PR} - ${BR}`)"
+      - CBox_IB.value = CBox_EB - BL - PL - PR - BR
+      - "Module.print('Inhaltshöhe = Einstellhöhe - Obere Rahmendicke - Oberer Innenabstand - Inhaltshöhe - Untere Rahmendicke - Unterer Innenabstand')"
+      - "Module.print(`Inhaltshöhe = ${CBox_EH} - ${BT} - ${PT} - ${PB} - ${BB}`)"
+      - CBox_IH.value = CBox_EH - BT - PT - PB - BB
+      - "Module.print('Die Inhaltsgrößen für Border-Boxen entsprechen den Einstellgrößen und werden daher lediglich übernommen.')"
+      - BBox_IB.value = BBox_EB.value
+      - BBox_IH.value = BBox_EH.value
+      - "Module.print('')"
+    transitions:
+      - target: Z3a
+  - id: Z3a
+    name: Aufgabentyp 'Einstellwerte' – Boxgrößen berechnet
+    actions:
+      - "Module.print('Die Boxgrößen für Content-Boxen entsprechen den Einstellgrößen und werden daher lediglich übernommen.')"
+      - CBox_BB.value = BBox_EB.value
+      - CBox_BH.value = BBox_EH.value
+      - "Module.print('Die Boxgrößen für Border-Boxen berechnen sich wie folgt:')"
+      - "Module.print('Boxbreite = Linke Rahmendicke + Linker Innenabstand + Einstellbreite + Rechte Rahmendicke + Rechter Innenabstand')"
+      - "Module.print(`Boxbreite = ${BL} + ${PL} + ${CBox_EB} + ${PR} + ${BR}`)"
+      - BBox_BB.value = BL + PL + CBox_EB + PR + BR
+      - "Module.print('Boxhöhe = Obere Rahmendicke + Oberer Innenabstand + Einstellhöhe + Untere Rahmendicke + Unterer Innenabstand')"
+      - "Module.print(`Boxhöhe = ${BT} + ${PT} + ${CBox_EH} + ${PB} + ${BB}`)"
+      - BBox_BH.value = BT + PT + CBox_EH + PB + BB
+      - "Module.print('')"
+    transitions:
+      - target: Z4
+
+# Aufgabentyp 'Inhaltswerte'
+  - id: Z1b
+    name: Aufgabentyp 'Inhaltswerte' – Inhaltsgrößen übernommen
+    actions:
+      - "Module.print('Die Inhaltsgrößen sind gegeben und werden daher lediglich übernommen.')"
+      - CBox_IB.value = B
+      - CBox_IH.value = H
+      - BBox_IB.value = B
+      - BBox_IH.value = H
+      - "Module.print('')"
+    transitions:
+      - target: Z2b
+  - id: Z2b
+    name: Aufgabentyp 'Inhaltswerte' – Einstellgrößen berechnet
+    actions:
+      - "Module.print('Die Einstellgrößen für Content-Boxen berechnen sich wie folgt:')"
+      - "Module.print('Einstellbreite = Linke Rahmendicke + Linker Innenabstand + Inhaltsbreite + Rechte Rahmendicke + Rechter Innenabstand')"
+      - "Module.print(`Einstellbreite = ${BL} + ${PL} + ${CBox_IB} + ${PR} + ${BR}`)"
+      - CBox_EB.value = BL + PL + CBox_IB + PR + BR
+      - "Module.print('Einstellhöhe = Obere Rahmendicke + Oberer Innenabstand + Inhaltshöhe + Untere Rahmendicke + Unterer Innenabstand')"
+      - "Module.print(`Einstellhöhe = ${BT} + ${PT} + ${CBox_IH} + ${PB} + ${BB}`)"
+      - CBox_EH.value = BT + PT + CBox_IH + PB + BB
+      - "Module.print('Die Einstellgrößen für Border-Boxen entsprechen den Inhaltsgrößen und werden daher lediglich übernommen.')"
+      - BBox_EB.value = BBox_IB.value
+      - BBox_EH.value = BBox_IH.value
+      - "Module.print('')"
+    transitions:
+      - target: Z3b
+  - id: Z3b
+    name: Aufgabentyp 'Inhaltswerte' – Boxgrößen berechnet
+    actions:
+      - "Module.print('Die Boxgrößen berechnen sich wie folgt:')"
+      - "Module.print('Boxbreite = Linke Rahmendicke + Linker Innenabstand + Inhaltsbreite + Rechte Rahmendicke + Rechter Innenabstand')"
+      - "Module.print(`Boxbreite (Content-Box) = ${BL} + ${PL} + ${CBox_IB} + ${PR} + ${BR}`)"
+      - "Module.print(`Boxbreite (Border-Box) = ${BL} + ${PL} + ${BBox_IB} + ${PR} + ${BR}`)"
+      - CBox_BB.value = BL + PL + CBox_IB + PR + BR
+      - BBox_BB.value = BL + PL + BBox_IB + PR + BR
+      - "Module.print('Boxhöhe = Obere Rahmendicke + Oberer Innenabstand + Inhaltshöhe + Untere Rahmendicke + Unterer Innenabstand')"
+      - "Module.print(`Boxhöhe (Content-Box) = ${BT} + ${PT} + ${CBox_IH} + ${PB} + ${BB}`)"
+      - "Module.print(`Boxhöhe (Border-Box) = ${BT} + ${PT} + ${BBox_IH} + ${PB} + ${BB}`)"
+      - CBox_BH.value = BT + PT + CBox_IH + PB + BB
+      - BBox_BH.value = BT + PT + BBox_IH + PB + BB
+      - "Module.print('')"
+    transitions:
+      - target: Z4
+
+  # Aufgabentyp 'Boxwerte'
+  - id: Z1c
+    name: Aufgabentyp 'Boxwerte' – Boxgrößen übernommen
+    actions:
+      - "Module.print('Die Boxgrößen sind gegeben und werden daher lediglich übernommen.')"
+      - CBox_BB.value = B
+      - CBox_BH.value = H
+      - BBox_BB.value = B
+      - BBox_BH.value = H
+      - "Module.print('')"
+    transitions:
+      - target: Z2c
+  - id: Z2c
+    name: Aufgabentyp 'Boxwerte' – Einstellgrößen berechnet
+    actions:
+      - "Module.print('Die Einstellgrößen für Content-Boxen entsprechen den Boxgrößen und werden daher lediglich übernommen.')"
+      - CBox_EB.value = CBox_BB.value
+      - CBox_EH.value = CBox_BH.value
+      - "Module.print('Die Einstellgrößen für Border-Boxen berechnen sich wie folgt:')"
+      - "Module.print('Einstellbreite = Boxbreite - Linke Rahmendicke - Linker Innenabstand - Rechte Rahmendicke - Rechter Innenabstand')"
+      - "Module.print(`Einstellbreite = ${BBox_BB} - ${BL} - ${PL} - ${PR} - ${BR}`)"
+      - BBox_EB.value = BBox_BB - BL - PL - PR - BR
+      - "Module.print('Einstellhöhe = Boxhöhe - Obere Rahmendicke - Oberer Innenabstand - Untere Rahmendicke - Unterer Innenabstand')"
+      - "Module.print(`Einstellhöhe = ${BBox_BH} - ${BT} - ${PT} - ${PB} - ${BB}`)"
+      - BBox_EH.value = BBox_BH - BT - PT - PB - BB
+      - "Module.print('')"
+    transitions:
+      - target: Z3c
+  - id: Z3c
+    name: Aufgabentyp 'Boxwerte' – Inhaltsgrößen berechnet
+    actions:
+      - "Module.print('Die Inhaltsgrößen berechnen sich wie folgt:')"
+      - "Module.print('Einstellbreite = Boxbreite - Linke Rahmendicke - Linker Innenabstand - Rechte Rahmendicke - Rechter Innenabstand')"
+      - "Module.print(`Einstellbreite = ${CBox_BB} - ${BL} - ${PL} - ${PR} - ${BR}`)"
+      - "Module.print(`Einstellbreite = ${BBox_BB} - ${BL} - ${PL} - ${PR} - ${BR}`)"
+      - CBox_IB.value = CBox_BB - BL - PL - PR - BR
+      - BBox_IB.value = BBox_BB - BL - PL - PR - BR
+      - "Module.print('Einstellhöhe = Boxhöhe - Obere Rahmendicke - Oberer Innenabstand - Untere Rahmendicke - Unterer Innenabstand')"
+      - "Module.print(`Einstellhöhe = ${CBox_BH} - ${BT} - ${PT} - ${PB} - ${BB}`)"
+      - "Module.print(`Einstellhöhe = ${BBox_BH} - ${BT} - ${PT} - ${PB} - ${BB}`)"
+      - CBox_IH.value = CBox_BH - BT - PT - PB - BB
+      - BBox_IH.value = BBox_BH - BT - PT - PB - BB
+      - "Module.print('')"
+    transitions:
+      - target: Z4
+
+# Weitere Schritte
+  - id: Z4
+    name: Gesamtgröße berechnet
+    actions:
+      - "Module.print('Die Gesamtgröße der Boxen berechnet sich wie folgt:')"
+      - "Module.print('Gesamtbreite = Linker Außenabstand + Boxbreite + Rechter Außenabstand')"
+      - "Module.print(`Gesamtbreite (Content-Box) = ${ML} + ${CBox_BB} + ${MR}`)"
+      - "Module.print(`Gesamtbreite (Border-Box) = ${ML} + ${BBox_BB} + ${MR}`)"
+      - CBox_GB.value = ML + CBox_BB + MR
+      - BBox_GB.value = ML + BBox_BB + MR
+      - "Module.print('Gesamthöhe = Oberer Außenabstand + Boxhöhe + Unterer Außenabstand')"
+      - "Module.print(`Gesamthöhe (Content-Box) = ${MT} + ${CBox_BH} + ${MB}`)"
+      - "Module.print(`Gesamthöhe (Border-Box) = ${MT} + ${BBox_BH} + ${MB}`)"
+      - CBox_GH.value = MT + CBox_BH + MB
+      - BBox_GH.value = MT + BBox_BH + MB
+      - "Module.print('')"
+    transitions:
+      - target: Z5
+  - id: Z5
+    name: Webseitengröße berechnet
+    actions:
+      - "Module.print('Die benötigte Webseitenbreite für zwei identische Boxen nebeneinander berechnet sich wie folgt:')"
+      - "Module.print('Gesamtbreite = Linker Außenabstand + Boxbreite + max(Rechter Außenabstand, Linker Außenabstand) + Boxbreite + Rechter Außenabstand')"
+      - "Module.print(`Gesamtbreite (Content-Box) = ${ML} + ${CBox_BB} + max(${MR}, ${ML}) + ${CBox_BB} + ${MR}`)"
+      - "Module.print(`Gesamtbreite (Border-Box) = ${ML} + ${BBox_BB} + max(${MR}, ${ML}) + ${BBox_BB} + ${MR}`)"
+      - CBox_WB.value = ML + CBox_BB + Math.max(MR.value, ML.value) + CBox_BB + MR
+      - BBox_WB.value = ML + BBox_BB + Math.max(MR.value, ML.value) + BBox_BB + MR
+      - "Module.print('Die benötigte Webseitenhöhe für zwei identische Boxen übereinander berechnet sich wie folgt:')"
+      - "Module.print('Gesamthöhe = Oberer Außenabstand + Boxhöhe + max(Unterer Außenabstand, Oberer Außenabstand) + Boxhöhe + Unterer Außenabstand')"
+      - "Module.print(`Gesamthöhe (Content-Box) = ${MT} + ${CBox_BH} + max(${MB}, ${MT}) + ${CBox_BH} + ${MB}`)"
+      - "Module.print(`Gesamthöhe (Border-Box) = ${MT} + ${BBox_BH} + max(${MB}, ${MT}) + ${BBox_BH} + ${MB}`)"
+      - CBox_WH.value = MT + CBox_BH + Math.max(MB.value, MT.value) + CBox_BH + MB
+      - BBox_WH.value = MT + BBox_BH + Math.max(MB.value, MT.value) + BBox_BH + MB

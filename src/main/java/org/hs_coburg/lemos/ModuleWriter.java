@@ -11,12 +11,12 @@ public class ModuleWriter
 {
     public static void writeModule(File targetFolder,
                                    String moduleName,
-                                   String libraryVersion,
+                                   String lemosVersion,
                                    String webXmlContent,
                                    String indexHtmlContent) throws IOException
     {
         assertTargetFolder(targetFolder);
-        selectLibrary(targetFolder, moduleName, libraryVersion);
+        selectLibrary(targetFolder, moduleName, lemosVersion);
         FileHelper.writeFile(new File(targetFolder, "WEB-INF/web.xml"), webXmlContent);
         FileHelper.writeFile(new File(targetFolder, "index.html"), indexHtmlContent);
     }
@@ -43,12 +43,12 @@ public class ModuleWriter
         }
     }
 
-    private static void selectLibrary(File targetFolder, String moduleName, String libraryVersion)
+    private static void selectLibrary(File targetFolder, String moduleName, String lemosVersion)
     {
         List<String> libs = Arrays.stream(new File(targetFolder, "libs").listFiles())
                                   .map(File::getName)
                                   .toList();
-        libraryVersion = "libVersion_" + libraryVersion;
+        String libraryVersion = "libVersion_" + lemosVersion;
         if (!libs.contains(libraryVersion))
         {
             // Wenn die Version nicht gefunden wurde oder "LATEST" lautet, wird die aktuellste Version (sollte die alphabetisch letzte sein) gewählt

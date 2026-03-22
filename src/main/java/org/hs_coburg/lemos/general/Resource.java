@@ -42,9 +42,9 @@ public class Resource
         }
         else
         {
-            String path = source.substring(source.indexOf("resources") + 9);  // Pfad vor dem resource-Ordner abschneiden
-            path = "./res" + path;                                            // Pfad zum resource-Ordner (res) des Lernmoduls ergänzen
-            path = path.replace("\\", "/");                                   // Potenzielle Probleme durch unterschiedliche Separatoren (/ oder \) auflösen
+            String path = "./res/" + source;  // Pfad zum resource-Ordner (res) des Lernmoduls ergänzen
+            path = path.replace("\\", "/");   // Potenzielle Probleme durch unterschiedliche Separatoren (/ oder \) auflösen
+            path = path.replace("//", "/");   // Potenzielle Probleme durch doppelte Separatoren (//) auflösen
             return StringHelper.escape(path);
         }
     }

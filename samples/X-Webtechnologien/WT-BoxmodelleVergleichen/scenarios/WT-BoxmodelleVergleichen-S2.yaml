@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=../../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S2
+  explanation: "Gegebene Inhaltsgröße"
+  initialization:
+    - Typ.value = "Inhaltswerte"
+    - B.value = 300
+    - H.value = 400
+    - ML.value = 11
+    - BL.value = 21
+    - PL.value = 31
+    - MT.value = 12
+    - BT.value = 22
+    - PT.value = 32
+    - MR.value = 13
+    - BR.value = 23
+    - PR.value = 33
+    - MB.value = 14
+    - BB.value = 24
+    - PB.value = 34

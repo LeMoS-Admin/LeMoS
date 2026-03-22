@@ -1,14 +1,14 @@
-import Logger from "./systemFunctions/Logger.js";
+import Module from "./systemFunctions/Module.js";
 import Controller from "./internalFunctions/Controller.js";
 
 export default class GlobalVariable
 {
 	constructor(name, value, isConstant)
 	{
-		this.name = name;
-		this.value = value;
-		this.initialValue = value;
-		this.isConstant = isConstant;
+		this._name = name;
+		this._value = value;
+		this._initialValue = value;
+		this._isConstant = isConstant;
 
 		if (!isConstant)	// Konstante Variablen müssen nicht verwaltet werden
 		{
@@ -16,36 +16,51 @@ export default class GlobalVariable
 		}
 	}
 
+	get value()
+	{
+		return this._value;
+	}
+
+	set value(value)
+	{
+		return this.setValue(value);
+	}
+
 	valueOf()
 	{
-		// Ermöglicht implizite Umwandlung des Felds in einen Wert
-		return this.value;
+		// Ermöglicht implizite Umwandlung der Variable in einen Wert
+		return this._value;
 	}
 
 	toString()
 	{
-		// Ermöglicht implizite Umwandlung des Felds in einen String
-		return String(this.value);
+		// Ermöglicht implizite Umwandlung der Variable in einen String
+		return String(this._value);
 	}
 
 	getValue()
 	{
-		return this.value;
+		return this._value;
 	}
 
 	setValue(value)
 	{
-		if (this.isConstant)
+		if (this._isConstant)
 		{
-			Logger.error(this.name + " is constant and therefore not changeable.")
+			Module.error(this._name + " is constant and therefore not changeable.")
 		}
-		this.value = value;
+		this._value = value;
 		return this;
+	}
+
+	getName()
+	{
+		return this._name;
 	}
 
 	_reset()
 	{
-		this.value = this.initialValue;
+		this.value = this._initialValue;
 		return this;
 	}
 }

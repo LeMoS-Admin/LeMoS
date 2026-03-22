@@ -75,9 +75,9 @@
           "additionalProperties": false,
           "required": [],
           "properties": {
-            "libraryVersion": {
+            "lemosVersion": {
               "type": "string",
-              "description": "Verwendete Version der Systembibliothek (Standard: 'LATEST')",
+              "description": "Erwartete Version des LeMoS (Standard: 'LATEST')",
               "examples": [
                 "1.0.0",
                 "LATEST"
@@ -234,7 +234,7 @@
                   },
                   "text": {
                     "type": "string",
-                    "description": "Anzuzeigender Inhalt oder Alternativtext, bei contentType TEXT zwingend erforderlich"
+                    "description": "Anzuzeigender Inhalt oder Alternativtext"
                   },
                   "resource": {
                     "$ref": "#/$defs/resource",
@@ -692,11 +692,11 @@
         },
         "allowEmpty": {
           "type": "boolean",
-          "description": "Leere Eingaben erlauben (Standard: false) \nNur bei usage INPUT berücksichtigt \nBei type INFO nicht berücksichtigt, da Infofelder für Benutzer stets unveränderlich sind \nFelder mit type SELECT gelten als leer, wenn eine leere Zeichenkette (bei emptyOption FALSE) bzw. die erste Option (bei emptyOption TRUE) gewählt wurde \nFelder mit type LIST oder TABLE gelten als leer, wenn alle Einträge leer sind"
+          "description": "Leere Eingaben erlauben (Standard: false) \nNur bei usage INPUT berücksichtigt \nBei type INFO nicht berücksichtigt, da Infofelder für Benutzer stets unveränderlich sind \nFelder mit type CHECK gelten als leer, wenn keine Option ausgewählt ist \nFelder mit type SELECT gelten als leer, wenn eine leere Zeichenkette (bei emptyOption FALSE) bzw. die erste Option (bei emptyOption TRUE) gewählt wurde \nFelder mit type LIST oder TABLE gelten als leer, wenn alle Einträge leer sind"
         },
         "datatype": {
           "type": "string",
-          "description": "Datentyp der Eingaben (Standard: 'STRING') \nNur bei usage INPUT berücksichtigt \nBei type INFO, SELECT und TABLE nicht berücksichtigt \nBei type SPLIT und LIST auf jeden Eintrag angewandt",
+          "description": "Datentyp der Eingaben (Standard: 'STRING') \nValidierung des Datentyps nur bei usage INPUT \nBei type INFO, CHECK, SELECT und TABLE nicht berücksichtigt \nBei type SPLIT und LIST auf jeden Eintrag angewandt \nBei type TEXT, SPLIT und LIST mit datatype NUMBER oder INTEGER: automatische Umwandlung der Werte in Zahlen, leere Zeichenketten werden zu NaN",
           "enum": [
             "INTEGER",
             "NUMBER",
@@ -722,15 +722,11 @@
         },
         "minLines": {
           "type": "integer",
-          "description": "Minimale Zeilenanzahl von Einträgen, nur bei multiline = true berücksichtigt, nicht mit fixLines kombinierbar (Standard: -1 = unbegrenzt)"
+          "description": "Minimale Zeilenanzahl von Einträgen, nur bei multiline = true berücksichtigt (Standard: 1)"
         },
         "maxLines": {
           "type": "integer",
-          "description": "Maximale Zeilenanzahl, muss mindestens 'minLines' entsprechen, nur bei multiline = true berücksichtigt, nicht mit fixLines kombinierbar (Standard: -1 = unbegrenzt)"
-        },
-        "fixLines": {
-          "type": "integer",
-          "description": "Feste Zeilenanzahl, nur bei multiline = true berücksichtigt, nicht mit minLines und/oder maxLines kombinierbar (Standard: -1 = unbegrenzt)"
+          "description": "Maximale Zeilenanzahl, muss mindestens 'minLines' entsprechen, nur bei multiline = true berücksichtigt (Standard: -1 = unbegrenzt)"
         }
       }
     },

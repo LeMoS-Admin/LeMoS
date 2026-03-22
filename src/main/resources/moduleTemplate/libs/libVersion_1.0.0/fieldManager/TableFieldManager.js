@@ -74,8 +74,8 @@ export default class TableFieldManager extends ExpandableFieldManager
 	getPrint()
 	{
 		let valueString = this.getEntries()
-				   .map(entry => entry.getPrint())
-				   .join(",\n\t");
+							  .map(entry => entry.getPrint())
+							  .join(",\n\t");
 		return "[\n\t" + valueString + "]"
 	}
 

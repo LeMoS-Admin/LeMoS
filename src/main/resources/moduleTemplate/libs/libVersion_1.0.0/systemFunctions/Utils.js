@@ -88,6 +88,11 @@ export default class Utils
 
 	static #extendArray()
 	{
+		Array.prototype.getLength = function ()
+		{
+			return this.length;
+		};
+
 		Array.prototype.first = function ()
 		{
 			return this.at(0);
@@ -121,7 +126,10 @@ export default class Utils
 		Array.prototype.remove = function (searchElement)
 		{
 			let index = this.indexOf(searchElement);
-			return this.removeIndex(index);
+			if (index !== -1)
+			{
+				return this.removeIndex(index);
+			}
 		};
 
 		Array.prototype.removeIndex = function (start, end = start + 1)
@@ -177,6 +185,11 @@ export default class Utils
 
 	static #extendMap()
 	{
+		Map.prototype.getLength = function ()
+		{
+			return this.size;
+		};
+
 		Map.prototype.remove = function (key)
 		{
 			return this.delete(key);
@@ -195,9 +208,21 @@ export default class Utils
 
 	static #extendString()
 	{
+		String.prototype.getLength = function ()
+		{
+			return this.length;
+		};
+
 		String.prototype.asNumber = function ()
 		{
-			return Number(this);
+			if (this.trim() === "") // "" würde zu 0 konvertiert und wäre somit nicht mehr leer
+			{
+				return NaN;
+			}
+			else
+			{
+				return Number(this.replace(",", ".")); // Dezimaltrennzeichen anpassen (Dezimalkomma durch Dezimalpunkt ersetzen)
+			}
 		};
 
 		String.prototype.insert = function (index, ...str)
@@ -207,9 +232,16 @@ export default class Utils
 					   .concat(this.slice(index, this.length));
 		};
 
-		String.prototype.remove = function (indexStart, indexEnd = indexStart)
+		String.prototype.remove = function (indexStart, indexEnd = indexStart + 1)
 		{
 			return this.slice(0, indexStart) + this.slice(indexEnd);
+		};
+
+		String.prototype.replaceAt = function (index, ...str)
+		{
+			return this.slice(0, index)
+					   .concat(...str)
+					   .concat(this.slice(index + 1, this.length));
 		};
 	}
 
@@ -219,10 +251,20 @@ export default class Utils
 		{
 			// Direkter Zugriff auf getValue()-Methode des FieldManagers, um Überschreibungen durch FieldInteractors zu umgehen
 			obj1 = obj1._fieldManager.getValue();
+			if (typeof obj1 === "number")
+			{
+				// Falls das Feld eine Zahl zurückgeliefert hat, muss diese zum Vergleich wieder zu einem String umgewandelt werden
+				obj1 = obj1.toString();
+			}
 		}
 		else if (obj1 instanceof FieldManager)
 		{
 			obj1 = obj1.getValue();
+			if (typeof obj1 === "number")
+			{
+				// Falls das Feld eine Zahl zurückgeliefert hat, muss diese zum Vergleich wieder zu einem String umgewandelt werden
+				obj1 = obj1.toString();
+			}
 		}
 		else if (typeof obj1 === "object" && Object.getPrototypeOf(obj1) === Object.prototype)
 		{
@@ -239,10 +281,20 @@ export default class Utils
 		{
 			// Direkter Zugriff auf getValue()-Methode des FieldManagers, um Überschreibungen durch FieldInteractors zu umgehen
 			obj2 = obj2._fieldManager.getValue();
+			if (typeof obj2 === "number")
+			{
+				// Falls das Feld eine Zahl zurückgeliefert hat, muss diese zum Vergleich wieder zu einem String umgewandelt werden
+				obj2 = obj2.toString();
+			}
 		}
 		else if (obj2 instanceof FieldManager)
 		{
 			obj2 = obj2.getValue();
+			if (typeof obj2 === "number")
+			{
+				// Falls das Feld eine Zahl zurückgeliefert hat, muss diese zum Vergleich wieder zu einem String umgewandelt werden
+				obj2 = obj2.toString();
+			}
 		}
 		else if (typeof obj2 === "object" && Object.getPrototypeOf(obj2) === Object.prototype)
 		{

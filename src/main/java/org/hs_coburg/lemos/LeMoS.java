@@ -2,7 +2,6 @@ package org.hs_coburg.lemos;
 
 import org.hs_coburg.lemos.module.LearningModule;
 import org.hs_coburg.lemos.util.FileHelper;
-import org.hs_coburg.lemos.util.StringHelper;
 
 import java.io.File;
 import java.util.Arrays;
@@ -30,9 +29,9 @@ public class LeMoS
         String moduleName = "Module";
         try
         {
-            File   moduleConfig = new File(args[0]).getCanonicalFile();
-            File   targetFolder = new File(args[1]).getCanonicalFile();
-            moduleName   = moduleConfig.getName().replace(FileHelper.getExtension(moduleConfig), "");
+            File moduleConfig = new File(args[0]).getCanonicalFile();
+            File targetFolder = new File(args[1]).getCanonicalFile();
+            moduleName = moduleConfig.getName().replace(FileHelper.getExtension(moduleConfig), "");
             readOptions(Arrays.copyOfRange(args, 2, args.length));
 
             System.out.println(moduleName + ": reading configuration");
@@ -40,12 +39,12 @@ public class LeMoS
             printLearningModule(module, moduleName);
 
             System.out.println(moduleName + ": interpreting configuration");
-            String libraryVersion   = module.general.settings.libraryVersion;
+            String lemosVersion     = module.general.settings.lemosVersion;
             String webXmlContent    = ModuleGenerator.generateWebXmlContent(module);
             String indexHtmlContent = ModuleGenerator.generateIndexHtmlContent(module);
 
             System.out.println(moduleName + ": writing module");
-            ModuleWriter.writeModule(targetFolder, moduleName, libraryVersion, webXmlContent, indexHtmlContent);
+            ModuleWriter.writeModule(targetFolder, moduleName, lemosVersion, webXmlContent, indexHtmlContent);
         }
         catch (Exception e)
         {

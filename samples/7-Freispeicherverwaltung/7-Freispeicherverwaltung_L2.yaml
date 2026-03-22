@@ -1,37 +1,55 @@
 # yaml-language-server: $schema=../LeMoS-Modul-Schema.json
 general:
-  heading: Freispeicherverwaltung
+  heading: Freispeicherverwaltung L2
   explanation: |
-                  Arbeitsspeicher verschiedener Prozesse mittels Bitmap verwalten (Verfahren: First Fit)<br>
-                  --> Speicherabschnitte können für Prozesse allokiert und freigegeben werden
+    Arbeitsspeicher verschiedener Prozesse mittels Bitmap verwalten (Verfahren: First Fit)<br>
+    --> Speicherabschnitte können für Prozesse allokiert und freigegeben werden<br>
+    L2 = Allokation und Freigabe als Zustände ausmodelliert
   settings:
-    libraryVersion: 1.0.0
+    lemosVersion: 1.0.0
   variables:
     - name: X
   functions:
+    - name: prozessAllokiert
+      implementation:
+        - return S.getAttribute("P").includes(X.value.get("P"))
     - name: speicherVerfügbar
       implementation:
         - |
-            S.restartIterator();
-            while(true) {
-              let index0 = S.findNextByAttribute("Z", 0);
-              if(index0 === undefined)
-                return false;
-              else
-                index0 = index0.get("N");
-
-              let index1 = S.findNextByAttribute("Z", 1);
-              if(index1 === undefined)
-                index1 = S.length();
-              else
-                index1 = index1.get("N");
-
-              let length = index1 - index0;
-              if(length >= X.value.get("G"))
-                return true;
-              else
-                return false;
-            }
+          S.restartIterator();
+          while(S.hasNext()) {
+            let index0 = S.findNextByAttribute("Z", 0);
+            if(index0 === undefined)
+              return false;
+            else
+              index0 = index0.get("N");
+          
+            let index1 = S.findNextByAttribute("Z", 1);
+            if(index1 === undefined)
+              index1 = S.getLength();
+            else
+              index1 = index1.get("N");
+          
+            let length = index1 - index0;
+            if(length >= X.value.get("G"))
+              return true;
+            else
+              continue;
+          }
+          return false;
+    - name: findeProzessStart
+      implementation:
+        - return S.findByAttribute("P", X.value.get("P")).get("N")
+    - name: findeProzessEnde
+      implementation:
+        - return S.findLastByAttribute("P", X.value.get("P")).get("N") + 1
+    - name: findeZustand
+      parameters:
+        - Zustand
+      implementation:
+        - let speicherEintrag = S.findNextByAttribute("Z", Zustand)
+        - if(speicherEintrag !== undefined) return speicherEintrag.get("N")
+        - else return S.getLength();
     - name: speicherSetzen
       parameters:
         - Prozess
@@ -39,7 +57,7 @@ general:
       implementation:
         - S.withEmptyEntries().fillAttribute("Z", Prozess, V.asNumber(), B.asNumber())
         - S.withEmptyEntries().fillAttribute("P", Zustand, V.asNumber(), B.asNumber())
-            
+
 
 fields:
   - id: E
@@ -51,8 +69,8 @@ fields:
       - message: Bei der Allokation von Speicher ist die zu allokierende Größe anzugeben, bei der Freigabe ist keine Größe anzugeben
         terms:
           - |
-              ((entry.get('A').getValue() === 'Allokation') && !entry.get('G').isEmpty()) ||
-              ((entry.get('A').getValue() === 'Freigabe') && entry.get('G').isEmpty())
+            ((entry.get('A').getValue() === 'Allokation') && !entry.get('G').isEmpty()) ||
+            ((entry.get('A').getValue() === 'Freigabe') && entry.get('G').isEmpty())
     initialEntries: 1
     innerFields:
       - id: A
@@ -93,8 +111,8 @@ fields:
       - message: Bei der Allokation von Speicher ist die zu allokierende Größe anzugeben, bei der Freigabe ist keine Größe anzugeben
         terms:
           - |
-              ((entry.get('A').getValue() === 'Allokation') && !entry.get('G').isEmpty()) ||
-              ((entry.get('A').getValue() === 'Freigabe') && entry.get('G').isEmpty())
+            ((entry.get('A').getValue() === 'Allokation') && !entry.get('G').isEmpty()) ||
+            ((entry.get('A').getValue() === 'Freigabe') && entry.get('G').isEmpty())
     initialEntries: 1
     innerFields:
       - id: A
@@ -139,6 +157,7 @@ fields:
         explanation: Nummer der Speicherzelle
         usage: OUTPUT
         type: TEXT
+        datatype: INTEGER
       - id: Z
         name: Zustand
         explanation: Aktuelle Verfügbarkeit der Speicherzelle, 0 für unbelegt, 1 für belegt
@@ -168,6 +187,7 @@ fields:
     explanation: Speicherzellennummer, ab der allokiert bzw. freigegeben werden soll
     usage: TEMP
     type: TEXT
+    datatype: INTEGER
     style:
       row: 3
       column: 1
@@ -176,6 +196,7 @@ fields:
     explanation: Speicherzellennummer, bis zu der allokiert bzw. freigegeben werden soll
     usage: TEMP
     type: TEXT
+    datatype: INTEGER
     style:
       row: 3
       column: 2
@@ -185,7 +206,7 @@ states:
     name: Lernmodul initialisiert
     type: ENTRY
     actions:
-      - for(let [index, field] of S.withEmptyEntries().entries()) field.get("N").setValue(index)
+      - S.withEmptyEntries().forEach((field, index) => field.get("N").value = index)
     transitions:
       - target: Z1
   - id: Z1
@@ -194,7 +215,7 @@ states:
     actions:
       - W.restartIterator()
     transitions:
-      - target: Z2  
+      - target: Z2
   - id: Z2
     name: Aktueller Eintrag definiert
     importance: LOW
@@ -205,7 +226,7 @@ states:
       - target: Z11
         conditions:
           - terms:
-              - X.value === undefined
+              - W.isAtEnd()
       - target: Z3a
         conditions:
           - terms:
@@ -222,7 +243,7 @@ states:
       - target: Z5a
         conditions:
           - terms:
-              - S.getAttribute("P").includes(X.value.get("P"))
+              - Own.prozessAllokiert()
   - id: Z3b
     name: Aktueller Eintrag allokierbar?
     type: JUNCTION
@@ -243,44 +264,39 @@ states:
     name: Von-Index definiert
     importance: LOW
     actions:
-      - let speicherEintrag = S.findByAttribute("P", X.value.get("P"))
-      - V.setValue(speicherEintrag.get("N"))
+      - V.value = Own.findeProzessStart()
     transitions:
       - target: Z7a
   - id: Z5b
     name: Von-Index definiert
     importance: LOW
     actions:
-      - let speicherEintrag = S.findNextByAttribute("Z", 0)
-      - V.setValue(speicherEintrag.get("N"))
+      - V.value = Own.findeZustand(0)
     transitions:
       - target: Z6b
   - id: Z6b
-    name: Bis-Index probiert
+    name: Bis-Index gefunden
     importance: LOW
     actions:
-      - let speicherEintrag = S.findNextByAttribute("Z", 1)
-      - if(speicherEintrag === undefined) B.setValue(S.length())
-      - else B.setValue(speicherEintrag.get("N"))
+      - B.value = Own.findeZustand(1)
     transitions:
       - target: Z5b
       - target: Z7b
         conditions:
           - terms:
-              - (B.asNumber() - V.asNumber()) >= X.value.get("G").asNumber()
+              - (B - V) >= X.value.get("G")
   - id: Z7a
     name: Bis-Index definiert
     importance: LOW
     actions:
-      - let speicherEintrag = S.findLastByAttribute("P", X.value.get("P"))
-      - V.setValue(speicherEintrag.get("N").asNumber() + 1)
+      - B.value = Own.findeProzessEnde()
     transitions:
       - target: Z8a
   - id: Z7b
     name: Bis-Index definiert
     importance: LOW
     actions:
-      - B.setValue(V.asNumber() + X.value.get("G").asNumber())
+      - B.value = V + X.value.get("G")
     transitions:
       - target: Z8b
   - id: Z8a
@@ -336,7 +352,7 @@ states:
       - target: Z20
         conditions:
           - terms:
-              - X.value === undefined
+              - E.isAtEnd()
   - id: Z19
     name: Aktueller Eintrag aus Ereignistabelle entfernt
     importance: LOW
@@ -359,7 +375,7 @@ states:
       - target: Z15a
         conditions:
           - terms:
-              - S.getAttribute("P").includes(X.value.get("P"))
+              - Own.prozessAllokiert()
   - id: Z13b
     name: Aktueller Eintrag allokierbar?
     type: JUNCTION
@@ -380,44 +396,39 @@ states:
     name: Von-Index definiert
     importance: LOW
     actions:
-      - let speicherEintrag = S.findByAttribute("P", X.value.get("P"))
-      - V.setValue(speicherEintrag.get("N"))
+      - V.value = Own.findeProzessStart()
     transitions:
       - target: Z17a
   - id: Z15b
     name: Von-Index definiert
     importance: LOW
     actions:
-      - let speicherEintrag = S.findNextByAttribute("Z", 0)
-      - V.setValue(speicherEintrag.get("N"))
+      - V.value = Own.findeZustand(0)
     transitions:
       - target: Z16b
   - id: Z16b
-    name: Bis-Index probiert
+    name: Bis-Index gefunden
     importance: LOW
     actions:
-      - let speicherEintrag = S.findNextByAttribute("Z", 1)
-      - if(speicherEintrag === undefined) B.setValue(S.length())
-      - else B.setValue(speicherEintrag.get("N"))
+      - B.value = Own.findeZustand(1)
     transitions:
       - target: Z15b
       - target: Z17b
         conditions:
           - terms:
-              - (B.asNumber() - V.asNumber()) >= X.value.get("G").asNumber()
+              - (B - V) >= X.value.get("G")
   - id: Z17a
     name: Bis-Index definiert
     importance: LOW
     actions:
-      - let speicherEintrag = S.findLastByAttribute("P", X.value.get("P"))
-      - B.setValue(speicherEintrag.get("N").asNumber() + 1)
+      - B.value = Own.findeProzessEnde()
     transitions:
       - target: Z18a
   - id: Z17b
     name: Bis-Index definiert
     importance: LOW
     actions:
-      - B.setValue(V.asNumber() + X.value.get("G").asNumber())
+      - B.value = V + X.value.get("G")
     transitions:
       - target: Z18b
   - id: Z18a

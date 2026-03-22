@@ -15,17 +15,17 @@ public class SelectField extends Field
 
     @JsonCreator
     public SelectField(@JsonProperty("id") String id,
-                         @JsonProperty("name") String name,
-                         @JsonProperty("explanation") String explanation,
-                         @JsonProperty("usage") FieldUsage usage,
-                         @JsonProperty("type") FieldType type,
-                         @JsonProperty("style") Style style,
-                         @JsonProperty("hidden") Boolean hidden,
-                         @JsonProperty("allowEmpty") Boolean allowEmpty,
-                         @JsonProperty("datatype") FieldDatatype datatype,    // Für SelectField ignoriert
-                         @JsonProperty("restrictions") List<Condition> restrictions,
-                         @JsonProperty("options") List<Option> options,
-                         @JsonProperty("emptyOption") Boolean emptyOption)
+                       @JsonProperty("name") String name,
+                       @JsonProperty("explanation") String explanation,
+                       @JsonProperty("usage") FieldUsage usage,
+                       @JsonProperty("type") FieldType type,
+                       @JsonProperty("style") Style style,
+                       @JsonProperty("hidden") Boolean hidden,
+                       @JsonProperty("allowEmpty") Boolean allowEmpty,
+                       @JsonProperty("datatype") FieldDatatype datatype,    // Für SelectField ignoriert
+                       @JsonProperty("restrictions") List<Condition> restrictions,
+                       @JsonProperty("options") List<Option> options,
+                       @JsonProperty("emptyOption") Boolean emptyOption)
     {
         super(id, name, explanation, usage, type, style, hidden, allowEmpty, FieldDatatype.STRING, restrictions);
         this.options     = Objects.requireNonNull(options, "Missing required attribute 'options'");

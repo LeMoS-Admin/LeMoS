@@ -1,4 +1,4 @@
-import Logger from "../systemFunctions/Logger.js";
+import Module from "../systemFunctions/Module.js";
 import Controller from "../internalFunctions/Controller.js";
 import ValidationError from "../ValidationError.js";
 
@@ -91,7 +91,7 @@ export default class FieldManager
 
 	getPrint()
 	{
-		return "'" + this.getValue() + "'";
+		return String(this.getValue());
 	}
 
 	// Hinweis: tolerateEmptiness wird bei einer durch ein Change-Event ausgelösten Überprüfung von Tabelleneinträgen benötigt,
@@ -117,7 +117,7 @@ export default class FieldManager
 		{
 			err.message = this.getMessagePrefix() + err.message;
 			this.setFailed(true, err.message);
-			Logger.fail(err);
+			Module.fail(err);
 		}
 	}
 
@@ -149,7 +149,7 @@ export default class FieldManager
 		else if (errors.length > 1)
 		{
 			let errorList = errors.map(err => "- " + err.message).join("\n").replaceAll("\n", "\n\t ");
-			Logger.fail(this.getMessagePrefix() + "mehrere Fehler:\n\t " + errorList);
+			throw new ValidationError("mehrere Fehler:\n\t " + errorList);
 		}
 	}
 
@@ -180,10 +180,9 @@ export default class FieldManager
 		switch (this.datatype)
 		{
 			case "Integer":
-				value = value.replace(",", "."); // Dezimaltrennzeichen anpassen (Dezimalkomma durch Dezimalpunkt ersetzen)
-				return !isNaN(value) && Number.isInteger(Number(value));
+				return typeof value === "number" && !Number.isNaN(value) && Number.isInteger(value);
 			case "Number":
-				return !isNaN(value);
+				return typeof value === "number" && !Number.isNaN(value);
 			case "String":
 				return typeof value === "string";
 			case "Ignore":
@@ -235,8 +234,8 @@ export default class FieldManager
 
 	handleChangeEvent()
 	{
-		this.validate();
 		Controller.handleChangeEvent();
+		this.validate();
 	}
 
 	getChildElement(childSelector)

@@ -14,14 +14,14 @@ if %errorlevel% neq 0 (
 )
 
 :: Ermitteln des Namens der jar-Datei (via for-Schleife)
-for %%f in (target\LeMoS*.jar) do (
+for %%f in (target\lemos*.jar) do (
 	:: Pfad entfernen, um Namen der Datei inkl. Endung zu erhalten
-	set "name=%%~nxf"
+	set "lemos=%%~nxf"
 )
-echo Generated LeMoS-Version: %name%
+echo Generated LeMoS-Version: %lemos%
 
 :: Verschieben der jar-Datei in den Oberordner (praktischer für spätere Auslieferung des fertigen LeMoS)
-move target\LeMoS*.jar %name% >nul
+move target\%lemos% %lemos% >nul
 
 cd /d %oldDir%
 exit /b 0

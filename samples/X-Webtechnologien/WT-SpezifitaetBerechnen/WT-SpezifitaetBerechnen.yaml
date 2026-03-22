@@ -1,0 +1,172 @@
+# yaml-language-server: $schema=../../LeMoS-Modul-Schema.json
+general:
+  heading: Spezifität berechnen
+  explanation: |
+    Die Spezifität eines CSS-Selectors beschreibt, wie wichtig die dazu konfigurierten Style-Einstellungen für das Aussehen eines Elements sind. <br>
+    Sie wird durch drei Zahlen (ID-, CLASS- und TYPE-Spalte) dargestellt, dieses Lernmodul behandelt daher die Berechnung dieser Zahlen. <br>
+    Hinweis: Das Aussehen eines Elements kann auch durch Inline-Style-Einstellungen beeinflusst werden, diese haben stets die höchste Priorität und werden daher in diesem Lernmodul nicht behandelt.
+  sources:
+    - Webtechnologien-Skript zu CSS
+    - <a href='https://developer.mozilla.org/de/docs/Web/CSS/CSS_cascade/Specificity' target="_blank">Online-Dokumentation</a>
+  contacts:
+    - name: Professor Dr. Dieter Wißmann
+      purpose: Fachliche Fragen
+      data:
+        Telefon: 09561 317-152
+        E-Mail: dieter.wissmann@hs-coburg.de
+        Büro: 2-127
+    - name: Professor Dr. Dieter Wißmann
+      purpose: Technische Fragen
+      data:
+        Telefon: 09561 317-152
+        E-Mail: dieter.wissmann@hs-coburg.de
+        Büro: 2-127
+  settings:
+    lemosVersion: 1.0.0
+    differentStepSizes: false
+  logger:
+    minWidth: 150
+  variables:
+    - name: selector
+    - name: parts
+  imports:
+    - alias: CSS
+      resource:
+        id: CSS-Utils
+        source: CSS-Utils.js
+
+fields:
+  - id: "S"
+    name: "CSS-Selektor"
+    explanation: "CSS-Selektor, für den die Spezifität berechnet werden soll"
+    type: TEXT
+    restrictions:
+      - message: "Bitte nur einen Selektor eingeben (keine Kommas)"
+        terms:
+          - "!S.includes(',')"
+    style:
+      row: 1
+      column: 1
+      width: 3
+  - id: "ID"
+    name: ID-Spalte
+    explanation: "Höchste Gewichtungskategorie, zählt ausschließlich IDs (#id)"
+    type: TEXT
+    usage: OUTPUT
+    datatype: INTEGER
+    style:
+      row: 2
+      column: 1
+  - id: "CLASS"
+    name: CLASS-Spalte
+    explanation: "Mittlere Gewichtungskategorie, zählt Klassen (.klasse), Pseudo-Klassen (:hover) und Attribute ([type='submit'])"
+    type: TEXT
+    usage: OUTPUT
+    datatype: INTEGER
+    style:
+      row: 2
+      column: 2
+  - id: "TYPE"
+    name: ELEMENT-Spalte
+    explanation: "Niedrigste Gewichtungskategorie, zählt Elemente (h1) und Pseudo-Elemente (::first-letter)"
+    type: TEXT
+    usage: OUTPUT
+    datatype: INTEGER
+    style:
+      row: 2
+      column: 3
+
+states:
+  - id: Z0
+    name: Lernmodul initialisiert
+    explanation: Einstieg
+    type: ENTRY
+    actions:
+      - "Module.print('Willkommen beim Lernmodul zur Berechnung der Spezifität eines CSS-Selektors.')"
+      - "Module.print('Bitte gib einen CSS-Selektor in das dafür vorgesehene Feld ein oder lade ein Szenario.')"
+      - "Module.print('')"
+    transitions:
+      - target: Z1
+        conditions:
+          - message: "Bitte gib einen CSS-Selektor in das dafür vorgesehene Feld ein oder lade ein Szenario."
+            terms:
+              - "!S.isEmpty()"
+  - id: Z1
+    name: Selektor normalisiert
+    actions:
+      - "Module.log('Eingegebener Selektor: ' + S.value)"
+      - selector.value = CSS.handleFunctionalPseudoClasses(S.value)
+      - "Module.print('Um die Spezifität des Selektors zu berechnen, sollten zunächst die sogenannten funktionalen Pseudo-Klassen aufgelöst werden.')"
+      - "Module.print('Zu den funktionalen Pseudo-Klassen gehören :is(), :not(), :has() und :where().')"
+      - "Module.print('Die Besonderheit der funktionalen Pseudo-Klassen liegt darin, dass nicht sie selbst, sondern nur ihre inneren Selektoren die Spezifität beeinflussen.')"
+      - "Module.print('Ausnahme: bei der Pseudo-Klasse :where() wirken sich auch die inneren Elemente nicht auf die Spezifität aus.')"
+      - "Module.print('Der eingegebene Selektor kann für die Berechnung der Spezifität somit wie folgt betrachtet werden: '+ selector.value)"
+      - "Module.print('')"
+      - selector.value = CSS.normalizeSelector(selector.value)
+      - "Module.log('Normalisierter Selektor: ' + selector.value)"
+    transitions:
+      - target: Z2
+  - id: Z2
+    name: Selektor aufgeteilt
+    actions:
+      - parts.value = CSS.splitSelector(selector.value)
+      - "Module.print('Um nun die Spezifität des Selektors zu berechnen, muss er gedanklich in seine Einzelteile, das heißt seine Teil-Selektoren, zerlegt werden.')"
+      - "Module.print('Der eingegebene Selektor setzt sich aus folgenden Teilen zusammen:')"
+      - "Module.print(parts.value)"
+      - "Module.print('')"
+    transitions:
+      - target: Z3
+  - id: Z3
+    name: ID-Spalte berechnet
+    actions:
+      - "Module.print('Fangen wir bei der höchsten Gewichtskategorie an: der ID-Spalte.')"
+      - "Module.print('Die ID-Spalte berücksichtigt ausschließlich IDs, es müssen daher lediglich alle ID-Selektoren gezählt werden.')"
+      - let idSelektoren = parts.value.filter(str => str.startsWith("#"))
+      - "Module.print('ID-Selektoren beginnen stets mit einem Hashtag (wie etwa #feldID), im eingegebenen Selektor sind also folgende ID-Selektoren enthalten:')"
+      - "Module.print(idSelektoren)"
+      - ID.value = idSelektoren.length;
+      - "Module.print('Diese brauchen wir nun lediglich zu zählen, um den Wert der ID-Spalte zu ermitteln.')"
+      - "Module.print('Für den eingegebenen Selektor lautet der Wert der ID-Spalte somit ' + ID.value + '.')"
+      - "Module.print('')"
+    transitions:
+      - target: Z4
+  - id: Z4
+    name: CLASS-Spalte berechnet
+    actions:
+      - "Module.print('Als nächstes berechnen wir die mittlere Gewichtskategorie: die CLASS-Spalte.')"
+      - "Module.print('Die CLASS-Spalte berücksichtigt Klassen, Pseudo-Klassen und Attribute, die ebenfalls gezählt und anschließend zusammengerechnet werden.')"
+      - let klassenSelektoren = parts.value.filter(str => str.startsWith("."))
+      - "Module.print('Klassen-Selektoren beginnen stets mit einem Punkt (wie etwa .feldKlasse), im eingegebenen Selektor sind also folgende Klassen-Selektoren enthalten:')"
+      - "Module.print(klassenSelektoren)"
+      - let pseudoKlassenSelektoren = parts.value.filter(str => str.startsWith(":") && !str.startsWith("::"))
+      - "Module.print('Pseudo-Klassen-Selektoren beginnen stets mit genau einem Doppelpunkt (wie etwa :hover), im eingegebenen Selektor sind also folgende Pseudo-Klassen-Selektoren enthalten:')"
+      - "Module.print(pseudoKlassenSelektoren)"
+      - let attributSelektoren = parts.value.filter(str => str.startsWith("["))
+      - "Module.print('Attribut-Selektoren sind stets mit durch eckige Klammern eingefasst (wie etwa [type=\\'submit\\']), im eingegebenen Selektor sind also folgende Attribut-Selektoren enthalten:')"
+      - "Module.print(attributSelektoren)"
+      - CLASS.value = klassenSelektoren.length + pseudoKlassenSelektoren.length + attributSelektoren.length
+      - "Module.print('Zusammengezählt lautet der Wert der CLASS-Spalte somit ' + CLASS.value + '.')"
+      - "Module.print('')"
+    transitions:
+      - target: Z5
+  - id: Z5
+    name: TYPE-Spalte berechnet
+    actions:
+      - "Module.print('Zu guter Letzt berechnen wir noch die niedrigste Gewichtskategorie: die TYPE-Spalte.')"
+      - "Module.print('Die TYPE-Spalte berücksichtigt Elemente und Pseudo-Elemente, die ebenfalls gezählt und anschließend zusammengerechnet werden.')"
+      - let elementSelektoren = parts.value.filter(str => !str.startsWith("#") && !str.startsWith(".") && !str.startsWith(":") && !str.startsWith("[") && str !== "*")
+      - "Module.print('Element-Selektoren haben kein Präfix, sie entsprechen einfach dem Namen eines HTML-Elements (wie etwa h1), im eingegebenen Selektor sind also folgende Element-Selektoren enthalten:')"
+      - "Module.print(elementSelektoren)"
+      - let pseudoElementSelektoren = parts.value.filter(str => str.startsWith("::"))
+      - "Module.print('Pseudo-Element-Selektoren beginnen stets mit genau zwei Doppelpunkten (wie etwa ::first-letter), im eingegebenen Selektor sind also folgende Pseudo-Element-Selektoren enthalten:')"
+      - "Module.print(pseudoElementSelektoren)"
+      - TYPE.value = elementSelektoren.length + pseudoElementSelektoren.length
+      - "Module.print('Zusammengezählt lautet der Wert der TYPE-Spalte somit ' + TYPE.value + '.')"
+      - "Module.print('')"
+    transitions:
+      - target: Z6
+  - id: Z6
+    name: Lernmodul abgeschlossen – Spezifität berechnet
+    actions:
+      - let ergebnis = ID.value + " – " + CLASS.value + " – " + TYPE.value
+      - "Module.print('Damit ist die Berechnung der Spezifität abgeschlossen, das Ergebnis lautet: ' + ergebnis + '.')"

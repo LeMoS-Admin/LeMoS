@@ -267,11 +267,11 @@
                 <!--FIELDS--></div>
             <div id='protocol' style="<!--PROTOCOL-CONTAINER-STYLE-->">
                 <details class='label'>
-                    <summary>Protokoll</summary>
+                    <summary>Ausgabe</summary>
                     <span>Ausgaben des Lernmoduls</span>
                 </details>
                 <form class='field'>
-                    <textarea name='protocol' style="<!--PROTOCOL-FIELD-STYLE-->" disabled></textarea>
+                    <textarea disabled name='protocol' style="<!--PROTOCOL-FIELD-STYLE-->"></textarea>
                 </form>
             </div>
         </section>
@@ -338,8 +338,8 @@
             import TableFieldManager from "./lib/fieldManager/TableFieldManager.js";
             import Controller from "./lib/internalFunctions/Controller.js";
             import Scroller from "./lib/internalFunctions/Scroller.js";
-            import Logger from "./lib/systemFunctions/Logger.js";
             import Module from "./lib/systemFunctions/Module.js";
+            import Fields from "./lib/systemFunctions/Fields.js";
             import Resource from "./lib/systemFunctions/Resource.js";
             import Utils from "./lib/systemFunctions/Utils.js";
             import GlobalVariable from "./lib/GlobalVariable.js";
@@ -357,7 +357,7 @@
             document.getElementById("forwardX").addEventListener("click", () => _nextState(9));
             let _history = [];
 
-            Logger.set(new SplitFieldManager("#protocol", "Log", true, false, "\n", true, "String", () => {}).getInteractor())
+            Module.setLogger(new SplitFieldManager("#protocol", "Log", true, false, "\n", true, "String", () => {}).getInteractor())
             Resource._set({<!--RESOURCES-->});
             Utils._performOverwrite();
 

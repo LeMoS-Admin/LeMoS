@@ -1,22 +1,23 @@
 #! /bin/bash
 echo Executing LeMoS
 
-SWD=$PWD			# SWD = Start Working Directory
-cd $(dirname "$BASH_SOURCE")	# Auflösen des ggf. relativen Pfades zum Skript, um absoluten Pfad des Skripts zu erhalten
-LWD=$PWD			# LWD = LeMoS Working Directory
-TEMPLATE="moduleTemplate"	# TEMPLATE = Vorlage für Webarchiv eines Lernmoduls
+SWD=$PWD                        # SWD = Start Working Directory
+cd $(dirname "$BASH_SOURCE")    # Auflösen des ggf. relativen Pfades zum Skript, um absoluten Pfad des Skripts zu erhalten
+LWD=$PWD                        # LWD = LeMoS Working Directory
+TEMPLATE="moduleTemplate"       # TEMPLATE = Vorlage für Webarchiv eines Lernmoduls
+OPTIONS=""                      # OPTIONS = Optionen für LeMoS-Aufruf, folgende sind möglich: -PaS bzw. -PrintAsStructure, -PaL bzw. -PrintAsLine (siehe Aufruf des LeMoS-Generators ohne Parameter)
 
 # LeMoS-Dateinamen ermitteln
-LeMoS=(LeMoS*.jar)		# Liefert Array mit allen passenden Dateien (sollte stets einen Eintrag haben)
-LeMoS=${LeMoS[0]}
-echo Found LeMoS-Version: $LeMoS
+lemos=(lemos*.jar)             # Liefert Array mit allen passenden Dateien (sollte stets einen Eintrag haben)
+lemos=${lemos[0]}
+echo Found LeMoS-Version: $lemos
 echo
 
 # Wenn keine Parameter übergeben: Erklärung der Funktionsweise des LeMoS
 if [[ $# == 0 ]]; then
-	echo "Bitte mindestens eine Lernmodul-Konfiguration (YAML-, JSON- oder XML-Datei) als absoluten oder relativen Pfad angeben."
-	echo "Konfigurationen von Lernmodul-Szenarien (YAML-, JSON- oder XML-Datei) sind nicht anzugeben, sie werden am Speicherort der Lernmodul-Konfiguration im Unterordner 'scenarios' erwartet."
-	echo "Bei erfolgreicher Ausführung werden die generierten Lernmodule am Aufrufort dieses Skripts als ZIP-Datei unter dem Namen der Lernmodul-Konfiguration abgelegt."
+	echo "Bitte mindestens eine Lernmodulkonfiguration (YAML-, JSON- oder XML-Datei) als absoluten oder relativen Pfad angeben."
+	echo "Konfigurationen von Lernmodul-Szenarien (YAML-, JSON- oder XML-Datei) sind nicht anzugeben, sie werden am Speicherort der Lernmodulkonfiguration im Unterordner 'scenarios' erwartet."
+	echo "Bei erfolgreicher Ausführung werden die generierten Lernmodule am Aufrufort dieses Skripts als ZIP-Datei unter dem Namen der Lernmodulkonfiguration abgelegt."
 	exit 1
 fi
 
@@ -32,7 +33,7 @@ for arg in "$@"; do
 	# Erstellen einer Kopie der Vorlage, damit diese anschließend mit den Daten des Lernmodul ausgefüllt werden kann
 	echo $name: preparing template
 	cd "$LWD"
-	unzip -q $LeMoS "$TEMPLATE/*"
+	unzip -q $lemos "$TEMPLATE/*"
 	
 	# Übernehmen der hinterlegten Resourcen (falls vorhanden) in das Verzeichnis des Lernmoduls
 	echo $name: preparing resources
@@ -40,10 +41,10 @@ for arg in "$@"; do
 		cp -r "$pfad/resources" "$LWD/$TEMPLATE/res"
 	fi
 
-	# Aufruf des LeMoS-Generators zur Verarbeitung der Lernmodul-Konfiguration (Parameter: Lernmodul-Konfigurationsdatei, Zielordner)
+	# Aufruf des LeMoS-Generators zur Verarbeitung der Lernmodulkonfiguration (Parameter: Lernmodulkonfigurationsdatei, Zielordner)
 	echo $name: starting generator
 	cd "$SWD"	# LeMoS muss in Startverzeichnis aufgerufen werden, damit es etwaige relative Pfade korrekt auflösen kann
-	java -jar "$LWD"/$LeMoS "$arg" "$LWD/$TEMPLATE"
+	java -jar "$LWD"/$lemos "$arg" "$LWD/$TEMPLATE" $OPTIONS
 	
 	# Behandeln von erfolglosen Generierungen (über einen vom LeMoS-Generator zurückgegebenen Statuscode, der ungleich 0 ist)
 	if [ $? != 0 ]; then

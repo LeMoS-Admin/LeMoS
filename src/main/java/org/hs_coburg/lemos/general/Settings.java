@@ -8,16 +8,16 @@ import java.util.Objects;
 
 public class Settings
 {
-    public final String  libraryVersion;
+    public final String  lemosVersion;
     public final Boolean showFieldIDs;
     public final Boolean differentStepSizes;
 
     @JsonCreator
-    public Settings(@JsonProperty("libraryVersion") String libraryVersion,
+    public Settings(@JsonProperty("lemosVersion") String lemosVersion,
                     @JsonProperty("showFieldIDs") Boolean showFieldIDs,
                     @JsonProperty("differentStepSizes") Boolean differentStepSizes)
     {
-        this.libraryVersion     = Objects.requireNonNullElse(libraryVersion, "LATEST");
+        this.lemosVersion       = Objects.requireNonNullElse(lemosVersion, "LATEST");
         this.showFieldIDs       = Objects.requireNonNullElse(showFieldIDs, false);
         this.differentStepSizes = Objects.requireNonNullElse(differentStepSizes, true);
     }
@@ -31,7 +31,7 @@ public class Settings
     public String toString()
     {
         return getClass().getSimpleName() + ":" +
-               "\n\t" + "libraryVersion: " + StringHelper.get(libraryVersion) +
+               "\n\t" + "lemosVersion: " + StringHelper.get(lemosVersion) +
                "\n\t" + "showFieldIDs: " + StringHelper.get(showFieldIDs) +
                "\n\t" + "differentStepSizes: " + StringHelper.get(differentStepSizes);
     }

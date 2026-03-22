@@ -95,9 +95,9 @@ export default class ObjectFieldInteractor extends FieldInteractor
 
 
 // Zusätzliche Methoden
-	length()
+	getLength()
 	{
-		return this.getValue().size;
+		return this.getValue().getLength();
 	}
 
 	remove(key)

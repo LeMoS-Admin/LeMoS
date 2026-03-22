@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=../../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S2
+  explanation: "form input[type='checkbox']:checked + label"
+  initialization:
+    - | 
+        Selektoren.setValue([["", "", "form", ""], 
+                    [" ", "", "input", ""], 
+                    ["", "[", "type='checkbox'", ""], 
+                    ["", ":", "checked", ""], 
+                    ["+", "", "label", ""]])

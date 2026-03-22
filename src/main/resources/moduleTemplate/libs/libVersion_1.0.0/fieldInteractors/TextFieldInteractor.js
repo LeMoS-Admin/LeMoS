@@ -7,7 +7,6 @@ export default class TextFieldInteractor extends FieldInteractor
 		super(fieldManager);
 	}
 
-
 // Lesende Methoden
 	at(index)
 	{
@@ -133,14 +132,22 @@ export default class TextFieldInteractor extends FieldInteractor
 
 
 // Zusätzliche Methoden
-	length()
+	getLength()
 	{
-		return this.getValue().length;
+		return this.getValue().getLength();
 	}
 
 	asNumber()
 	{
-		return this.getValue().asNumber();
+		let value = this.getValue();
+		if (typeof value === "number")
+		{
+			return value;
+		}
+		else
+		{
+			return this.getValue().asNumber();
+		}
 	}
 
 	insert(index, ...str)
@@ -153,6 +160,13 @@ export default class TextFieldInteractor extends FieldInteractor
 	remove(indexStart, indexEnd)
 	{
 		let newValue = this.getValue().remove(indexStart, indexEnd);
+		this.setValue(newValue);
+		return this;
+	}
+
+	replaceAt(index, ...str)
+	{
+		let newValue = this.getValue().replaceAt(index, ...str);
 		this.setValue(newValue);
 		return this;
 	}

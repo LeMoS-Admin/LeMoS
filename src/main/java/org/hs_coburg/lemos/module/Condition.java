@@ -49,7 +49,7 @@ public class Condition
         String template = """
                              if(!({{terms}}))
                              {
-                               Logger.log("Condition for transition to {{target}} not met");
+                               Module.log("Condition for transition to {{target}} not met");
                                {{alertMessage}}
                              }
                           """;
@@ -82,7 +82,7 @@ public class Condition
         }
         else
         {
-            return "Logger.alert('" + StringHelper.escape(message) + "');";
+            return "Module.alert('" + StringHelper.escape(message) + "');";
         }
     }
 

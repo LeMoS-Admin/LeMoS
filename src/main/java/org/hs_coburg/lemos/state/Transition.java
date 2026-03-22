@@ -34,17 +34,17 @@ public class Transition
         if (conditions.isEmpty())
         {
             template = """
-                       Logger.log("Transition to {{target}}{{name}}{{explanation}}");
+                       Module.log("Transition to {{target}}{{name}}{{explanation}}");
                        return {{stateFunctionCall}};
                        """;
         }
         else
         {
             template = """
-                       Logger.log("Trying transition to {{target}}{{name}}{{explanation}}");
+                       Module.log("Trying transition to {{target}}{{name}}{{explanation}}");
                        {{conditions}}
                        {
-                         Logger.log("Transition to {{target}}{{name}}{{explanation}}")
+                         Module.log("Transition to {{target}}{{name}}{{explanation}}")
                          return {{stateFunctionCall}};
                        }
                        """;

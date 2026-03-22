@@ -28,7 +28,7 @@
             </contact>
         </contacts>
         <settings>
-            <libraryVersion>1.0.0</libraryVersion>
+            <lemosVersion>1.0.0</lemosVersion>
             <showFieldIDs>true</showFieldIDs>
             <differentStepSizes>false</differentStepSizes>
         </settings>
@@ -130,7 +130,7 @@
                     <conditions>
                         <condition>
                             <terms>
-                                <operation>Module.countFilled() === 3</operation>
+                                <operation>Fields.countFilled() === 3</operation>
                             </terms>
                         </condition>
                     </conditions>
@@ -150,7 +150,7 @@
                     <conditions>
                         <condition>
                             <terms>
-                                <operation>Module.isFilled(Y, W)</operation>
+                                <operation>Fields.areFilled(Y, W)</operation>
                             </terms>
                         </condition>
                     </conditions>
@@ -162,7 +162,7 @@
                     <conditions>
                         <condition>
                             <terms>
-                                <operation>Module.isFilled(N, W)</operation>
+                                <operation>Fields.areFilled(N, W)</operation>
                             </terms>
                         </condition>
                     </conditions>
@@ -174,7 +174,7 @@
                     <conditions>
                         <condition>
                             <terms>
-                                <operation>Module.isFilled(N, Y)</operation>
+                                <operation>Fields.areFilled(N, Y)</operation>
                             </terms>
                         </condition>
                     </conditions>

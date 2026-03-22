@@ -19,7 +19,7 @@ general:
         E-Mail: dieter.wissmann@hs-coburg.de
         Büro: 2-127
   settings:
-    libraryVersion: 1.0.0
+    lemosVersion: 1.0.0
     showFieldIDs: true
 
 fields:
@@ -101,9 +101,9 @@ states:
         conditions:
           - message: Bitte die beiden Eingabefelder mit je mindestens einem Wert befüllen
             terms:
-            - Module.isFilled(LW, LN)
+            - Fields.areFilled(LW, LN)
   - id: Z1
-    name: W und N berechnet
+    name: Wartezeit und Länge berechnet
     explanation: Durchschnittliche Wartezeit (W) und durchschnittliche Warteschlangenlänge (N) berechnet
     type: STATE
     importance: LOW
@@ -115,7 +115,7 @@ states:
         explanation: Bedingungsloser Übergang zu Z2
 
   - id: Z2
-    name: Y berechnet
+    name: Ankunftsrate berechnet
     explanation: Ankunftsrate von neuen Wartenden mit umgestellter Formel (Y = N / W) berechnet
     type: STATE
     importance: HIGH

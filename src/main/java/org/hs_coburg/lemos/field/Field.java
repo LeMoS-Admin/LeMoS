@@ -50,18 +50,17 @@ public abstract class Field
         this.type        = Objects.requireNonNull(type, "Missing required attribute 'type'");
         this.style       = Objects.requireNonNullElse(style, Style.emptyStyle);
         this.hidden      = Objects.requireNonNullElse(hidden, false);
+        this.datatype    = Objects.requireNonNullElse(datatype, FieldDatatype.STRING);
 
         if (this.usage != FieldUsage.INPUT)
         {
             // Für ein Feld, dass keine Eingaben zulässt, ergeben Eingabebeschränkungen keinen Sinn
             this.allowEmpty   = true;
-            this.datatype     = FieldDatatype.STRING;
             this.restrictions = Collections.emptyList();
         }
         else
         {
             this.allowEmpty   = Objects.requireNonNullElse(allowEmpty, false);
-            this.datatype     = Objects.requireNonNullElse(datatype, FieldDatatype.STRING);
             this.restrictions = Objects.requireNonNullElse(restrictions, Collections.emptyList());
         }
     }

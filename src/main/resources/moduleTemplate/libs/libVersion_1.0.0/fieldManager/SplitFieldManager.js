@@ -24,22 +24,28 @@ export default class SplitFieldManager extends MultilineableFieldManager
 
 	getValue(keepEmptyEntries = false)
 	{
-		if (keepEmptyEntries)
+		let value = this.getField().value;
+		if (value === "") // Komplett leeres Feld würde bei keepEmptyEntries sonst trotzdem eine (leere) Zeile zurückgeben
 		{
-			return this.getField().value
-					   .split(this.separator);
+			return [];
 		}
-		else
+
+		value = value.split(this.separator);
+		if (!keepEmptyEntries)
 		{
-			return this.getField().value
-					   .split(this.separator)
-					   .filter(entry => entry.trim() !== "");
+			value = value.filter(entry => entry.trim() !== "");
 		}
+		if (this.datatype === "Integer" || this.datatype === "Number")
+		{
+			value = value.map(val => Number(val.replace(",", "."))); // Dezimaltrennzeichen anpassen (Dezimalkomma durch Dezimalpunkt ersetzen)
+		}
+
+		return value;
 	}
 
 	setValue(value)
 	{
-		if (value === undefined)
+		if (value === undefined || Number.isNaN(value))
 		{
 			this.clear();
 			return;
@@ -47,11 +53,22 @@ export default class SplitFieldManager extends MultilineableFieldManager
 
 		if (value instanceof Array)
 		{
-			this.getField().value = value.join(this.separator);
+			// NaN muss explizit in "" umgewandelt werden, damit der Eintrag leer bleibt und nicht zu "NaN" wird
+			this.getField().value = value.map(val =>
+											  {
+												  if (Number.isNaN(val))
+												  {
+													  return ""
+												  }
+												  else
+												  {
+													  return val
+												  }
+											  }).join(this.separator);
 		}
 		else
 		{
-			this.getField().value = value;
+			this.getField().value = String(value);
 		}
 		this.resetHeight();
 		this.scrollToBottom();
@@ -72,11 +89,6 @@ export default class SplitFieldManager extends MultilineableFieldManager
 		return super.toString() +
 			"\n\tseparator: " + this.separator +
 			"\n\tvalue: [" + this.getValue().join(", ") + "]";
-	}
-
-	getPrint()
-	{
-		return this.getValue().toString();
 	}
 
 	validateInternal(outerField, tolerateEmptiness)

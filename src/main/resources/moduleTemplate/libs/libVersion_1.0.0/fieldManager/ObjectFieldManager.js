@@ -1,4 +1,4 @@
-import Logger from "../systemFunctions/Logger.js";
+import Module from "../systemFunctions/Module.js";
 import Controller from "../internalFunctions/Controller.js";
 import FieldManager from "./FieldManager.js";
 import ExpandableFieldManager from "./ExpandableFieldManager.js";
@@ -92,7 +92,7 @@ export default class ObjectFieldManager extends FieldManager
 		{
 			if (value.length !== this.fieldMap.size)
 			{
-				Logger.error(this.getMessagePrefix() + "length of value to set must be equal to number of inner #fields");
+				Module.error(this.getMessagePrefix() + "length of value to set must be equal to number of inner #fields");
 			}
 
 			let fields = this.fieldMap.values().toArray();
@@ -108,16 +108,20 @@ export default class ObjectFieldManager extends FieldManager
 			{
 				if (!this.fieldMap.has(key))
 				{
-					Logger.error(this.getMessagePrefix() + "field '" + key + "' does not exist");
+					Module.error(this.getMessagePrefix() + "field '" + key + "' does not exist");
 				}
 				this.fieldMap.get(key).setValue(val);
 			}
 		}
-		else
+		else if (typeof value === "object" && Object.getPrototypeOf(value) === Object.prototype)
 		{
 			// Hinweis: Definition der Werte mittels {} erzeugt eine Object-Instanz
 			// --> Umwandlung der Object-Instanz in Map und erneutes aufrufen dieser Methode
 			return this.setValue(new Map(Object.entries(value)));
+		}
+		else
+		{
+			throw new Error("Value for ObjectFields must be an Array, Map or direct instance of Object")
 		}
 	}
 
@@ -148,7 +152,7 @@ export default class ObjectFieldManager extends FieldManager
 		let pairs = [];
 		for (let [key, value] of this.fieldMap.entries())
 		{
-			pairs.push(key + ": " + value.toString().replaceAll("\n", "\n\t\t"));
+			pairs.push(key + ": " + String(value).replaceAll("\n", "\n\t\t"));
 		}
 
 		return super.toString() +
@@ -196,8 +200,8 @@ export default class ObjectFieldManager extends FieldManager
 	handleChangeEvent(event)
 	{
 		event.stopPropagation(); // Muss vor eigentlicher Validierung ausgeführt werden, da diese potenziell einen Fehler wirft
+		Controller.handleChangeEvent();
 		super.validate(true);
-		Controller.handleChangeEvent("change");
 	}
 
 	isEnabled()

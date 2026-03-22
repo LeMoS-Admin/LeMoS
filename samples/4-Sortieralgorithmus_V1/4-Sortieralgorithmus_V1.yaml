@@ -3,7 +3,7 @@ general:
   heading: Sortieralgorithmus V1
   explanation: Sortieren einer Liste von Werten durch direktes Auswählen ("Selectionsort")
   settings:
-    libraryVersion: 1.0.0
+    lemosVersion: 1.0.0
 
 fields:
   - id: 'E'
@@ -55,20 +55,19 @@ states:
                       Bitte die folgenden Felder befüllen:
                       - Eingabeliste
             terms:
-              - Module.isFilled(E)
+              - Fields.areFilled(E)
   - id: Z1
     name: Kleinster Wert initialisiert
     importance: LOW
     actions:
-      - K.setValue(E.first())
-      - E.restartIterator()
+      - K.value = E.first()
     transitions:
       - target: Z2
   - id: Z2
     name: Aktueller Wert definiert
     importance: LOW
     actions:
-      - X.setValue(E.next())
+      - X.value = E.next()
     transitions:
       - target: Z3
       - target: Z5
@@ -84,26 +83,26 @@ states:
       - target: Z4
         conditions:
           - terms:
-              - X.getValue() < K.getValue()
+              - X < K
   - id: Z4
     name: Kleinsten Wert überschrieben
     importance: LOW
     actions:
-      - K.setValue(X.getValue())
+      - K.value = X.value
     transitions:
       - target: Z2
   - id: Z5
     name: Kleinsten Wert in Ausgabeliste eingetragen
     importance: LOW
     actions:
-      - A.add(K.getValue())
+      - A.add(K.value)
     transitions:
       - target: Z6
   - id: Z6
     name: Kleinsten Wert aus Eingabeliste entfernt
     importance: HIGH
     actions:
-      - E.remove(K.getValue())
+      - E.remove(K.value)
     transitions:
       - target: Z1
       - target: Z7

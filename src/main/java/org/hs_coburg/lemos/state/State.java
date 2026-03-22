@@ -70,7 +70,7 @@ public class State
                             (() => {
                               {{actions}}
                             })();
-                            Logger.log("Reached state {{id}}{{name}}{{explanation}}");
+                            Module.log("Reached state {{id}}{{name}}{{explanation}}");
                             _nextTransition = () => {
                               {{transitions}}
                             }
@@ -121,7 +121,7 @@ public class State
         if (transitions.isEmpty())
         {
             return """
-                   Logger.log("No further transitions, learning module is completed");
+                   Module.log("No further transitions, learning module is completed");
                    return -1;
                    """;
         }
@@ -149,7 +149,7 @@ public class State
         {
             // Falls kein unbedingter Übergang definiert wurde, wird als ELSE-Fall '-1' zurückgegeben (kein Übergang möglich)
             transitionsJS.append("""
-                                 Logger.log("No suitable transition, staying in current state");
+                                 Module.log("No suitable transition, staying in current state");
                                  return -1;
                                  """);
         }

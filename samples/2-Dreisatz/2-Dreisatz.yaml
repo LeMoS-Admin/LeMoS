@@ -3,7 +3,7 @@ general:
   heading: Dreisatz
   explanation: Interaktives Modul, um den Dreisatz auszuprobieren
   settings:
-    libraryVersion: 1.0.0
+    lemosVersion: 1.0.0
 
 fields:
   - id: LS
@@ -95,12 +95,12 @@ states:
                       - Rechter Startwert
                       - Linker Endwert
             terms:
-              - Module.isFilled(LS, RS, LE)
+              - Fields.areFilled(LS, RS, LE)
   - id: Z1
-    name: Teiler berechnet
+    name: Teiler bestimmt
     importance: LOW
     actions:
-      - T.setValue(LS.getValue())
+      - T.value = LS.value
     transitions:
       - target: Z2
   - id: Z2
@@ -112,10 +112,10 @@ states:
     transitions:
       - target: Z3
   - id: Z3
-    name: Faktor berechnet
+    name: Faktor bestimmt
     importance: LOW
     actions:
-      - F.setValue(LE.getValue())
+      - F.value = LE.value
     transitions:
       - target: Z4
   - id: Z4

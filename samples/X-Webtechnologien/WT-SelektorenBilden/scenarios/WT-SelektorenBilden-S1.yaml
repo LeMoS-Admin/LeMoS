@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=../../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S1
+  explanation: "#main .content > ul li:first-child a:hover"
+  initialization:
+    - | 
+        Selektoren.setValue([["", "#", "main", ""], 
+                    [" ", ".", "content", ""],
+                    [">", "", "ul", ""],
+                    [" ", "", "li", ""],
+                    ["", ":", "first-child", ""],
+                    [" ", "", "a", ""],
+                    ["", ":", "hover", ""]])

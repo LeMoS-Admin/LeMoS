@@ -37,11 +37,6 @@ export default class ListFieldManager extends ExpandableFieldManager
 			"\n\tvalue: [" + this.getValue().join(", ") + "]";
 	}
 
-	getPrint()
-	{
-		return this.getValue().toString()
-	}
-
 	setFailed(isFailed, message)
 	{
 		// Felder die aus mehreren Elementen bestehen, signalisieren Fehler über ihren Container

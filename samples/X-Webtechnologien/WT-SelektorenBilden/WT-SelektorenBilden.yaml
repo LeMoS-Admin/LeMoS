@@ -1,0 +1,171 @@
+# yaml-language-server: $schema=../../LeMoS-Modul-Schema.json
+general:
+  heading: Selektoren bilden
+  explanation: |
+    Um mit CSS das Erscheinungsbild der Elemente der Webseite zu modifizieren, müssen diese zunächst selektiert werden. <br>
+    Die Selektierung erfolgt auf Basis des DOM (Document Object Model), dass die Elemente der Webseite als Baumstruktur darstellt. <br>
+    <br>
+    Zur Bildung eines CSS-Selektors werden verschiedene Teil-Selektoren durch Kombinatoren zusammengefügt. <br>
+    Um einen Überblick der dabei bestehenden Möglichkeiten zu erhalten, ermöglicht dieses Lernmodul die interaktive 
+    Zusammenstellung eines solchen CSS-Selektors. <br>
+    <br>
+    Hinweis: Dieses Lernmodul konzentriert sich auf den grundlegenden Umgang mit den wesentlichen Selektoren und Kombinatoren, 
+    für ein weiterführende Informationen können die Quellen zur Vertiefung betrachtet werden.
+  sources:
+    - Webtechnologien-Skript zu CSS
+    - <a href='https://developer.mozilla.org/de/docs/Web/CSS/CSS_selectors' target="_blank">Online-Dokumentation</a>
+  contacts:
+    - name: Professor Dr. Dieter Wißmann
+      purpose: Fachliche Fragen
+      data:
+        Telefon: 09561 317-152
+        E-Mail: dieter.wissmann@hs-coburg.de
+        Büro: 2-127
+    - name: Professor Dr. Dieter Wißmann
+      purpose: Technische Fragen
+      data:
+        Telefon: 09561 317-152
+        E-Mail: dieter.wissmann@hs-coburg.de
+        Büro: 2-127
+  settings:
+    lemosVersion: 1.0.0
+    differentStepSizes: false
+  logger:
+    minWidth: 200
+  functions:
+    - name: erzeugeSelektor
+      implementation:
+        - let entry = Selektoren.next()
+        - let index = Selektoren.currentIndex() + 1
+        - let combinator = entry.get('Kombinator').getValue()
+        - let type = entry.get('Typ').getValue()
+        - let content = entry.get('Wert').getValue()
+        - let selector = type + content
+        - if(type === "[") selector += "]"
+        
+        - if (index === 1) {
+        -   "Module.print(`Für den ${index}. Eintrag setzt sich der Wert aus dem Typ-Präfix '${type}' und dem Wert '${content}' zusammen und lautet somit '${selector}'.`)"
+        - '} else {'
+        -   selector = combinator + selector
+        -   "Module.print(`Für den ${index}. Eintrag setzt sich der Wert aus dem Kombinator '${combinator}', dem Typ-Präfix '${type}' und dem Wert '${content}' zusammen und lautet somit '${selector}'.`)"
+        - '}'
+        - entry.set("Selektor", selector)
+      
+fields:
+  - id: Selektoren
+    name: CSS-Selektoren
+    explanation: Liste der Selektoren und Kombinatoren, aus denen der CSS-Selektor gebildet werden soll
+    type: TABLE
+    initialEntries: 2
+    restrictions:
+      - message: |
+          Elemente mit der Beziehung 'Gleiches Element' können nicht den Selektor-Typ 'Element' haben, da Selektoren vom Typ 'Element' stets zuerst stehen müssen.
+          Tausche den Eintrag mit dem vorherigen, um diese Anforderung zu erfüllen.
+        terms:
+          - Selektoren.indexOf(entry) === 0 || !(entry.get('Kombinator').equals('') && entry.get('Typ').equals('')) # Bei erstem Eintrag wird der Kombinator sowieso ignoriert, daher muss dort nicht geprüft werden
+    relativeColumnWidths:
+      - 1
+      - 1
+      - 2
+      - 3
+    innerFields:
+      - id: Kombinator
+        name: Beziehung
+        explanation: |
+          Beziehung dieses Eintrags zum vorherigen Eintrag, Erläuterungen: <br>
+          - Gleiches Element (kein Kombinator): Selektor bezieht sich auf das gleiche Element, wie der des vorherigen Eintrags <br>
+          - Beliebiger Nachkomme (' '): Selektor durchsucht die kompleten DOM-Teilbäume aller Treffer des vorherigen Selektors <br>
+          - Direkter Nachkomme ('>'): Selektor durchsucht ausschlißlich die jeweis erste Hierachie-Ebene der DOM-Teilbäume aller Treffer des vorherigen Selektors <br>
+          - Beliebiges Geschwister ('~'): Selektor durchsucht den DOM-Baum jeweils auf der gleichen Hierachie-Ebene der Treffer des vorherigen Selektors <br>
+          - Direktes Geschwister ('+'): Selektor prüft jeweils das nächste auf gleicher Hierachie-Ebene wie der Treffer des vorherigen Selektors liegende Element <br>
+          Hinweis: Die Beziehung des ersten Eintrags wird ignoriert.
+        type: SELECT
+        allowEmpty: true
+        options:
+          - id: ''
+            name: Gleiches Element
+          - id: ' '
+            name: Beliebiger Nachkomme
+          - id: '>'
+            name: Direkter Nachkomme
+          - id: '~'
+            name: Beliebiges Geschwister
+          - id: '+'
+            name: Direktes Geschwister
+      - id: Typ
+        name: Selektor-Typ
+        explanation: |
+          Typ des Selektors in diesem Eintrag, Erläuterungen: <br>
+          - ID (#): Sucht Elemente auf Basis ihrer id-Attribute (z.B. feldID) <br>
+          - Klasse (.): Sucht Elemente auf Basis ihrer class-Attribute (z.B. feldKlasse) <br>
+          - Element (kein Präfix): Sucht Elemente auf Basis ihres Tags (z.B. p oder h1) <br>
+          - Attribut ([]): Sucht Elemente auf Basis eines beliebigen Attributs (z.B. type oder type="submit") <br>
+          - Pseudo-Klasse (:): Sucht Elemente auf Basis ihres Zustands (z.B. h1) <br>
+          - Pseudo-Element (::): Sucht Pseudo-Elemente auf Basis ihres Namens (z.B. h1)
+        type: SELECT
+        allowEmpty: true
+        options:
+          - id: '#'
+            name: ID
+          - id: '.'
+            name: Klasse
+          - id: ''
+            name: Element
+          - id: '['
+            name: Attribut
+          - id: ':'
+            name: Pseudo-Klasse
+          - id: '::'
+            name: Pseudo-Element
+      - id: Wert
+        name: Selektor-Wert
+        explanation: |
+          Wert des Selektors in diesem Eintrag, Beipsiele: <br>
+          - Für IDs: feldID <br>
+          - Für Klassen: feldKlasse <br>
+          - Für Elemente: p oder h1 <br>
+          - Für Attribute: type (für Elemente, die 'type' definieren) oder type="submit" (für Elemente, die 'type' als 'submit' definieren)  <br>
+          - Für Pseudo-Klassen: hover oder nth-child(2n+1) oder has(.subFeldKlasse) <br>
+          - Für Pseudo-Elemente: first-letter
+        type: TEXT
+      - id: Selektor
+        name: Resultierender Teilselektor
+        explanation: Resultierender Selektor dieses Eintrags, stellt einen Teil des gesammten Selektors dar
+        usage: OUTPUT
+        type: TEXT
+  - id: Ergebnis
+    name: Fertiger CSS-Selektor
+    explanation: Resultierender CSS-Selektor, ergibt sich aus der Zusammenstellung der Teilselektoren aller Einträge
+    usage: OUTPUT
+    type: TEXT
+
+states:
+  - id: Z0
+    name: Lernmodul initialisiert
+    explanation: Einstieg
+    type: ENTRY
+    actions:
+      - "Module.print('Willkommen beim Lernmodul zur Bildung eines CSS-Selektors.')"
+      - "Module.print('Bitte konfiguriere alle gewünschten Teile des CSS-Selektor über die dafür vorgesehene Tabelle oder lade ein Szenario.')"
+      - "Module.print('')"
+    transitions:
+      - target: Z1
+        conditions:
+          - message: "Bitte gib mindestens einen gewünschten Teil des CSS-Selektor in die dafür vorgesehene Tabelle ein oder lade ein Szenario."
+            terms:
+              - "!Selektoren.isEmpty()"
+  - id: Z1
+    name: Teilselektoren gebildet
+    actions:
+      - "Module.print('Um den CSS-Selektor zu bilden, sollten zunächst die Teilselektoren zusammengesetzt werden.')"
+      - Selektoren.restartIterator()
+      - Selektoren.forEach(Own.erzeugeSelektor)
+      - "Module.print('')"
+    transitions:
+      - target: Z2
+  - id: Z2
+    name: Selektor zusammengestellt
+    actions:
+      - "Module.print('Die einzelnen Teilselektoren müssen nun lediglich noch zu einem gesamten Selektor zusammengefügt werden.')"
+      - Ergebnis.value = Selektoren.getAttribute("Selektor").join("");
+      - "Module.print(`Der fertige Selektor lautet somit '` + Ergebnis.value + `'.`)"

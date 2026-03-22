@@ -21,10 +21,9 @@ public class TextField extends MultilineableField
                      @JsonProperty("restrictions") List<Condition> restrictions,
                      @JsonProperty("multiline") Boolean multiline,
                      @JsonProperty("minLines") Integer minLines,
-                     @JsonProperty("maxLines") Integer maxLines,
-                     @JsonProperty("fixLines") Integer fixLines)
+                     @JsonProperty("maxLines") Integer maxLines)
     {
-        super(id, name, explanation, usage, type, style, hidden, allowEmpty, datatype, restrictions, multiline, minLines, maxLines, fixLines);
+        super(id, name, explanation, usage, type, style, hidden, allowEmpty, datatype, restrictions, multiline, minLines, maxLines);
     }
 
     @Override

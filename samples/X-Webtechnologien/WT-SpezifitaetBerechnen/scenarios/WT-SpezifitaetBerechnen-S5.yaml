@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=../../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S5
+  explanation: "ul.nav ~ li:not(:last-child)"
+  initialization:
+    - S.setValue('ul.nav ~ li:not(:last-child)')

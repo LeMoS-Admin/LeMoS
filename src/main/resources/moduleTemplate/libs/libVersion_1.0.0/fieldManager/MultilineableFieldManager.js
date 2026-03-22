@@ -44,6 +44,12 @@ export default class MultilineableFieldManager extends FieldManager
 		}
 	}
 
+	backup()
+	{
+		// Weitere Verarbeitungsschritte (Aufteilung in Array, Konvertierung in Zahlen) vermeiden
+		return super.backup().set("value", this.getField().value);
+	}
+
 	toString()
 	{
 		return super.toString() +

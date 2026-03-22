@@ -24,13 +24,13 @@ public class Option
 
     public String generateSelectOptionHTML()
     {
-        String template = "<option value='{{id}}'>{{name}}{{explanation}}</option>";
+        String template = "<option value='{{id}}' data-name='{{name}}'>{{name}}{{explanation}}</option>";
         return performReplacements(template);
     }
 
     public String generateCheckOptionHTML()
     {
-        String template = "<input type='{{checkType}}' name='{{fieldID}}' value='{{id}}'>" +
+        String template = "<input type='{{checkType}}' name='{{fieldID}}' value='{{id}}' data-name='{{name}}'>" +
                           "<label>{{name}}{{explanation}}</label><br>";
         return performReplacements(template).replace("{{fieldID}}", "{{id}}");
     }

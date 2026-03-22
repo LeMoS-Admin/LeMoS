@@ -13,11 +13,11 @@ if [ $? != 0 ]; then
 fi
 
 # Ermitteln des Namens der jar-Datei
-name=$(ls target/LeMoS*.jar)	# Ermitteln des konkreten Pfades zur  LeMoS*.jar
-name="${name##*/}"		# Pfad entfernen, um Namen der Datei (inkl. Endung) zu erhalten
-echo Generated LeMoS-Version: $name
+lemos=$(ls target/lemos*.jar)	# Ermitteln des konkreten Pfades zur  lemos*.jar
+lemos="${lemos##*/}"		# Pfad entfernen, um Namen der Datei (inkl. Endung) zu erhalten
+echo Generated LeMoS-Version: "$lemos"
 
 # Verschieben der jar-Datei in den Oberordner (praktischer für spätere Auslieferung des fertigen LeMoS)
-mv target/LeMoS*.jar "$name"
+mv "target/$lemos" "$lemos"
 
 exit 0

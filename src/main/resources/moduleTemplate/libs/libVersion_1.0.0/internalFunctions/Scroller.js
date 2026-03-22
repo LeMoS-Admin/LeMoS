@@ -2,7 +2,7 @@ export default class Scroller // Zuständig für das automatische Scrollen
 {
 	static #currentScrollPosition;
 	static #currentScrollSelector;
-	
+
 	static #getCurrentPosition()
 	{
 		return document.querySelector(Scroller.#currentScrollSelector).getBoundingClientRect().y;

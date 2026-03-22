@@ -1,4 +1,4 @@
-import Logger from "../systemFunctions/Logger.js";
+import Module from "../systemFunctions/Module.js";
 import FieldManager from "./FieldManager.js";
 import CheckFieldInteractor from "../fieldInteractors/CheckFieldInteractor.js";
 
@@ -25,14 +25,19 @@ export default class CheckFieldManager extends FieldManager
 
 	getValue()
 	{
-		let checkedOptions = this.getCheckedOptions();
+		let checkedOptions = this.getOptions()
+								 .filter(option => option.checked)
+								 .map(option => option.value);
+
 		if (this.multipleCheck)
 		{
+			// Gibt leeres Array zurück, wenn nichts ausgewählt ist
 			return checkedOptions;
 		}
 		else
 		{
-			return checkedOptions.at(0)
+			// Gibt undefined zurück, wenn nichts ausgewählt ist
+			return checkedOptions.at(0);
 		}
 	}
 
@@ -41,18 +46,13 @@ export default class CheckFieldManager extends FieldManager
 		this.clear();
 		if (value === undefined)
 		{
-			return;
+			// Do nothing
 		}
-
-		if (typeof value === "string")
+		else if (value instanceof Array)
 		{
-			this.#setChecked(value);
-		}
-		else
-		{
-			if(!this.multipleCheck && value.length > 1)
+			if (!this.multipleCheck && value.length > 1)
 			{
-				Logger.error(this.getMessagePrefix() + "CheckFields without multipleCheck can not select multiple values")
+				Module.error(this.getMessagePrefix() + "CheckFields without multipleCheck can not select multiple values")
 			}
 
 			for (let v of value)
@@ -60,55 +60,40 @@ export default class CheckFieldManager extends FieldManager
 				this.#setChecked(v);
 			}
 		}
+		else
+		{
+			this.#setChecked(value);
+		}
 	}
 
 	#setChecked(value)
 	{
-		if (this.getOptions().includes(value))
+		value = String(value);
+		if (this.getOptions().map(option => option.value).includes(value))
 		{
-			this.#getOptionsInternal()
+			this.getOptions()
 				.find(option => option.value === value)
 				.checked = true;
 		}
 		else
 		{
-			Logger.log(this.getMessagePrefix() + "option '" + value + "' is not available")
+			Module.error(this.getMessagePrefix() + "option '" + value + "' is not available")
 		}
 	}
 
 	getOptions()
-	{
-		return this.#getOptionsInternal()
-				   .map(option => option.value);
-	}
-
-	getCheckedOptions()
-	{
-		return this.#getOptionsInternal()
-				   .filter(option => option.checked)
-				   .map(option => option.value);
-	}
-
-	getUncheckedOptions()
-	{
-		return this.#getOptionsInternal()
-				   .filter(option => !option.checked)
-				   .map(option => option.value);
-	}
-
-	#getOptionsInternal()
 	{
 		return this.getChildElements(".field > input");
 	}
 
 	isEmpty()
 	{
-		return this.getCheckedOptions().length === 0;
+		return this.getOptions().filter(option => option.checked).length === 0;
 	}
 
 	clear()
 	{
-		this.#getOptionsInternal()
+		this.getOptions()
 			.forEach(option => option.checked = false);
 	}
 
@@ -129,18 +114,6 @@ export default class CheckFieldManager extends FieldManager
 		else
 		{
 			return ret + "\n\tvalue: [" + this.getValue().join(", ") + "]";
-		}
-	}
-
-	getPrint()
-	{
-		if (!this.multipleCheck)
-		{
-			return String(this.getValue());
-		}
-		else
-		{
-			return this.getValue().toString();
 		}
 	}
 

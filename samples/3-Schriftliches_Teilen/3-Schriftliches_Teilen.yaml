@@ -3,7 +3,7 @@ general:
   heading: Schriftliche Division
   explanation: Schriftliche d.h. manuelle Berechnung des Quotienten und ggf. des Restes aus Dividend und Divisor
   settings:
-    libraryVersion: 1.0.0
+    lemosVersion: 1.0.0
 
 fields:
   - id: 'X'
@@ -71,22 +71,19 @@ states:
                       - Dividend
                       - Divisor
             terms:
-              - Module.isFilled(X, Y)
+              - Fields.areFilled(X, Y)
   - id: Z1
     name: Minuend zusammengesetzt
     importance: LOW
     actions:
-      - let Xi = X.next()
-      - let Dtemp = D.getValue()
-      - if(Dtemp === undefined) Dtemp = 0
-      - M.setValue(Dtemp * 10 + Number(Xi))
+      - M.value = D + "" + X.next()
     transitions:
       - target: Z2
   - id: Z2
     name: Nächste Ziffer des Quotienten berechnet
     importance: LOW
     actions:
-      - let Qi = Math.floor(M.getValue() / Y.getValue())
+      - let Qi = Math.floor(M / Y)
       - Q.add(Qi)
     transitions:
       - target: Z3
@@ -94,14 +91,14 @@ states:
     name: Subtrahend berechnet
     importance: LOW
     actions:
-      - S.setValue(Q.last() * Y.getValue())
+      - S.value = Q.last() * Y
     transitions:
       - target: Z4
   - id: Z4
     name: Dividend berechnet
     importance: HIGH
     actions:
-      - D.setValue(M.getValue() - S.getValue())
+      - D.value = M - S
     transitions:
       - target: Z1
       - target: Z5
@@ -110,7 +107,7 @@ states:
           - terms:
               - "!X.hasNext()"
   - id: Z5
-    name: Rest berechnet
+    name: Rest ergänzt
     importance: HIGH
     actions:
-      - Q.add(" R" + D.getValue())
+      - Q.add(" R" + D)

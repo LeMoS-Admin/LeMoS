@@ -28,7 +28,7 @@
       }
     ],
     "settings": {
-      "libraryVersion": "1.0.0",
+      "lemosVersion": "1.0.0",
       "showFieldIDs": true,
       "differentStepSizes": false
     }
@@ -130,7 +130,7 @@
             {
               "message": "",
               "terms": [
-                "Module.countFilled() === 3"
+                "Fields.countFilled() === 3"
               ]
             }
           ]
@@ -151,7 +151,7 @@
             {
               "message": "",
               "terms": [
-                "Module.isFilled(Y, W)"
+                "Fields.areFilled(Y, W)"
               ]
             }
           ]
@@ -164,7 +164,7 @@
             {
               "message": "",
               "terms": [
-                "Module.isFilled(N, W)"
+                "Fields.areFilled(N, W)"
               ]
             }
           ]
@@ -177,7 +177,7 @@
             {
               "message": "",
               "terms": [
-                "Module.isFilled(N, Y)"
+                "Fields.areFilled(N, Y)"
               ]
             }
           ]

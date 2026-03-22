@@ -1,4 +1,4 @@
-import Logger from "../systemFunctions/Logger.js";
+import Module from "../systemFunctions/Module.js";
 
 export default class Controller
 {
@@ -17,7 +17,7 @@ export default class Controller
 		let backup = new Map();
 		for (let variable of Controller.#variables)
 		{
-			backup.set(variable.name, variable.value);
+			backup.set(variable.getName(), variable.getValue());
 		}
 		return backup;
 	}
@@ -26,7 +26,7 @@ export default class Controller
 	{
 		for (let variable of Controller.#variables)
 		{
-			variable.value = (backup.get(variable.name));
+			variable.setValue(backup.get(variable.getName()));
 		}
 	}
 
@@ -112,7 +112,7 @@ export default class Controller
 		else if (errors.length > 1)
 		{
 			let errorList = errors.map(err => "- " + err.message).join("\n").replaceAll("\n", "\n\t ");
-			Logger.fail("Lernmodul: mehrere Fehler:\n\t " + errorList);
+			Module.fail("Lernmodul: mehrere Fehler:\n\t " + errorList);
 		}
 	}
 

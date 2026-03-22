@@ -3,7 +3,7 @@ general:
   heading: Sortieralgorithmus V2
   explanation: Sortieren einer Liste von Werten durch direktes Einfügen ("Insertionsort")
   settings:
-    libraryVersion: 1.0.0
+    lemosVersion: 1.0.0
 
 fields:
   - id: 'E'
@@ -63,20 +63,19 @@ states:
                       Bitte die folgenden Felder befüllen:
                       - Eingabeliste
             terms:
-              - Module.isFilled(E)
+              - Fields.areFilled(E)
   - id: Z1
     name: Neuer Wert initialisiert
     importance: LOW
     actions:
-      - W.setValue(E.first())
-      - A.restartIterator()
+      - W.value = E.first()
     transitions:
       - target: Z2
   - id: Z2
     name: Aktueller Wert definiert
     importance: LOW
     actions:
-      - X.setValue(A.next())
+      - X.value = A.next()
     transitions:
       - target: Z3
       - target: Z4a
@@ -92,33 +91,33 @@ states:
       - target: Z4b
         conditions:
           - terms:
-              -  W.getValue() < X.getValue()
+              -  W < X
   - id: Z4a
-    name: Einfügepunkt auf letzte Position gesetzt
+    name: Einfügepunkt auf Ende der Ausgabeliste gesetzt
     importance: LOW
     actions:
-      - P.setValue(A.length())
+      - P.value = A.getLength()
     transitions:
       - target: Z5
   - id: Z4b
     name: Einfügepunkt auf Position des aktuellen Werts gesetzt
     importance: LOW
     actions:
-      - P.setValue(A.indexOf(X.getValue()))
+      - P.value = A.currentIndex()
     transitions:
       - target: Z5
   - id: Z5
-    name: Neuer Wert in Ausgabeliste eingetragen
+    name: Neuen Wert in Ausgabeliste eingeschoben
     importance: LOW
     actions:
-      - A.insert(P.getValue(), W.getValue())
+      - A.insert(P.value, W.value)
     transitions:
       - target: Z6
   - id: Z6
     name: Neuer Wert aus Eingabeliste entfernt
     importance: HIGH
     actions:
-      - E.remove(W.getValue())
+      - E.remove(W.value)
     transitions:
       - target: Z1
       - target: Z7

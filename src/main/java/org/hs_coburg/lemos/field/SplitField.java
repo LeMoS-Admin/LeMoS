@@ -26,10 +26,9 @@ public class SplitField extends MultilineableField
                       @JsonProperty("multiline") Boolean multiline,
                       @JsonProperty("minLines") Integer minLines,
                       @JsonProperty("maxLines") Integer maxLines,
-                      @JsonProperty("fixLines") Integer fixLines,
                       @JsonProperty("separator") String separator)
     {
-        super(id, name, explanation, usage, type, style, hidden, allowEmpty, datatype, restrictions, multiline, minLines, maxLines, fixLines);
+        super(id, name, explanation, usage, type, style, hidden, allowEmpty, datatype, restrictions, multiline, minLines, maxLines);
         this.separator = Objects.requireNonNullElse(separator, "");
     }
 

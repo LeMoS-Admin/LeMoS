@@ -1,28 +1,42 @@
-Wichtigste Änderungen in LeMoS-1.1.0:
-- Kompatibilität: abwärtskompatibel zu Version 1.0.0, wenn folgende Maßnahmen getroffen werden
-  - In bestehdenen Lernmodulkonfigurationen muss der Feldtyp "SELECTOR" durch "SELECT" ersetzt werden
+Wichtigste Änderungen in LeMoS-1.2.0:
+- Kompatibilität: abwärtskompatibel zu Version 1.1.0, wenn folgende Maßnahmen in der beschriebenen Reihenfolge getroffen werden:
+  - Attribut "libraryVersion" durch "lemosVersion" ersetzen
+  - Attribut "fixLines" durch Attribute "minLines" und "maxLines" mit gleichem Wert ersetzen
+  - Verwendungen von "Module" durch "Fields" ersetzen
+  - Verwendungen von "Logger" durch "Module" ersetzen
+  - Aufrufe von "Fields.isFilled(" durch "Fields.areFilled(" ersetzen
+  - Aufrufe von "Module.set(" durch "Module.setLogger(" ersetzen
+  - Aufrufe von "Module.clear()" durch "Module.clearLogger()" ersetzen
+  - Aufrufe von ".length()" durch ".getLength()" ersetzen
+  - Optional: Aufrufe von ".length" bei Strings, Arrays und Maps zur Vereinheitlichung ebenfalls durch ".getLength()" ersetzen
 - Strukturell
-  - Dokumentation der Systemfunktionen erstellt
-- Generierung
-  - LeMoS-Skripte für Windows erstellt
-  - SelectorField zur Vereinheitlichung in SelectField umbenannt
-- Lernmodul
-  - Automatisches Scrollen nach Klick auf Buttons eingebaut
-  - Darstellung von Infotexten überarbeitet
-  - setEnabled()-Methode ergänzt
-  - setDisplayed() und setEnabled() in Historie (für Rückschritte) aufgenommen
-  - Letzter Eintrag von Listen/Tabellen wird nun unsichtbar, wenn er entfernt werden soll (vorher blieb der letzte Eintrag immer bestehen und sichtbar)
-  - Systemfunktionen der Module-Klasse in mehrere Klassen aufgespalten, um eine bessere Trennung der Funktionen zu erreichen
-- Konfigurationen
-  - Konfiguration eines Moduls zum Testen aller Systemfunktionen hinzugefügt
-
-Ausstehende Arbeiten:
+  - Überarbeitung der ReadMe-Dateien (Rechtschreibfehler und Inkonsistenzen)
   - Anpassung der Dateinamen (kein Camel-Case wie "LeMoS")
-  - Erweiterung der Konfigurationen um Protokolausgaben
+  - Variable für LeMoS-Optionen am Anfang der Skripte eingebaut
+- Generierung
+  - Attribut libraryVersion (Settings) in lemosVersion umbenannt, um für mehr Klarheit bei potenzieller zukünftiger Kompatibilitätslogik zu sorgen
+  - Attribut "fixLines" in MultilineableFields entfernt, da es redundant zu minLines und maxLines (bei gleichem Wert) war
+- Lernmodul
+  - Methode length() von verschiedenen Feldern in getLength() umbenannt, um die Methode auch für Strings, Arrays und Maps anbieten zu können (length() würde hier zu Namenskollisionen führen)
+  - TextFields und SplitFields und ListFields mit datatype "NUMBER" oder "INTEGER" wandeln ihre Werte nun automatisch in Zahlen um
+  - Methode replaceAt() für TextFields und Strings ergänzt
+  - Fehlermeldung bei falscher Benutzung der setValue()-Methoden ergänzt (falsche Übergabeparameter wurden vorher teilweise einfach übergangen)
+  - Fehlende map()-Funktion für alle ListableFields ergänzt
+  - Methoden zur Abfrage der Option-Namen von CheckFields und SelectFields ergänzt
+  - Über general.resources konfigurierte Ressourcen werden nun automatisch im Hintergrund vorgeladen, um sie bei Bedarf schneller nutzen zu können
+  - Systemfunktionenklasse "Module" zur Verständlichkeit in "Fields" umbenannt, da sich die Systemfunktionen darin ausschließlich um Felder drehten
+  - Funktion Fields.isFilled() (ehemals Module.isFilled()) grammatikalisch zu Fields.areFilled() angepasst
+  - Funktion Fields.areFilled() ergänzt
+  - Systemfunktionenklasse "Logger" zur Verständlichkeit in "Module" umbenannt, da "Module" besser als Analogie zu Klassen wie "System" passt
+  - Funktionen Module.set() (ehemals Logger.set()) und Module.clear() (ehemals Logger.clear()) aufgrund der Umbenennung von "Logger" zu "Module" zu Module.setLogger() und Module.clearLogger() umbenannt
+- Konfigurationen
+  - Konfigurationen aller Lernmodule überarbeitet (hauptsächlich auf einfachere/lesbarere Befehle umgestellt)
+  - Konfigurationen zur ersten Lösung von 7-Freispeicherverwaltung ergänzt ("7-Freispeicherverwaltung_L1"), bisherige Lösung entsprechend zu "7-Freispeicherverwaltung_L2" umbenannt
+  - Konfigurationen der Lernmodule "WT-SpezifitaetBerechnen", "WT-SelektorenBilden" und "WT-BoxmodelleVergleichen" ergänzt
 
 Allgemeine Hinweise:
 - Zum Ausführen der Lernmodule wird ein aktueller Browser benötigt
-- Falls der Browser 'Mozilla Firefox' verwendet wird, darf dieser nicht via Snap instaliert sein
+- Falls der Browser 'Mozilla Firefox' verwendet wird, darf dieser nicht via Snap installiert sein
 
 Informationen zum Umgang mit dem LeMoS finden sich in folgenden Dateien:
 - "ReadMe-Lernmodulersteller.txt" für Informationen zur Verwendung des LeMoS
@@ -31,10 +45,10 @@ Informationen zum Umgang mit dem LeMoS finden sich in folgenden Dateien:
 
 Testen des LeMoS:
 - Für einen vollständigen Test ist zunächst die Anleitung für Verwalter der Lernplattform ("ReadMe-Softwareentwickler.txt") zu befolgen
-- Anschließend kann das Testen bliebig oft entsprechend der Anleitung für Ersteller von Lernmodulen ("ReadMe-Lernmodulersteller.txt") ab Schritt 3 erfolgen
+- Anschließend kann das Testen beliebig oft entsprechend der Anleitung für Ersteller von Lernmodulen ("ReadMe-Lernmodulersteller.txt") ab Schritt 3 erfolgen
 - Exemplarische Testdaten finden sich in der mitgelieferten Datei "Lernmodulkonfigurationen.tar"
 - Zusätzlich können auch neue Lernmodule erstellt und getestet werden, hierfür ist die Anleitung für Ersteller von Lernmodulen ("ReadMe-Lernmodulersteller.txt") ab Schritt 1 zu befolgen
-- Folgende Lernmodule sind konfiguiert:
+- Folgende Lernmodule sind konfiguriert:
   - "0-FeldtypenTestmodul_Locker" (+ 1 Szenario und einige Ressourcen)
   - "0-FeldtypenTestmodul_Restriktiv" (+ 1 Szenario und einige Ressourcen)
   - "1-Theorem_von_Little_V1" in YAML, XML und JSON (+ 3 Szenarien)
@@ -45,17 +59,22 @@ Testen des LeMoS:
   - "4-Sortieralgorithmus_V2" (+ 1 Szenario)
   - "5-FAT_Dateisystem" (+ 1 Szenario)
   - "6-Servlet_Mapping" (+ 2 Szenarien)
-  - "7-Freispeicherverwaltung" auf Basis von Lösung 2 (+ 1 Szenario)
+  - "7-Freispeicherverwaltung_L1" auf Basis von Lösung 1 (+ 1 Szenario)
+  - "7-Freispeicherverwaltung_L2" auf Basis von Lösung 2 (+ 1 Szenario)
+  - Im Unterordner "X-Webtechnologien":
+    - "WT-SpezifitaetBerechnen" (+ 5 Szenarien)
+    - "WT-SelektorenBilden" (+ 5 Szenarien)
+    - "WT-BoxmodelleVergleichen" (+ 3 Szenarien)
   - Hinweis-1: die Konfigurationen der Lernmodule decken sich nicht mehr mit den Darstellungen aus der Anforderungsanalyse, sie sind eher daran angelehnt
-  - Hinweis-2: für die Protokollfeldern der Lernmodule sind aktuell nur in den Testmodulen Ausgaben konfiguriert, in allen anderen Modulen bleibt das Protokoll somit korrekterweise leer solange kein Fehler auftritt
+  - Hinweis-2: für die Protokollfelder der Lernmodule sind aktuell nur in den WT- und Testmodulen Ausgaben konfiguriert, in den Modulen der Anforderungsanalyse bleibt das Protokoll somit korrekterweise leer, solange kein Fehler auftritt
 - Folgende Funktionalitäten des LeMoS sind umgesetzt und sollten funktionieren:
   - Kompilieren und Ausführen des LeMoS unter Linux (.bat-Dateien für Windows aktuell noch nicht implementiert)
   - Berücksichtigung aller konfigurierbaren Eigenschaften
   - Konfiguration und Verwendung aller Feldtypen (INFO, TEXT, SPLIT, CHECK, SELECT, LIST, TABLE) in allen Varianten (z.B. multiline, horizontal/vertikal)
   - Verwendung aller Vorwärts- und Rückwärts-Schritte und des Resets (|<, <<, <, O, >, >>, >|)
   - Verwendung aller Systemfunktionen (bilden einen Großteil der jeweils passenden JavaScript-Objektfunktionen ab, haben aber zusätzlich noch einige weitere)
-    Folgende Feldtypen untersützen im Allgemeinen die Funktionen folgender JavaScript-Objekte:
-    - Textfield: String-Klasse
+  - Folgende Feldtypen unterstützen im Allgemeinen die Funktionen folgender JavaScript-Objekte:
+    - TextField: String-Klasse
     - SplitField, ListField, TableField: Array-Klasse
     - ObjectField (Einträge von TableField): Map-Klasse
     - InfoField, CheckField und SelectField: keine ähnliche JavaScript-Klasse

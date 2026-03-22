@@ -42,17 +42,17 @@ export default class InfoFieldManager extends FieldManager
 
 	setValue(value)
 	{
-		if(value === undefined)
+		if (value === undefined)
 		{
 			this.clear();
 		}
 		else if (this.contentType === "Text")
 		{
-			this.getChildElement(".field > span").innerHTML = value;
+			this.getChildElement(".field > span").innerHTML = String(value);
 		}
 		else
 		{
-			this.getChildElement(".field > *").attributes.getNamedItem("src").value = value;
+			this.getChildElement(".field > *").attributes.getNamedItem("src").value = String(value);
 		}
 	}
 
@@ -71,6 +71,11 @@ export default class InfoFieldManager extends FieldManager
 		return super.toString() +
 			"\n\tcontentType: " + this.contentType +
 			"\n\tvalue: " + this.getValue();
+	}
+
+	getPrint()
+	{
+		return "'" + super.getPrint() + "'";
 	}
 
 	validate(tolerateEmptiness = false)

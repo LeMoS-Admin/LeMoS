@@ -1,6 +1,7 @@
-import Logger from "../systemFunctions/Logger.js";
-import Scroller from "../internalFunctions/Scroller.js";
 import FieldManager from "./FieldManager.js";
+import Module from "../systemFunctions/Module.js";
+import Scroller from "../internalFunctions/Scroller.js";
+import Controller from "../internalFunctions/Controller.js";
 
 export default class ExpandableFieldManager extends FieldManager
 {
@@ -13,21 +14,21 @@ export default class ExpandableFieldManager extends FieldManager
 
 		this.getChildElement(".buttons > .addEntryButton").addEventListener("click", () =>
 		{
+			Controller.handleChangeEvent();
 			// Die Scroll-Position muss stets vom Auslöser einer Änderung angepasst werden, damit die Anpassung nicht mehrfach erfolgt
 			// --> Muss im EventListener beschrieben werden, da this.addEntry(); auch intern aufgerufen wird
 			Scroller.saveCurrentScrollPosition(this.selector + " > .buttons");
 			this.addEntry();
 			Scroller.scrollToSavedPosition();
-			this.handleChangeEvent();
 		});
 		this.getChildElement(".buttons > .removeEntryButton").addEventListener("click", () =>
 		{
+			Controller.handleChangeEvent();
 			// Die Scroll-Position muss stets vom Auslöser einer Änderung angepasst werden, damit die Anpassung nicht mehrfach erfolgt
 			// --> Muss im EventListener beschrieben werden, da this.removeEntry(); auch intern aufgerufen wird
 			Scroller.saveCurrentScrollPosition(this.selector + " > .buttons");
 			this.removeEntry();
 			Scroller.scrollToSavedPosition();
-			this.handleChangeEvent();
 		});
 	}
 
@@ -47,10 +48,14 @@ export default class ExpandableFieldManager extends FieldManager
 
 	setValue(value)
 	{
-		if(value === undefined)
+		if (value === undefined)
 		{
 			this.clear();
 			return;
+		}
+		else if (!(value instanceof Array))
+		{
+			throw new Error("Value for ExpandableFields must be an Array")
 		}
 
 		this.setLength(value.length);
@@ -80,7 +85,7 @@ export default class ExpandableFieldManager extends FieldManager
 	backup()
 	{
 		let entriesBackup = [];
-		for(let entry of this.entries)
+		for (let entry of this.entries)
 		{
 			entriesBackup.push(entry.backup());
 		}
@@ -163,7 +168,14 @@ export default class ExpandableFieldManager extends FieldManager
 		// Ausgeblendete Zeilen werden nicht berücksichtigt, sodass auch eine leere Liste/Tabelle dargestellt werden kann
 		if (keepEmptyEntries)
 		{
-			return this.entries;
+			if (this.getLength() === 0) // Ausgeblendeter Eintrag soll nicht als leerer Eintrag zurückgegeben werden
+			{
+				return [];
+			}
+			else
+			{
+				return this.entries;
+			}
 		}
 		else
 		{
@@ -182,7 +194,7 @@ export default class ExpandableFieldManager extends FieldManager
 		else if (this.getLength() === this.maxEntries)
 		{
 			// Maximale Anzahl von Einträgen darf nicht überschritten werden
-			Logger.log(this.getMessagePrefix() + "maximum amount of entries already reached")
+			Module.log(this.getMessagePrefix() + "maximum amount of entries already reached")
 			return;
 		}
 

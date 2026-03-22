@@ -1,10 +1,10 @@
-import Logger from "../systemFunctions/Logger.js";
+import Module from "../systemFunctions/Module.js";
 import Utils from "../systemFunctions/Utils.js";
 import ListableFieldInteractor from "./ListableFieldInteractor.js";
 import ObjectFieldInteractor from "./ObjectFieldInteractor.js";
 
 export default class TableFieldInteractor extends ListableFieldInteractor
-{	
+{
 	constructor(fieldManager, keepEmptyEntries)
 	{
 		super(fieldManager, keepEmptyEntries);
@@ -74,9 +74,9 @@ export default class TableFieldInteractor extends ListableFieldInteractor
 
 	setAttribute(attribute, values)
 	{
-		if (this.length() !== values.length)
+		if (this.getLength() !== values.length)
 		{
-			Logger.error(this._fieldManager.getMessagePrefix() + "length of values to set must be equal to number of entries");
+			Module.error(this._fieldManager.getMessagePrefix() + "length of values to set must be equal to number of entries");
 		}
 
 		let entries = this.getValue();
@@ -87,12 +87,12 @@ export default class TableFieldInteractor extends ListableFieldInteractor
 		return this;
 	}
 
-	fillAttribute(attribute, value, start = 0, end = this.length())
+	fillAttribute(attribute, value, start = 0, end = this.getLength())
 	{
-		if (end > this.length())
+		if (end > this.getLength())
 		{
-			Logger.log(this._fieldManager.getMessagePrefix() + "end must be lower or equal to number of entries");
-			end = this.length();
+			Module.log(this._fieldManager.getMessagePrefix() + "end must be lower or equal to number of entries");
+			end = this.getLength();
 		}
 
 		let entries = this.getValue();

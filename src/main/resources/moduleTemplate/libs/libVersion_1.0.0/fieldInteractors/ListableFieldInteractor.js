@@ -144,6 +144,13 @@ export default class ListableFieldInteractor extends FieldInteractor
 		return this;
 	}
 
+	map(callbackFn)
+	{
+		let newValue = this.getValue().map(callbackFn);
+		this.setValue(newValue);
+		return this;
+	}
+
 	push(...element)
 	{
 		let newValue = this.getValue();
@@ -198,7 +205,6 @@ export default class ListableFieldInteractor extends FieldInteractor
 	}
 
 // Angepasste Methoden
-
 	includes(searchElement, fromIndex)
 	{
 		return this.getValue().includes(searchElement, fromIndex)
@@ -216,9 +222,9 @@ export default class ListableFieldInteractor extends FieldInteractor
 
 
 // Zusätzliche Methoden
-	length()
+	getLength()
 	{
-		return this.getValue().length;
+		return this.getValue().getLength();
 	}
 
 	first()
@@ -286,7 +292,7 @@ export default class ListableFieldInteractor extends FieldInteractor
 	{
 		if (!this.hasNext())
 		{
-			this.#iteratorPosition = this.length();
+			this.#iteratorPosition = this.getLength();
 			return undefined;
 		}
 		this.#iteratorPosition++;
@@ -346,7 +352,7 @@ export default class ListableFieldInteractor extends FieldInteractor
 
 	hasNext()
 	{
-		return this.#iteratorPosition < this.length() - 1;
+		return this.#iteratorPosition < this.getLength() - 1;
 	}
 
 	hasPrevious()
@@ -361,7 +367,7 @@ export default class ListableFieldInteractor extends FieldInteractor
 
 	isAtEnd()
 	{
-		return this.#iteratorPosition === this.length() || this.isEmpty();
+		return this.#iteratorPosition === this.getLength() || this.isEmpty();
 	}
 
 	getIteratorPosition()
@@ -377,7 +383,7 @@ export default class ListableFieldInteractor extends FieldInteractor
 
 	setToEnd()
 	{
-		this.#iteratorPosition = this.length();
+		this.#iteratorPosition = this.getLength();
 		return this;
 	}
 
@@ -387,7 +393,7 @@ export default class ListableFieldInteractor extends FieldInteractor
 		{
 			this.setToStart();
 		}
-		else if (position > this.length())
+		else if (position > this.getLength())
 		{
 			this.setToEnd();
 		}

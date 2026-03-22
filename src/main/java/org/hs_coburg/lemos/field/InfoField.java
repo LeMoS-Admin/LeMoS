@@ -61,11 +61,6 @@ public class InfoField extends Field
 
     private void validate()
     {
-        if (contentType == ContentType.TEXT &&
-            text.isEmpty())
-        {
-            throw new RuntimeException("ContentType 'TEXT' requires the attribute 'text'");
-        }
         if (contentType != ContentType.TEXT &&
             resourceID.isEmpty() &&
             resource == Resource.emptyResource)

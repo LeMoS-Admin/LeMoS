@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=../../../LeMoS-Szenario-Schema.json
+scenario:
+  id: S3
+  explanation: "section article:nth-of-type(2) h3::after"
+  initialization:
+    - S.setValue('section article:nth-of-type(2) h3::after')

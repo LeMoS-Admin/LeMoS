@@ -1,0 +1,334 @@
+# yaml-language-server: $schema=../LeMoS-Modul-Schema.json
+general:
+  heading: Freispeicherverwaltung L1
+  explanation: |
+    Arbeitsspeicher verschiedener Prozesse mittels Bitmap verwalten (Verfahren: First Fit)<br>
+    --> Speicherabschnitte können für Prozesse allokiert und freigegeben werden<br>
+    L1 = Allokation und Freigabe als Funktionen ausgelagert
+  settings:
+    lemosVersion: 1.0.0
+  variables:
+    - name: X
+  functions:
+    - name: prozessAllokiert
+      implementation:
+        - return S.getAttribute("P").includes(X.value.get("P"))
+    - name: speicherVerfügbar
+      implementation:
+        - return Own.findeSpeicher() !== undefined
+    - name: speicherFreigeben
+      implementation:
+        - let von = S.findByAttribute("P", X.value.get("P")).get("N")
+        - let bis = S.findLastByAttribute("P", X.value.get("P")).get("N") + 1
+        - S.withEmptyEntries().fillAttribute("Z", 0, von, bis)
+        - S.withEmptyEntries().fillAttribute("P", 0, von, bis)
+    - name: speicherAllokieren
+      implementation:
+        - let von = Own.findeSpeicher()
+        - let bis = von + X.value.get("G")
+        - S.withEmptyEntries().fillAttribute("Z", 1, von, bis)
+        - S.withEmptyEntries().fillAttribute("P", X.value.get("P"), von, bis)
+    - name: findeSpeicher
+      implementation:
+        - |
+          S.restartIterator();
+          while(S.hasNext()) {
+            let index0 = S.findNextByAttribute("Z", 0)
+            if(index0 === undefined)
+              return undefined;
+            else
+              index0 = index0.get("N");
+          
+            let index1 = S.findNextByAttribute("Z", 1)
+            if(index1 === undefined)
+              index1 = S.getLength();
+            else
+              index1 = index1.get("N");
+          
+            let length = index1 - index0;
+            if(length >= X.value.get("G"))
+              return index0;
+            else
+              continue;
+          }
+          return undefined;
+
+fields:
+  - id: E
+    name: Ereignistabelle
+    explanation: Liste der durchzuführenden Allokationen und Freigaben
+    type: TABLE
+    allowEmpty: true
+    restrictions:
+      - message: Bei der Allokation von Speicher ist die zu allokierende Größe anzugeben, bei der Freigabe ist keine Größe anzugeben
+        terms:
+          - |
+            ((entry.get('A').getValue() === 'Allokation') && !entry.get('G').isEmpty()) ||
+            ((entry.get('A').getValue() === 'Freigabe') && entry.get('G').isEmpty())
+    initialEntries: 1
+    innerFields:
+      - id: A
+        name: Aktion
+        type: SELECT
+        emptyOption: true
+        options:
+          - id: Leer
+            name: Bitte wählen
+          - id: Allokation
+          - id: Freigabe
+      - id: P
+        name: Prozess
+        type: TEXT
+        datatype: INTEGER
+        restrictions:
+          - message: Nur positive Zahlenwerte
+            terms:
+              - P.getValue() >= 0
+      - id: G
+        name: Größe
+        type: TEXT
+        allowEmpty: true
+        datatype: INTEGER
+        restrictions:
+          - message: Nur positive Zahlenwerte
+            terms:
+              - G.getValue() >= 0
+    style:
+      row: 1
+      column: 1
+  - id: W
+    name: Wartetabelle
+    explanation: Liste der durchzuführenden Allokationen und Freigaben
+    type: TABLE
+    allowEmpty: true
+    restrictions:
+      - message: Bei der Allokation von Speicher ist die zu allokierende Größe anzugeben, bei der Freigabe ist keine Größe anzugeben
+        terms:
+          - |
+            ((entry.get('A').getValue() === 'Allokation') && !entry.get('G').isEmpty()) ||
+            ((entry.get('A').getValue() === 'Freigabe') && entry.get('G').isEmpty())
+    initialEntries: 1
+    innerFields:
+      - id: A
+        name: Aktion
+        type: SELECT
+        emptyOption: true
+        options:
+          - id: Leer
+            name: Bitte wählen
+          - id: Allokation
+          - id: Freigabe
+      - id: P
+        name: Prozess
+        type: TEXT
+        datatype: INTEGER
+        restrictions:
+          - message: Nur positive Zahlenwerte
+            terms:
+              - P.getValue() >= 0
+      - id: G
+        name: Größe
+        type: TEXT
+        allowEmpty: true
+        datatype: INTEGER
+        restrictions:
+          - message: Nur positive Zahlenwerte
+            terms:
+              - G.getValue() >= 0
+    style:
+      row: 1
+      column: 2
+  - id: S
+    name: Speichertabelle
+    explanation: Aktuelle Bitmap zur Speicherverwaltung
+    usage: OUTPUT
+    type: TABLE
+    growthDirection: HORIZONTAL
+    initialEntries: 32
+    innerFields:
+      - id: 'N'
+        name: Nummer
+        explanation: Nummer der Speicherzelle
+        usage: OUTPUT
+        type: TEXT
+        datatype: INTEGER
+      - id: Z
+        name: Zustand
+        explanation: Aktuelle Verfügbarkeit der Speicherzelle, 0 für unbelegt, 1 für belegt
+        type: TEXT
+        usage: INPUT
+        datatype: INTEGER
+        restrictions:
+          - message: Zustand muss 0 (unbelegt) oder 1 (belegt) sein
+            terms:
+              - Z.equals(0) || Z.equals(1)
+      - id: P
+        name: Prozess
+        explanation: Prozess, der die Speicherzelle aktuell belegt
+        usage: INPUT
+        type: TEXT
+        datatype: INTEGER
+        restrictions:
+          - message: Nur positive Zahlenwerte
+            terms:
+              - P.getValue() >= 0
+    style:
+      row: 2
+      column: 1
+      width: 2
+
+states:
+  - id: Z0
+    name: Lernmodul initialisiert
+    type: ENTRY
+    actions:
+      - S.withEmptyEntries().forEach((field, index) => field.get("N").value = index)
+    transitions:
+      - target: Z1
+  - id: Z1
+    name: Iteration über Wartetabelle neugestartet
+    importance: ZERO
+    actions:
+      - W.restartIterator()
+    transitions:
+      - target: Z2
+  - id: Z2
+    name: Aktueller Eintrag definiert
+    importance: LOW
+    actions:
+      - X.value = W.next()
+      - if (X.value !== undefined) X.value = X.value.valueOf()
+    transitions:
+      - target: Z11
+        conditions:
+          - terms:
+              - W.isAtEnd()
+      - target: Z3a
+        conditions:
+          - terms:
+              - X.value.get("A") === "Freigabe"
+      - target: Z3b
+        conditions:
+          - terms:
+              - X.value.get("A") === "Allokation"
+  - id: Z3a
+    name: Aktueller Eintrag allokiert?
+    type: JUNCTION
+    transitions:
+      - target: Z2
+      - target: Z8a
+        conditions:
+          - terms:
+              - Own.prozessAllokiert()
+  - id: Z3b
+    name: Aktueller Eintrag allokierbar?
+    type: JUNCTION
+    transitions:
+      - target: Z2
+      - target: Z8b
+        conditions:
+          - terms:
+              - Own.speicherVerfügbar()
+  - id: Z8a
+    name: Speicherbereich freigegeben
+    importance: LOW
+    actions:
+      - Own.speicherFreigeben()
+    transitions:
+      - target: Z9
+  - id: Z8b
+    name: Speicherbereich allokiert
+    importance: LOW
+    actions:
+      - Own.speicherAllokieren()
+    transitions:
+      - target: Z9
+  - id: Z9
+    name: Aktueller Eintrag aus Wartetabelle entfernt
+    importance: HIGH
+    actions:
+      - W.remove(X.value)
+    transitions:
+      - target: Z2
+  - id: Z11
+    name: Iteration über Ereignistabelle neugestartet
+    importance: ZERO
+    actions:
+      - E.restartIterator()
+    transitions:
+      - target: Z12
+  - id: Z11a
+    name: Aktuellen Eintrag am Anfang der Wartetabelle eingeschoben
+    importance: HIGH
+    actions:
+      - W.insert(0, X.value)
+    transitions:
+      - target: Z12
+  - id: Z11b
+    name: Aktuellen Eintrag am Ende der Wartetabelle angehangen
+    importance: HIGH
+    actions:
+      - W.add(X.value)
+    transitions:
+      - target: Z12
+  - id: Z12
+    name: Aktueller Eintrag definiert
+    importance: LOW
+    actions:
+      - X.value = E.next()
+      - if (X.value !== undefined) X.value = X.value.valueOf()
+    transitions:
+      - target: Z19
+      - target: Z20
+        conditions:
+          - terms:
+              - E.isAtEnd()
+  - id: Z19
+    name: Aktueller Eintrag aus Ereignistabelle entfernt
+    importance: LOW
+    actions:
+      - E.remove(X.value)
+    transitions:
+      - target: Z13a
+        conditions:
+          - terms:
+              - X.value.get("A") === "Freigabe"
+      - target: Z13b
+        conditions:
+          - terms:
+              - X.value.get("A") === "Allokation"
+  - id: Z13a
+    name: Aktueller Eintrag allokiert?
+    type: JUNCTION
+    transitions:
+      - target: Z11a
+      - target: Z18a
+        conditions:
+          - terms:
+              - Own.prozessAllokiert()
+  - id: Z13b
+    name: Aktueller Eintrag allokierbar?
+    type: JUNCTION
+    transitions:
+      - target: Z11b
+      - target: Z18b
+        conditions:
+          - terms:
+              - Own.speicherVerfügbar()
+  - id: Z18a
+    name: Speicherbereich freigegeben
+    importance: HIGH
+    actions:
+      - Own.speicherFreigeben()
+    transitions:
+      - target: Z1
+  - id: Z18b
+    name: Speicherbereich allokiert
+    importance: HIGH
+    actions:
+      - Own.speicherAllokieren()
+    transitions:
+      - target: Z1
+  - id: Z20
+    name: Modul abgeschlossen
+    importance: HIGH

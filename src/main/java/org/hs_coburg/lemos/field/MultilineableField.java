@@ -11,7 +11,6 @@ public abstract class MultilineableField extends Field
     public final Boolean multiline;
     public final Integer minLines;
     public final Integer maxLines;
-    public final Integer fixLines;
 
     protected MultilineableField(String id,
                                  String name,
@@ -25,8 +24,7 @@ public abstract class MultilineableField extends Field
                                  List<Condition> restrictions,
                                  Boolean multiline,
                                  Integer minLines,
-                                 Integer maxLines,
-                                 Integer fixLines)
+                                 Integer maxLines)
     {
         super(id, name, explanation, usage, type, style, hidden, allowEmpty, datatype, restrictions);
         this.multiline = Objects.requireNonNullElse(multiline, false);
@@ -34,13 +32,11 @@ public abstract class MultilineableField extends Field
         {
             this.minLines = -1;
             this.maxLines = -1;
-            this.fixLines = -1;
         }
         else
         {
-            this.minLines = Objects.requireNonNullElse(minLines, -1);
+            this.minLines = Objects.requireNonNullElse(minLines, 1);
             this.maxLines = Objects.requireNonNullElse(maxLines, -1);
-            this.fixLines = Objects.requireNonNullElse(fixLines, -1);
         }
         validate();
     }
@@ -50,10 +46,6 @@ public abstract class MultilineableField extends Field
         if (maxLines != -1 && minLines > maxLines)
         {
             throw new RuntimeException("Attribute 'maxLines' must be higher or equal to 'minLines'");
-        }
-        if (fixLines != -1 && (minLines != -1 || maxLines != -1))
-        {
-            throw new RuntimeException("Attribute 'fixLines' can not be combined with 'minLines' or 'maxLines'");
         }
     }
 
@@ -82,30 +74,29 @@ public abstract class MultilineableField extends Field
     {
         String fieldStyle = "style='";
 
-        // Jeweils addieren einer halben Zeile, damit die konfigurierten Zeilen sicher in das Feld passen
-        if (minLines != -1)
+        // Hinweis: damit die konfigurierten Zeilen sicher in das Feld passen, wird jeweils eine halbe Zeile addiert
+        if (minLines.equals(maxLines) && minLines != -1)
         {
-            fieldStyle += " min-height: " + (minLines + 0.5) + "lh;";
+            fieldStyle += "height: " + (minLines + 0.5) + "lh; ";
         }
-        if (maxLines != -1)
+        else
         {
-            fieldStyle += " max-height: " + (maxLines + 0.5) + "lh;";
-        }
-        if (fixLines != -1)
-        {
-            fieldStyle += " height: " + (fixLines + 0.5) + "lh;";
-        }
-        if (multiline && fixLines == -1)
-        {
-            // Höhe mit 0 initialisieren, um min-height zu nutzen
-            fieldStyle += " height: 0;";
+            if (minLines != -1)
+            {
+                fieldStyle += "height: 0; "; // Höhe mit 0 initialisieren, um initial min-height zu nutzen
+                fieldStyle += "min-height: " + (minLines + 0.5) + "lh; ";
+            }
+            if (maxLines != -1)
+            {
+                fieldStyle += "max-height: " + (maxLines + 0.5) + "lh; ";
+            }
         }
         return fieldStyle + "'";
     }
 
     private String getGrowable()
     {
-        if (multiline && fixLines == -1)
+        if (multiline && !minLines.equals(maxLines))
         {
             return "true";
         }
@@ -121,7 +112,6 @@ public abstract class MultilineableField extends Field
         return super.toString() +
                "\n\t" + "multiline: " + StringHelper.get(multiline) +
                "\n\t" + "minLines: " + StringHelper.get(minLines) +
-               "\n\t" + "maxLines: " + StringHelper.get(maxLines) +
-               "\n\t" + "fixLines: " + StringHelper.get(fixLines);
+               "\n\t" + "maxLines: " + StringHelper.get(maxLines);
     }
 }

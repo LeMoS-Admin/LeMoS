@@ -23,25 +23,33 @@ export default class TextFieldManager extends MultilineableFieldManager
 
 	getValue()
 	{
-		return this.getField().value;
+		let value = this.getField().value;
+		if (this.datatype === "Integer" || this.datatype === "Number")
+		{
+			return value.asNumber();
+		}
+		else
+		{
+			return value;
+		}
 	}
 
 	setValue(value)
 	{
-		if (value === undefined)
+		if (value === undefined || Number.isNaN(value))
 		{
 			this.clear();
 			return;
 		}
-		
-		this.getField().value = value;
+
+		this.getField().value = String(value);
 		this.resetHeight();
 		this.scrollToBottom();
 	}
 
 	isEmpty()
 	{
-		return this.getValue().trim() === "";
+		return this.getField().value.trim() === "";
 	}
 
 	clear()
@@ -53,6 +61,11 @@ export default class TextFieldManager extends MultilineableFieldManager
 	{
 		return super.toString() +
 			"\n\tvalue: " + this.getValue();
+	}
+
+	getPrint()
+	{
+		return "'" + super.getPrint() + "'";
 	}
 }
 

@@ -6,19 +6,21 @@ set "SWD=%cd%"			& :: SWD = Start Working Directory
 cd /d "%~dp0"			& :: Auflösen des ggf. relativen Pfades zum Skript, um absoluten Pfad des Skripts zu erhalten
 set "LWD=%cd%"			& :: LWD = LeMoS Working Directory
 set "TEMPLATE=moduleTemplate" 	& :: TEMPLATE = Vorlage für Webarchiv eines Lernmoduls
+set "OPTIONS="                  & :: OPTIONS = Optionen für LeMoS-Aufruf, folgende sind möglich: -PaS bzw. -PrintAsStructure, -PaL bzw. -PrintAsLine (siehe Aufruf des LeMoS-Generators ohne Parameter)
+
 
 :: LeMoS-Dateinamen ermitteln, indem über alle passenden Dateien iteriert wird (sollte stets genau eine sein)
-for %%f in (LeMoS*.jar) do (
-	set "LeMoS=%%f"
+for %%f in (lemos*.jar) do (
+	set "lemos=%%f"
 )
-echo Found LeMoS-Version: %LeMoS%
+echo Found LeMoS-Version: %lemos%
 echo.
 
 :: Wenn keine Parameter übergeben: Erklärung der Funktionsweise des LeMoS
 if %1 equ "" (
-	echo "Bitte mindestens eine Lernmodul-Konfiguration (YAML-, JSON- oder XML-Datei) als absoluten oder relativen Pfad angeben."
-	echo "Konfigurationen von Lernmodul-Szenarien (YAML-, JSON- oder XML-Datei) sind nicht anzugeben, sie werden am Speicherort der Lernmodul-Konfiguration im Unterordner 'scenarios' erwartet."
-	echo "Bei erfolgreicher Ausführung werden die generierten Lernmodule am Aufrufort dieses Skripts als ZIP-Datei unter dem Namen der Lernmodul-Konfiguration abgelegt."
+	echo "Bitte mindestens eine Lernmodulkonfiguration (YAML-, JSON- oder XML-Datei) als absoluten oder relativen Pfad angeben."
+	echo "Konfigurationen von Lernmodul-Szenarien (YAML-, JSON- oder XML-Datei) sind nicht anzugeben, sie werden am Speicherort der Lernmodulkonfiguration im Unterordner 'scenarios' erwartet."
+	echo "Bei erfolgreicher Ausführung werden die generierten Lernmodule am Aufrufort dieses Skripts als ZIP-Datei unter dem Namen der Lernmodulkonfiguration abgelegt."
 	cd /d "%SWD%"
 	exit /b 1
 )
@@ -34,7 +36,7 @@ for %%x in (%*) do (
 	:: Erstellen einer Kopie der Vorlage, damit diese anschließend mit den Daten des Lernmodul ausgefüllt werden kann
 	echo !name!: preparing template
 	cd /d "%LWD%"
-	tar -xf "%LeMoS%" "%TEMPLATE%"
+	tar -xf "%lemos%" "%TEMPLATE%"
 
 	:: Übernehmen der hinterlegten Resourcen (falls vorhanden) in das Verzeichnis des Lernmoduls
 	echo !name!: preparing resources
@@ -42,10 +44,10 @@ for %%x in (%*) do (
 		xcopy "%pfad%\resources" "%LWD%\%TEMPLATE%\res" /e /i /q /y >nul
 	)
 	
-	:: Aufruf des LeMoS-Generators zur Verarbeitung der Lernmodul-Konfiguration (Parameter: Lernmodul-Konfigurationsdatei, Zielordner)
+	:: Aufruf des LeMoS-Generators zur Verarbeitung der Lernmodulkonfiguration (Parameter: Lernmodulkonfigurationsdatei, Zielordner)
 	echo !name!: starting generator
 	cd /d "%SWD%"					& :: LeMoS muss in Startverzeichnis aufgerufen werden, damit es etwaige relative Pfade korrekt auflösen kann
-	java -jar "%LWD%\%LeMoS%" %%x "%LWD%\%TEMPLATE%"
+	java -jar "%LWD%\%lemos%" %%x "%LWD%\%TEMPLATE%" %OPTIONS%"
 
 	:: Behandeln von erfolglosen Generierungen (über einen vom LeMoS-Generator zurückgegebenen Statuscode, der ungleich 0 ist)
 	if %errorlevel% neq 0 (

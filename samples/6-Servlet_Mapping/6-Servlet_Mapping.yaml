@@ -4,7 +4,7 @@ general:
   explanation: Erstellen eines Konfigurationseintrags, um eine URL auf eine Webressource zu mappen
   settings:
     differentStepSizes: false
-    libraryVersion: 1.0.0
+    lemosVersion: 1.0.0
 
 fields:
   - id: LOCP
@@ -33,7 +33,8 @@ fields:
     type: TEXT
     usage: OUTPUT
     multiline: true
-    fixLines: 8
+    minLines: 8
+    maxLines: 8
 
 states:
   - id: Z0
@@ -48,12 +49,12 @@ states:
                       - URL zur Ressource
                       - Name des Servlets
             terms:
-              - Module.isFilled(LOCP, EURL, NAME)
+              - Fields.areFilled(LOCP, EURL, NAME)
   - id: Z1
     name: Grundstruktur definiert
     actions:
       - |
-          let temp = 
+          KONF.value = 
           `<servlet>
           	SERVLET-NAME
           	SERVLET-INHALT
@@ -62,13 +63,12 @@ states:
           	SERVLET-NAME
           	MAPPING-URL
           </servlet-mapping>`
-      - KONF.setValue(temp)
     transitions:
       - target: Z2
   - id: Z2
     name: Servlet-Name eingetragen
     actions:
-      - let temp = "<servlet-name>" + NAME.getValue() + "</servlet-name>"
+      - let temp = "<servlet-name>" + NAME + "</servlet-name>"
       - KONF.replaceAll("SERVLET-NAME", temp)
     transitions:
       - target: Z3
@@ -82,31 +82,31 @@ states:
               - LOCP.endsWith(".jsp")
       - target: Z3b
         conditions:
-          - message: Ressource muss entwender die Dateiendung ".jsp" oder ".class" haben.
+          - message: Ressource muss entweder die Dateiendung ".jsp" oder ".class" haben.
             terms:
               - LOCP.endsWith(".class")
   - id: Z3a
     name: Tag für Inhalt definiert (jsp)
     actions:
-      - ITAG.setValue("jsp-file")
+      - ITAG.value = "jsp-file"
     transitions:
       - target: Z4
   - id: Z3b
     name: Tag für Inhalt definiert (class)
     actions:
-      - ITAG.setValue("servlet-class")
+      - ITAG.value = "servlet-class"
     transitions:
       - target: Z4
   - id: Z4
     name: Servlet-Inhalt eingetragen
     actions:
-      - let temp = "<" + ITAG.getValue() + ">" + LOCP.getValue() + "</" + ITAG.getValue() + ">"
+      - let temp = "<" + ITAG + ">" + LOCP + "</" + ITAG + ">"
       - KONF.replace("SERVLET-INHALT", temp)
     transitions:
       - target: Z5
   - id: Z5
     name: Mapping-URL eingetragen
     actions:
-      - let temp = "<url-pattern>" + EURL.getValue() + "</url-pattern>"
+      - let temp = "<url-pattern>" + EURL + "</url-pattern>"
       - KONF.replace("MAPPING-URL", temp)
 

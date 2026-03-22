@@ -3,7 +3,7 @@ general:
   heading: FAT-Dateisystem
   explanation: Finden der Blöcke einer Datei in einem FAT-Dateisystem, um die Größe der Datei zu berechnen
   settings:
-    libraryVersion: 1.0.0
+    lemosVersion: 1.0.0
 
 fields:
   - id: 'F'
@@ -94,45 +94,44 @@ states:
                       - Startblock
                       - Blockgröße
             terms:
-              - Module.isFilled(F, S, BG)
+              - Fields.areFilled(F, S, BG)
   - id: Z1
     name: Aktueller Block initialisiert
     importance: HIGH
     actions:
-      - A.setValue(S.getValue())
+      - A.value = S.value
     transitions:
       - target: Z2
   - id: Z2
     name: Aktueller Block zu Blockliste hinzugefügt
     importance: LOW
     actions:
-      - B.add(A.getValue())
+      - B.add(A.value)
     transitions:
       - target: Z3
   - id: Z3
     name: Aktueller Block definiert
     importance: HIGH
     actions:
-      - let nextEntry = F.findByAttribute("I", A.getValue())
-      - let nextBlock = nextEntry.get("N").getValue()
-      - A.setValue(nextBlock)
+      - let block = F.findByAttribute("I", A.value)
+      - A.value = block.get("N").value
     transitions:
       - target: Z2
       - target: Z4
         explanation: Wenn letzter Block gefunden wurde, wird mit der Berechnung von Länge und Dateigröße fortgefahren
         conditions:
           - terms:
-              - A.getValue() === "EOF"
+              - A.value === "EOF"
   - id: Z4
     name: Länge berechnet
     importance: LOW
     actions:
-      - L.setValue(B.length())
+      - L.value = B.getLength()
     transitions:
       - target: Z5
   - id: Z5
     name: Dateigröße berechnet
     importance: HIGH
     actions:
-      - DG.setValue(L.getValue() * BG.getValue())
+      - DG.value = L * BG
 

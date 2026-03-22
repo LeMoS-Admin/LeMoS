@@ -1,4 +1,4 @@
-import Logger from "../lib/systemFunctions/Logger.js";
+import Module from "../lib/systemFunctions/Module.js";
 import Resource from "../lib/systemFunctions/Resource.js";
 import Utils from "../lib/systemFunctions/Utils.js";
 
@@ -128,10 +128,11 @@ export class TestLib
 
 		// Zusätzliche Methoden
 		{
-			errors.push(TestLib.#assertResult(field, initialValue, 10, () => field.length()));
+			errors.push(TestLib.#assertResult(field, initialValue, 10, () => field.getLength()));
 			errors.push(TestLib.#assertResult(field, "20.25", 20.25, () => field.asNumber()));
 			errors.push(TestLib.#assertValue(field, initialValue, "Hallo große Welt", () => field.insert(6, "große ")));
 			errors.push(TestLib.#assertValue(field, initialValue, "Hallo", () => field.remove(5, 10)));
+			errors.push(TestLib.#assertValue(field, initialValue, "Hallo große Welt", () => field.replaceAt(5, " große ")));
 		}
 
 		errors.push(TestLib.#assertResult(field, null, false, () => field.isEmpty()));
@@ -157,9 +158,12 @@ export class TestLib
 		errors.push(TestLib.#assertResult(field, null, true, () => field.setEnabled(true).isEnabled()));
 		errors.push(TestLib.#assertValue(field, null, undefined));
 
-		errors.push(TestLib.#assertResult(field, null, ["Opt0", "Opt1", "Opt2"], () => field.getOptions()));
+		errors.push(TestLib.#assertResult(field, undefined, ["Opt0", "Opt1", "Opt2"], () => field.getOptions()));
 		errors.push(TestLib.#assertResult(field, "Opt1", ["Opt1"], () => field.getCheckedOptions()));
 		errors.push(TestLib.#assertResult(field, "Opt1", ["Opt0", "Opt2"], () => field.getUncheckedOptions()));
+		errors.push(TestLib.#assertResult(field, undefined, ["Option 0", "Option 1", "Option 2"], () => field.getOptionNames()));
+		errors.push(TestLib.#assertResult(field, "Opt1", ["Option 1"], () => field.getCheckedOptionNames()));
+		errors.push(TestLib.#assertResult(field, "Opt1", ["Option 0", "Option 2"], () => field.getUncheckedOptionNames()));
 		errors.push(TestLib.#assertValue(field, "Opt1", "Opt1"));
 		errors.push(TestLib.#assertValue(field, ["Opt1"], "Opt1"));
 		errors.push(TestLib.#assertValue(field, undefined, undefined));
@@ -182,9 +186,12 @@ export class TestLib
 		errors.push(TestLib.#assertResult(field, null, true, () => field.setEnabled(true).isEnabled()));
 		errors.push(TestLib.#assertValue(field, null, []));
 
-		errors.push(TestLib.#assertResult(field, null, ["Opt0", "Opt1", "Opt2"], () => field.getOptions()));
+		errors.push(TestLib.#assertResult(field, undefined, ["Opt0", "Opt1", "Opt2"], () => field.getOptions()));
 		errors.push(TestLib.#assertResult(field, ["Opt0", "Opt1"], ["Opt0", "Opt1"], () => field.getCheckedOptions()));
 		errors.push(TestLib.#assertResult(field, ["Opt0", "Opt1"], ["Opt2"], () => field.getUncheckedOptions()));
+		errors.push(TestLib.#assertResult(field, undefined, ["Option 0", "Option 1", "Option 2"], () => field.getOptionNames()));
+		errors.push(TestLib.#assertResult(field, ["Opt0", "Opt1"], ["Option 0", "Option 1"], () => field.getCheckedOptionNames()));
+		errors.push(TestLib.#assertResult(field, ["Opt0", "Opt1"], ["Option 2"], () => field.getUncheckedOptionNames()));
 		errors.push(TestLib.#assertValue(field, "Opt1", ["Opt1"]));
 		errors.push(TestLib.#assertValue(field, ["Opt0", "Opt1"], ["Opt0", "Opt1"]));
 		errors.push(TestLib.#assertValue(field, undefined, []));
@@ -208,7 +215,9 @@ export class TestLib
 		errors.push(TestLib.#assertValue(field, null, "Opt0"));
 
 		errors.push(TestLib.#assertResult(field, null, ["Opt0", "Opt1", "Opt2"], () => field.getOptions()));
+		errors.push(TestLib.#assertResult(field, null, ["Option 0", "Option 1", "Option 2"], () => field.getOptionNames()));
 		errors.push(TestLib.#assertResult(field, null, 0, () => field.getSelectedIndex()));
+		errors.push(TestLib.#assertResult(field, null, "Option 0", () => field.getSelectedName()));
 		errors.push(TestLib.#assertValue(field, "Opt0", "Opt0"));
 		errors.push(TestLib.#assertValue(field, 2, "Opt2"));
 		errors.push(TestLib.#assertResult(field, "Opt1", 1, () => field.getSelectedIndex()));
@@ -237,7 +246,7 @@ export class TestLib
 		{
 			errors.push(TestLib.#assertResult(field, initialValue, "sit", () => field.at(3)));
 			errors.push(TestLib.#assertResult(field, initialValue, [[0, "Lorem"], [1, "ipsum"], [2, "dolor"], [3, "sit"], [4, "amet"]], () => Array.from(field.entries())));
-			errors.push(TestLib.#assertResult(field, initialValue, false, () => field.every(str => str.length === 5)));
+			errors.push(TestLib.#assertResult(field, initialValue, false, () => field.every(str => str.getLength() === 5)));
 			errors.push(TestLib.#assertResult(field, initialValue, "ipsum", () => field.find(str => str.includes("i"))));
 			errors.push(TestLib.#assertResult(field, initialValue, 1, () => field.findIndex(str => str.includes("i"))));
 			errors.push(TestLib.#assertResult(field, initialValue, "sit", () => field.findLast(str => str.includes("i"))));
@@ -245,7 +254,7 @@ export class TestLib
 			errors.push(TestLib.#assertResult(field, initialValue, null, () => field.forEach(str => str.toUpperCase())));
 			errors.push(TestLib.#assertResult(field, initialValue, "Lorem ipsum dolor sit amet", () => field.join(" ")));
 			errors.push(TestLib.#assertResult(field, initialValue, [0, 1, 2, 3, 4], () => Array.from(field.keys())));
-			errors.push(TestLib.#assertResult(field, initialValue, true, () => field.some(str => str.length === 5)));
+			errors.push(TestLib.#assertResult(field, initialValue, true, () => field.some(str => str.getLength() === 5)));
 			errors.push(TestLib.#assertResult(field, initialValue, ["Lorem", "ipsum", "dolor", "sit", "amet"], () => Array.from(field.values())));
 		}
 
@@ -273,8 +282,8 @@ export class TestLib
 
 		// Zusätzliche lesende Methoden
 		{
-			errors.push(TestLib.#assertResult(field, [], 0, () => field.length()));
-			errors.push(TestLib.#assertResult(field, initialValue, 5, () => field.length()));
+			errors.push(TestLib.#assertResult(field, [], 0, () => field.getLength()));
+			errors.push(TestLib.#assertResult(field, initialValue, 5, () => field.getLength()));
 			errors.push(TestLib.#assertResult(field, initialValue, "Lorem", () => field.first()));
 			errors.push(TestLib.#assertResult(field, initialValue, "amet", () => field.last()));
 			errors.push(TestLib.#assertResult(field, initialValue, true, () => field.contains("ipsum")));
@@ -305,7 +314,7 @@ export class TestLib
 			errors.push(TestLib.#assertResult(field, null, true, () => field.hasNext()));
 			errors.push(TestLib.#assertResult(field, null, "Lorem", () => field.next()));
 			errors.push(TestLib.#assertResult(field, null, "ipsum", () => field.next()));
-			errors.push(TestLib.#assertResult(field, null, "amet", () => field.findNext(str => str.length === 4)));
+			errors.push(TestLib.#assertResult(field, null, "amet", () => field.findNext(str => str.getLength() === 4)));
 			errors.push(TestLib.#assertResult(field, null, false, () => field.hasNext()));
 			errors.push(TestLib.#assertResult(field, null, false, () => field.isAtEnd()));
 			errors.push(TestLib.#assertResult(field, null, undefined, () => field.next()));
@@ -314,7 +323,7 @@ export class TestLib
 
 			errors.push(TestLib.#assertResult(field, null, "amet", () => field.previous()));
 			errors.push(TestLib.#assertResult(field, null, "sit", () => field.previous()));
-			errors.push(TestLib.#assertResult(field, null, undefined, () => field.findPrevious(str => str.length === 3)));
+			errors.push(TestLib.#assertResult(field, null, undefined, () => field.findPrevious(str => str.getLength() === 3)));
 			errors.push(TestLib.#assertResult(field, null, false, () => field.hasPrevious()));
 			errors.push(TestLib.#assertResult(field, null, false, () => field.isAtStart()));
 			errors.push(TestLib.#assertResult(field, null, undefined, () => field.previous()));
@@ -396,8 +405,8 @@ export class TestLib
 
 		// Zusätzliche lesende Methoden
 		{
-			errors.push(TestLib.#assertResult(field, [], 0, () => field.length()));
-			errors.push(TestLib.#assertResult(field, initialValue, 3, () => field.length()));
+			errors.push(TestLib.#assertResult(field, [], 0, () => field.getLength()));
+			errors.push(TestLib.#assertResult(field, initialValue, 3, () => field.getLength()));
 			errors.push(TestLib.#assertResult(field, initialValue, {"Attr1": 7, "Attr2": 8, "Attr3": 9}, () => field.first()));
 			errors.push(TestLib.#assertResult(field, initialValue, {"Attr1": 1, "Attr2": 2, "Attr3": 3}, () => field.last()));
 			errors.push(TestLib.#assertResult(field, initialValue, true, () => field.contains({"Attr1": 4, "Attr2": 5, "Attr3": 6})));
@@ -507,7 +516,7 @@ export class TestLib
 
 		// Zusätzliche Methoden
 		{
-			errors.push(TestLib.#assertResult(field, initialValue, 3, () => field.length()));
+			errors.push(TestLib.#assertResult(field, initialValue, 3, () => field.getLength()));
 			errors.push(TestLib.#assertValue(field, initialValue, {"Attr1": "Lorem", "Attr2": "", "Attr3": "dolor"}, () => field.remove("Attr2")));
 		}
 
@@ -529,7 +538,7 @@ export class TestLib
 			let result = action();
 			if (expectedResult === null || Utils.equals(result, expectedResult))
 			{
-				Logger.print("Passed: " + testName);
+				Module.print("Passed: " + testName);
 				return undefined;
 			}
 			else
@@ -537,7 +546,7 @@ export class TestLib
 				let caller = Error().stack.split("\n").at(1).split("/res/").at(-1).replace(")", "").trim();
 				let message = "Failed: " + testName + " at " + caller + ", message: "
 					+ "result " + Utils.objectToPrint(result) + " is not equal to expected result '" + Utils.objectToPrint(expectedResult) + "'";
-				Logger.print(message);
+				Module.print(message);
 				return new Error(message);
 			}
 		}
@@ -546,7 +555,7 @@ export class TestLib
 			let caller = err.stack.split("\n").filter(str => str.includes("TestLib.js")).at(1).split("/res/").at(-1).replace(")", "").trim();
 			let message = "Error:  " + testName + " at " + caller + ", message: " + err.toString()
 				+ ", stack: \n\t\t" + err.stack.replaceAll("\n", "\n\t\t");
-			Logger.print(message);
+			Module.print(message);
 			err.message = message;
 			return err;
 		}
@@ -565,7 +574,7 @@ export class TestLib
 			action();
 			if (expectedValue === null || Utils.equals(field, expectedValue))
 			{
-				Logger.print("Passed: " + testName);
+				Module.print("Passed: " + testName);
 				return undefined;
 			}
 			else
@@ -573,7 +582,7 @@ export class TestLib
 				let caller = Error().stack.split("\n").at(1).split("/res/").at(-1).replace(")", "").trim();
 				let message = "Failed: " + testName + " at " + caller + ", message: "
 					+ "value " + Utils.objectToPrint(field).replaceAll("\n", " ").replaceAll("\t", "") + " is not equal to expected value '" + Utils.objectToPrint(expectedValue) + "'";
-				Logger.print(message);
+				Module.print(message);
 				return new Error(message);
 			}
 		}
@@ -582,7 +591,7 @@ export class TestLib
 			let caller = err.stack.split("\n").filter(str => str.includes("TestLib.js")).at(1).split("/res/").at(-1).replace(")", "").trim();
 			let message = "Error:  " + testName + " at " + caller + ", message: " + err.toString()
 				+ ", stack: \n\t\t" + err.stack.replaceAll("\n", "\n\t\t");
-			Logger.print(message);
+			Module.print(message);
 			err.message = message;
 			return err;
 		}

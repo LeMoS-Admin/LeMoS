@@ -6,7 +6,7 @@ general:
     Hinweis: Die Szenarioauswahl funktioniert hier nicht, da es für dieses Modul eigentlich kein Szenario gibt,
     die Konfiguration aber im gleichen Ordner wie die anderen Testmodule liegt, um die Ressourcen nicht doppelt speichern zu müssen.
   settings:
-    libraryVersion: 1.0.0
+    lemosVersion: 1.0.0
     showFieldIDs: true
     differentStepSizes: false
   logger:
@@ -20,20 +20,20 @@ general:
       alias: Tester
       resource:
         id: TestLib
-        source: ./resources/TestLib.js
+        source: TestLib.js
   resources:
     - id: Image1
-      source: ./resources/poster.png
+      source: poster.png
     - id: Image2
       source: https://www.w3schools.com/html/pic_trulli.jpg
       isExternal: true
     - id: Audio1
-      source: ./resources/viper.mp3
+      source: viper.mp3
     - id: Audio2
       source: https://www.w3schools.com/html/horse.mp3
       isExternal: true
     - id: Video1
-      source:  ./resources/rabbit320.mp4
+      source:  rabbit320.mp4
     - id: Video2
       source: https://www.w3schools.com/html/mov_bbb.mp4
       isExternal: true
@@ -183,7 +183,7 @@ states:
     name: Test von Info1
     actions:
       - Info1.setDisplayed(true)
-      - Logger.print(Info1.getDebug())
+      - Module.print(Info1.getDebug())
       - errors.value = errors.value.concat(Tester.testInfoField(Info1))
     transitions:
       - target: Z1b
@@ -192,14 +192,14 @@ states:
     importance: ZERO
     actions:
       - Info1.setDisplayed(false)
-      - Logger.clear()
+      - Module.clearLogger()
     transitions:
       - target: Z2a
   - id: Z2a
     name: Test von Image1
     actions:
       - Image1.setDisplayed(true)
-      - Logger.print(Image1.getDebug())
+      - Module.print(Image1.getDebug())
       - errors.value = errors.value.concat(Tester.testImageField(Image1))
     transitions:
       - target: Z2b
@@ -208,14 +208,14 @@ states:
     importance: ZERO
     actions:
       - Image1.setDisplayed(false)
-      - Logger.clear()
+      - Module.clearLogger()
     transitions:
       - target: Z3a
   - id: Z3a
     name: Test von Audio1
     actions:
       - Audio1.setDisplayed(true)
-      - Logger.print(Audio1.getDebug())
+      - Module.print(Audio1.getDebug())
       - errors.value = errors.value.concat(Tester.testAudioField(Audio1))
     transitions:
       - target: Z3b
@@ -224,14 +224,14 @@ states:
     importance: ZERO
     actions:
       - Audio1.setDisplayed(false)
-      - Logger.clear()
+      - Module.clearLogger()
     transitions:
       - target: Z4a
   - id: Z4a
     name: Test von Video1
     actions:
       - Video1.setDisplayed(true)
-      - Logger.print(Video1.getDebug())
+      - Module.print(Video1.getDebug())
       - errors.value = errors.value.concat(Tester.testVideoField(Video1))
     transitions:
       - target: Z4b
@@ -240,14 +240,14 @@ states:
     importance: ZERO
     actions:
       - Video1.setDisplayed(false)
-      - Logger.clear()
+      - Module.clearLogger()
     transitions:
       - target: Z5a
   - id: Z5a
     name: Test von Text1
     actions:
       - Text1.setDisplayed(true)
-      - Logger.print(Text1.getDebug())
+      - Module.print(Text1.getDebug())
       - errors.value = errors.value.concat(Tester.testTextField(Text1))
       - Text1.setEnabled(false);
     transitions:
@@ -257,14 +257,14 @@ states:
     importance: ZERO
     actions:
       - Text1.setDisplayed(false)
-      - Logger.clear()
+      - Module.clearLogger()
     transitions:
       - target: Z6a
   - id: Z6a
     name: Test von Split1
     actions:
       - Split1.setDisplayed(true)
-      - Logger.print(Split1.getDebug())
+      - Module.print(Split1.getDebug())
       - errors.value = errors.value.concat(Tester.testSplitField(Split1))
       - Split1.setEnabled(false)
     transitions:
@@ -274,14 +274,14 @@ states:
     importance: ZERO
     actions:
       - Split1.setDisplayed(false)
-      - Logger.clear()
+      - Module.clearLogger()
     transitions:
       - target: Z7a
   - id: Z7a
     name: Test von Radio1
     actions:
       - Radio1.setDisplayed(true)
-      - Logger.print(Radio1.getDebug())
+      - Module.print(Radio1.getDebug())
       - errors.value = errors.value.concat(Tester.testRadioField(Radio1))
       - Radio1.setEnabled(false)
     transitions:
@@ -291,14 +291,14 @@ states:
     importance: ZERO
     actions:
       - Radio1.setDisplayed(false)
-      - Logger.clear()
+      - Module.clearLogger()
     transitions:
       - target: Z8a
   - id: Z8a
     name: Test von Check1
     actions:
       - Check1.setDisplayed(true)
-      - Logger.print(Check1.getDebug())
+      - Module.print(Check1.getDebug())
       - errors.value = errors.value.concat(Tester.testCheckField(Check1))
       - Check1.setEnabled(false)
     transitions:
@@ -308,14 +308,14 @@ states:
     importance: ZERO
     actions:
       - Check1.setDisplayed(false)
-      - Logger.clear()
+      - Module.clearLogger()
     transitions:
       - target: Z9a
   - id: Z9a
     name: Test von Select1
     actions:
       - Select1.setDisplayed(true)
-      - Logger.print(Select1.getDebug())
+      - Module.print(Select1.getDebug())
       - errors.value = errors.value.concat(Tester.testSelectField(Select1))
       - Select1.setEnabled(false)
     transitions:
@@ -325,14 +325,14 @@ states:
     importance: ZERO
     actions:
       - Select1.setDisplayed(false)
-      - Logger.clear()
+      - Module.clearLogger()
     transitions:
       - target: Z10a
   - id: Z10a
     name: Test von List1
     actions:
       - List1.setDisplayed(true)
-      - Logger.print(List1.getDebug())
+      - Module.print(List1.getDebug())
       - errors.value = errors.value.concat(Tester.testListField(List1))
       - List1.setEnabled(false)
     transitions:
@@ -342,14 +342,14 @@ states:
     importance: ZERO
     actions:
       - List1.setDisplayed(false)
-      - Logger.clear()
+      - Module.clearLogger()
     transitions:
       - target: Z11a
   - id: Z11a
     name: Test von Table1
     actions:
       - Table1.setDisplayed(true)
-      - Logger.print(Table1.getDebug())
+      - Module.print(Table1.getDebug())
       - errors.value = errors.value.concat(Tester.testTableField(Table1))
       - Table1.setEnabled(false)
     transitions:
@@ -359,18 +359,18 @@ states:
     importance: ZERO
     actions:
       - Table1.setDisplayed(false)
-      - Logger.clear()
+      - Module.clearLogger()
     transitions:
       - target: Z12a
       - target: Z12b
         conditions:
           - terms:
-              - errors.value.length === 0
+              - errors.value.getLength() === 0
   - id: Z12a
     name: Fehler aufgetreten
     actions:
-      - "Logger.alert('Es sind fehler aufgetreten:\\n' + errors.value.map(err => err.message).join('\\n'))"
+      - "Module.alert('Es sind fehler aufgetreten:\\n' + errors.value.map(err => err.message).join('\\n'))"
   - id: Z12b
     name: Alle Tests erfolgreich
     actions:
-      - "Logger.alert('Alle Tests erfolgreich')"
+      - "Module.alert('Alle Tests erfolgreich')"

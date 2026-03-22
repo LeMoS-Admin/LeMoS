@@ -1,4 +1,4 @@
-import Logger from "../systemFunctions/Logger.js";
+import Module from "../systemFunctions/Module.js";
 import FieldManager from "./FieldManager.js";
 import SelectFieldInteractor from "../fieldInteractors/SelectFieldInteractor.js";
 
@@ -35,20 +35,13 @@ export default class SelectFieldManager extends FieldManager
 			this.clear();
 			return;
 		}
+		else if (typeof value === "bigint")
+		{
+			value = Number(value);
+		}
 
 		let selectElement = this.getChildElement(".field > select");
-		if (typeof value === "string")
-		{
-			if (this.getOptions().includes(value))
-			{
-				selectElement.value = value;
-			}
-			else
-			{
-				Logger.log(this.getMessagePrefix() + "option '" + value + "' is not available")
-			}
-		}
-		else
+		if (typeof value === "number")
 		{
 			if (this.getOptions().length > value)
 			{
@@ -56,7 +49,19 @@ export default class SelectFieldManager extends FieldManager
 			}
 			else
 			{
-				Logger.log(this.getMessagePrefix() + "option with index " + value + " is not available")
+				Module.error(this.getMessagePrefix() + "option with index " + value + " is not available")
+			}
+		}
+		else
+		{
+			value = String(value);
+			if (this.getOptions().map(option => option.value).includes(value))
+			{
+				selectElement.value = value;
+			}
+			else
+			{
+				Module.error(this.getMessagePrefix() + "option '" + value + "' is not available")
 			}
 		}
 	}
@@ -68,7 +73,7 @@ export default class SelectFieldManager extends FieldManager
 
 	getOptions()
 	{
-		return this.getChildElements(".field > select > option").map(option => option.value);
+		return this.getChildElements(".field > select > option");
 	}
 
 	isEmpty()
