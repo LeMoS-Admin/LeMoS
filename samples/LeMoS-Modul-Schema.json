@@ -127,7 +127,7 @@
             "properties": {
               "name": {
                 "type": "string",
-                "description": "Eindeutiger Name"
+                "description": "Eindeutiger Name, muss gültiger JavaScript-Variablenname sein, darf nicht mit einem Unterstrich beginnen"
               },
               "value": {
                 "type": "string",
@@ -162,7 +162,7 @@
             "properties": {
               "name": {
                 "type": "string",
-                "description": "Eindeutiger Name"
+                "description": "Eindeutiger Name, muss gültiger JavaScript-Variablenname sein, darf nicht mit einem Unterstrich beginnen"
               },
               "parameters": {
                 "type": "array",
