@@ -8,13 +8,13 @@ import org.hs_coburg.lemos.util.StringHelper;
 import java.util.List;
 import java.util.Objects;
 
-public class SelectorField extends Field
+public class SelectField extends Field
 {
     public final List<Option> options;
     public final Boolean      emptyOption;
 
     @JsonCreator
-    public SelectorField(@JsonProperty("id") String id,
+    public SelectField(@JsonProperty("id") String id,
                          @JsonProperty("name") String name,
                          @JsonProperty("explanation") String explanation,
                          @JsonProperty("usage") FieldUsage usage,
@@ -22,7 +22,7 @@ public class SelectorField extends Field
                          @JsonProperty("style") Style style,
                          @JsonProperty("hidden") Boolean hidden,
                          @JsonProperty("allowEmpty") Boolean allowEmpty,
-                         @JsonProperty("datatype") FieldDatatype datatype,    // Für SelectorField ignoriert
+                         @JsonProperty("datatype") FieldDatatype datatype,    // Für SelectField ignoriert
                          @JsonProperty("restrictions") List<Condition> restrictions,
                          @JsonProperty("options") List<Option> options,
                          @JsonProperty("emptyOption") Boolean emptyOption)
@@ -53,7 +53,7 @@ public class SelectorField extends Field
         StringBuilder optionsHTML = new StringBuilder();
         for (Option option : options)
         {
-            optionsHTML.append(option.generateSelectorOptionHTML())
+            optionsHTML.append(option.generateSelectOptionHTML())
                        .append("\n");
         }
         return optionsHTML.toString();
@@ -62,7 +62,7 @@ public class SelectorField extends Field
     @Override
     protected String getFieldVariableTemplateJS()
     {
-        return "let {{id}} = new SelectorFieldManager('#{{id}}', '{{name}}', {{emptyOption}}, {{allowEmpty}}, () => {\n{{restrictions}}}).getInteractor();";
+        return "let {{id}} = new SelectFieldManager('#{{id}}', '{{name}}', {{emptyOption}}, {{allowEmpty}}, () => {\n{{restrictions}}}).getInteractor();";
     }
 
     @Override

@@ -1,4 +1,4 @@
-import Module from "../systemFunctions/Module.js";
+import Controller from "../internalFunctions/Controller.js";
 import Utils from "../systemFunctions/Utils.js";
 
 export default class FieldInteractor
@@ -9,19 +9,18 @@ export default class FieldInteractor
 
 		if (this._fieldManager.isTopLevelField())
 		{
-			Module._registerField(this);
+			Controller.registerField(this);
 		}
 	}
 
 	_backup()
 	{
-		// Hinweis: direkter Zugriff auf getValue()-Methode der FieldManager, damit auch Tabellen durch JS-Objekte repräsentiert werden (this.getValue() ist überschrieben)
-		return this._fieldManager.getValue();
+		return this._fieldManager.backup();
 	}
 
 	_restore(backup)
 	{
-		this.setValue(backup);
+		this._fieldManager.restore(backup);
 		return this;
 	}
 
@@ -42,7 +41,17 @@ export default class FieldInteractor
 	{
 		// Ermöglicht implizite Umwandlung des Felds in einen String
 		// Hinweis: direkter Zugriff auf getValue()-Methode der FieldManager, damit auch Tabellen durch JS-Objekte repräsentiert werden (this.getValue() ist überschrieben)
-		return this._fieldManager.getValue();
+		return this._fieldManager.getValue().toString();
+	}
+
+	get value()
+	{
+		return this.getValue();
+	}
+
+	set value(value)
+	{
+		return this.setValue(value);
 	}
 
 	getValue()
@@ -82,21 +91,30 @@ export default class FieldInteractor
 		return this._fieldManager.getPrint();
 	}
 
-	toDebugString()
+	getDebug()
 	{
 		return this._fieldManager.toString();
 	}
 
-	setDisplayed(displayed)
+	isDisplayed()
 	{
-		if (displayed)
-		{
-			this._fieldManager.getNode().style.display = "";
-		}
-		else
-		{
-			this._fieldManager.getNode().style.display = "none";
-		}
+		return this._fieldManager.isDisplayed();
+	}
+
+	setDisplayed(displayed = true)
+	{
+		this._fieldManager.setDisplayed(displayed);
+		return this;
+	}
+
+	isEnabled()
+	{
+		return this._fieldManager.isEnabled();
+	}
+
+	setEnabled(enabled = true)
+	{
+		this._fieldManager.setEnabled(enabled);
 		return this;
 	}
 }

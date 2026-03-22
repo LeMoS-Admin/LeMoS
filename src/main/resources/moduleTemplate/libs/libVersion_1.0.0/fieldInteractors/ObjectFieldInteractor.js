@@ -19,20 +19,27 @@ export default class ObjectFieldInteractor extends FieldInteractor
 
 	setValue(value)
 	{
-		// Auspacken der von getValue() als Interaktoren verpackten Einträge
-		let newValue = new Map();
-		for (let [key, val] of value)
+		if (value instanceof Map)
 		{
-			if (val instanceof FieldInteractor)
+			// Auspacken der von getValue() als Interaktoren verpackten Einträge
+			let newValue = new Map();
+			for (let [key, val] of value)
 			{
-				newValue.set(key, val._fieldManager.getValue());
+				if (val instanceof FieldInteractor)
+				{
+					newValue.set(key, val._fieldManager.getValue());
+				}
+				else
+				{
+					newValue.set(key, val);
+				}
 			}
-			else
-			{
-				newValue.set(key, val);
-			}
+			this._fieldManager.setValue(newValue);
 		}
-		this._fieldManager.setValue(newValue);
+		else
+		{
+			this._fieldManager.setValue(value);
+		}
 		return this;
 	}
 
@@ -41,6 +48,12 @@ export default class ObjectFieldInteractor extends FieldInteractor
 	entries()
 	{
 		return this.getValue().entries();
+	}
+
+	forEach(callbackFn)
+	{
+		this.getValue().forEach(callbackFn);
+		return this;
 	}
 
 	get(key)
@@ -69,14 +82,6 @@ export default class ObjectFieldInteractor extends FieldInteractor
 	{
 		let newValue = this.getValue();
 		newValue.delete(key);
-		this.setValue(newValue);
-		return this;
-	}
-
-	forEach(callbackFn, thisArg)
-	{
-		let newValue = this.getValue();
-		newValue.forEach(callbackFn, thisArg);
 		this.setValue(newValue);
 		return this;
 	}

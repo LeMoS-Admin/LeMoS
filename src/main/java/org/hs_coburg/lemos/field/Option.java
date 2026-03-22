@@ -22,7 +22,7 @@ public class Option
         this.explanation = Objects.requireNonNullElse(explanation, "");
     }
 
-    public String generateSelectorOptionHTML()
+    public String generateSelectOptionHTML()
     {
         String template = "<option value='{{id}}'>{{name}}{{explanation}}</option>";
         return performReplacements(template);

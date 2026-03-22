@@ -79,6 +79,11 @@ export default class Utils
 			}
 			return -1;
 		};
+
+		Array.prototype.toString = function ()
+		{
+			return "[" + this.map(value => Utils.objectToPrint(value)).join(", ") + "]";
+		}
 	}
 
 	static #extendArray()
@@ -93,54 +98,35 @@ export default class Utils
 			return this.at(this.length - 1);
 		};
 
-		Array.prototype.contains = function (entry)
+		Array.prototype.contains = function (searchElement, fromIndex)
 		{
-			return this.includes(entry);
+			return this.includes(searchElement, fromIndex);
 		};
 
-		Array.prototype.add = function (...entries)
+		Array.prototype.add = function (...element)
 		{
-			return this.push(...entries);
+			return this.push(...element);
 		};
 
-		Array.prototype.set = function (index, ...entries)
+		Array.prototype.set = function (index, ...item)
 		{
-			return this.splice(index, 1, ...entries);
+			return this.splice(index, 1, ...item);
 		};
 
-		Array.prototype.insert = function (index, ...entries)
+		Array.prototype.insert = function (index, ...item)
 		{
-			return this.splice(index, 0, ...entries);
+			return this.splice(index, 0, ...item);
 		};
 
-		Array.prototype.remove = function (value)
+		Array.prototype.remove = function (searchElement)
 		{
-			let index = this.indexOf(value);
+			let index = this.indexOf(searchElement);
 			return this.removeIndex(index);
 		};
 
 		Array.prototype.removeIndex = function (start, end = start + 1)
 		{
 			return this.splice(start, end - start);
-		};
-
-		Array.prototype.replace = function (searchValue, ...replacementValues)
-		{
-			let index = this.indexOf(searchValue);
-			this.set(index, ...replacementValues);
-			return this;
-		};
-
-		Array.prototype.replaceAll = function (searchValue, ...replacementValues)
-		{
-			for (let index of this.keys())
-			{
-				if (Utils.equals(this.at(index), searchValue))
-				{
-					this.set(index, ...replacementValues);
-				}
-			}
-			return this;
 		};
 
 		Array.prototype.unify = function ()
@@ -157,6 +143,36 @@ export default class Utils
 			return this;
 		};
 
+		Array.prototype.minimum = function ()
+		{
+			return this.map(val => Number(val)).sort((a, b) => a - b).at(0);
+		};
+
+		Array.prototype.maximum = function ()
+		{
+			return this.map(val => Number(val)).sort((a, b) => a - b).at(-1);
+		};
+
+		Array.prototype.average = function ()
+		{
+			return this.sum() / this.length;
+		};
+
+		Array.prototype.median = function ()
+		{
+			let middle = Math.round((this.length - 1) / 2);
+			return this.map(val => Number(val)).sort((a, b) => a - b).at(middle);
+		};
+
+		Array.prototype.sum = function ()
+		{
+			let sum = 0;
+			for (let value of this)
+			{
+				sum += Number(value);
+			}
+			return sum;
+		};
 	}
 
 	static #extendMap()
@@ -165,25 +181,35 @@ export default class Utils
 		{
 			return this.delete(key);
 		};
+
+		Map.prototype.toString = function ()
+		{
+			let pairs = [];
+			for (let [key, value] of this.entries())
+			{
+				pairs.push("'" + key + "': " + Utils.objectToPrint(value));
+			}
+			return "{" + pairs.join(", ") + "}";
+		};
 	}
 
 	static #extendString()
 	{
-		String.prototype.asNumber = function () {
+		String.prototype.asNumber = function ()
+		{
 			return Number(this);
 		};
 
-		String.prototype.insert = function (index, strings)
+		String.prototype.insert = function (index, ...str)
 		{
-			let newString = this.slice(0, index);
-			newString.concat(strings);
-			newString.concat(this.slice(index + 1, this.length));
-			return newString;
+			return this.slice(0, index)
+					   .concat(...str)
+					   .concat(this.slice(index, this.length));
 		};
 
-		String.prototype.remove = function (start, end = start)
+		String.prototype.remove = function (indexStart, indexEnd = indexStart)
 		{
-			return this.slice(0, start) + this.slice(end);
+			return this.slice(0, indexStart) + this.slice(indexEnd);
 		};
 	}
 
@@ -198,6 +224,12 @@ export default class Utils
 		{
 			obj1 = obj1.getValue();
 		}
+		else if (typeof obj1 === "object" && Object.getPrototypeOf(obj1) === Object.prototype)
+		{
+			// Objekte, die via {}-Operator initialisiert wurden, werden zu Maps umgewandelt
+			// Hinweis: die Bedingung ist bei allen Objekten wahr, die eine direkte Instanz (ohne Vererbung) von Object sind
+			obj1 = new Map(Object.entries(obj1));
+		}
 		else if (typeof obj1 === "boolean" || typeof obj1 === "number" || typeof obj1 === "bigint")
 		{
 			// Konvertierung in String wird insbesondere bei Zahlen benötigt, da beispielsweise "0" === 0 sonst nicht wahr ist
@@ -211,6 +243,12 @@ export default class Utils
 		else if (obj2 instanceof FieldManager)
 		{
 			obj2 = obj2.getValue();
+		}
+		else if (typeof obj2 === "object" && Object.getPrototypeOf(obj2) === Object.prototype)
+		{
+			// Objekte, die via {}-Operator initialisiert wurden, werden zu Maps umgewandelt
+			// Hinweis: die Bedingung ist bei allen Objekten wahr, die eine direkte Instanz (ohne Vererbung) von Object sind
+			obj2 = new Map(Object.entries(obj2));
 		}
 		else if (typeof obj2 === "boolean" || typeof obj2 === "number" || typeof obj2 === "bigint")
 		{
@@ -244,6 +282,28 @@ export default class Utils
 		else
 		{
 			return obj1 === obj2;
+		}
+	}
+
+	static objectToPrint(obj)
+	{
+		if (obj instanceof FieldInteractor || obj instanceof FieldManager)
+		{
+			return obj.getPrint();
+		}
+		else if (obj instanceof Array || obj instanceof Map)
+		{
+			return obj.toString();
+		}
+		else if (typeof obj === "object" && Object.getPrototypeOf(obj) === Object.prototype)
+		{
+			// Objekte, die via {}-Operator initialisiert wurden, werden zu Maps umgewandelt
+			// Hinweis: die Bedingung ist bei allen Objekten wahr, die eine direkte Instanz (ohne Vererbung) von Object sind
+			return Utils.objectToPrint(new Map(Object.entries(obj)));
+		}
+		else
+		{
+			return "'" + String(obj) + "'";
 		}
 	}
 }

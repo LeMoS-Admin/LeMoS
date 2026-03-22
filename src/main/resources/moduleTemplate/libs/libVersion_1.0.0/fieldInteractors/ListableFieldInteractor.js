@@ -5,24 +5,25 @@ export default class ListableFieldInteractor extends FieldInteractor
 // Iterierende Methoden
 	#iteratorPosition;
 
-	constructor(fieldManager)
+	constructor(fieldManager, keepEmptyEntries = false)
 	{
 		super(fieldManager);
 		this.restartIterator();
+		this.keepEmptyEntries = keepEmptyEntries;
 	}
 
 	_backup()
 	{
-		let backup = new Map();
-		backup.set("fieldValue", super._backup());
-		backup.set("#iteratorPosition", this.#iteratorPosition);
+		let backup = super._backup();
+		backup.set("iteratorPosition", this.#iteratorPosition);
+		// this.keepEmptyEntries muss nicht gesichert werden, da der Wert nur in temporären Instanzen true und ansonsten stets false ist
 		return backup;
 	}
 
 	_restore(backup)
 	{
-		super._restore(backup.get("fieldValue"));
-		this.#iteratorPosition = (backup.get("#iteratorPosition"));
+		super._restore(backup);
+		this.#iteratorPosition = (backup.get("iteratorPosition"));
 		return this;
 	}
 
@@ -36,11 +37,19 @@ export default class ListableFieldInteractor extends FieldInteractor
 		return this;
 	}
 
+	withEmptyEntries() {}
+
 	setValue(value)
 	{
 		super.setValue(value);
 		this.restartIterator();
 		return this;
+	}
+
+	getDebug()
+	{
+		return super.getDebug() +
+			"\n\titeratorPosition: " + this.#iteratorPosition;
 	}
 
 // Lesende Methoden
@@ -54,29 +63,35 @@ export default class ListableFieldInteractor extends FieldInteractor
 		return this.getValue().entries();
 	}
 
-	every(predicate)
+	every(callbackFn)
 	{
-		return this.getValue().every(predicate);
+		return this.getValue().every(callbackFn);
 	}
 
-	find(predicate)
+	find(callbackFn)
 	{
-		return this.getValue().find(predicate);
+		return this.getValue().find(callbackFn);
 	}
 
-	findIndex(predicate)
+	findIndex(callbackFn)
 	{
-		return this.getValue().findIndex(predicate);
+		return this.getValue().findIndex(callbackFn);
 	}
 
-	findLast(predicate)
+	findLast(callbackFn)
 	{
-		return this.getValue().findLast(predicate);
+		return this.getValue().findLast(callbackFn);
 	}
 
-	findLastIndex(predicate)
+	findLastIndex(callbackFn)
 	{
-		return this.getValue().findLastIndex(predicate);
+		return this.getValue().findLastIndex(callbackFn);
+	}
+
+	forEach(callbackFn)
+	{
+		this.getValue().forEach(callbackFn);
+		return this;
 	}
 
 	join(separator)
@@ -89,9 +104,9 @@ export default class ListableFieldInteractor extends FieldInteractor
 		return this.getValue().keys();
 	}
 
-	some(predicate)
+	some(callbackFn)
 	{
-		return this.getValue().some(predicate);
+		return this.getValue().some(callbackFn);
 	}
 
 	values()
@@ -100,9 +115,9 @@ export default class ListableFieldInteractor extends FieldInteractor
 	}
 
 // Verändernde Methoden
-	concat(...entries)
+	concat(...value)
 	{
-		let newValue = this.getValue().concat(...entries);
+		let newValue = this.getValue().concat(...value);
 		this.setValue(newValue);
 		return this;
 	}
@@ -114,17 +129,9 @@ export default class ListableFieldInteractor extends FieldInteractor
 		return this;
 	}
 
-	filter(predicate)
+	filter(callbackFn)
 	{
-		let newValue = this.getValue().filter(predicate);
-		this.setValue(newValue);
-		return this;
-	}
-
-	forEach(callbackFn)
-	{
-		let newValue = this.getValue();
-		newValue.forEach(callbackFn);
+		let newValue = this.getValue().filter(callbackFn);
 		this.setValue(newValue);
 		return this;
 	}
@@ -137,10 +144,10 @@ export default class ListableFieldInteractor extends FieldInteractor
 		return this;
 	}
 
-	push(...entries)
+	push(...element)
 	{
 		let newValue = this.getValue();
-		newValue.push(...entries);
+		newValue.push(...element);
 		this.setValue(newValue);
 		return this;
 	}
@@ -174,18 +181,18 @@ export default class ListableFieldInteractor extends FieldInteractor
 		return this;
 	}
 
-	splice(start, deleteCount, ...entries)
+	splice(start, deleteCount, ...item)
 	{
 		let newValue = this.getValue();
-		newValue.splice(start, deleteCount, ...entries);
+		newValue.splice(start, deleteCount, ...item);
 		this.setValue(newValue);
 		return this;
 	}
 
-	unshift(...entries)
+	unshift(...element)
 	{
 		let newValue = this.getValue();
-		newValue.unshift(...entries);
+		newValue.unshift(...element);
 		this.setValue(newValue);
 		return this;
 	}
@@ -224,9 +231,9 @@ export default class ListableFieldInteractor extends FieldInteractor
 		return this.getValue().last();
 	}
 
-	contains(entry)
+	contains(searchElement, fromIndex)
 	{
-		return this.getValue().includes(entry);
+		return this.getValue().includes(searchElement, fromIndex);
 	}
 
 	add(...entries)
@@ -234,48 +241,34 @@ export default class ListableFieldInteractor extends FieldInteractor
 		return this.push(...entries);
 	}
 
-	set(index, ...entries)
+	set(index, ...item)
 	{
 		let newValue = this.getValue();
-		newValue.set(index, ...entries);
+		newValue.set(index, ...item);
 		this.setValue(newValue);
 		return this;
 	}
 
-	insert(index, ...entries)
+	insert(index, ...item)
 	{
 		let newValue = this.getValue();
-		newValue.insert(index, ...entries);
+		newValue.insert(index, ...item);
 		this.setValue(newValue);
 		return this;
 	}
 
-	remove(value)
+	remove(searchElement)
 	{
 		let newValue = this.getValue();
-		newValue.remove(value);
+		newValue.remove(searchElement);
 		this.setValue(newValue);
 		return this;
 	}
 
-	removeIndex(start, end = start)
+	removeIndex(start, end)
 	{
 		let newValue = this.getValue();
-		newValue.removeIndex(start, end = start);
-		this.setValue(newValue);
-		return this;
-	}
-
-	replace(searchValue, replacementValue)
-	{
-		let newValue = this.getValue().replace(searchValue, replacementValue);
-		this.setValue(newValue);
-		return this;
-	}
-
-	replaceAll(searchValue, replacementValue)
-	{
-		let newValue = this.getValue().replaceAll(searchValue, replacementValue);
+		newValue.removeIndex(start, end);
 		this.setValue(newValue);
 		return this;
 	}
@@ -285,12 +278,6 @@ export default class ListableFieldInteractor extends FieldInteractor
 		let newValue = this.getValue().unify();
 		this.setValue(newValue);
 		return this;
-	}
-
-	toDebugString()
-	{
-		return super.toDebugString() +
-			"\n\t#iteratorPosition: " + this.#iteratorPosition;
 	}
 
 
@@ -306,12 +293,12 @@ export default class ListableFieldInteractor extends FieldInteractor
 		return this.at(this.#iteratorPosition);
 	}
 
-	findNext(predicate)
+	findNext(callbackFn)
 	{
 		while (this.hasNext())
 		{
 			let currentEntry = this.next()
-			if (predicate(currentEntry))
+			if (callbackFn(currentEntry))
 			{
 				return currentEntry;
 			}
@@ -330,12 +317,12 @@ export default class ListableFieldInteractor extends FieldInteractor
 		return this.at(this.#iteratorPosition);
 	}
 
-	findPrevious(predicate)
+	findPrevious(callbackFn)
 	{
 		while (this.hasPrevious())
 		{
 			let currentEntry = this.previous()
-			if (predicate(currentEntry))
+			if (callbackFn(currentEntry))
 			{
 				return currentEntry;
 			}
@@ -367,14 +354,14 @@ export default class ListableFieldInteractor extends FieldInteractor
 		return this.#iteratorPosition > 0;
 	}
 
-	isAtEnd()
-	{
-		return this.#iteratorPosition === this.length() || this.isEmpty();
-	}
-
 	isAtStart()
 	{
 		return this.#iteratorPosition === -1;
+	}
+
+	isAtEnd()
+	{
+		return this.#iteratorPosition === this.length() || this.isEmpty();
 	}
 
 	getIteratorPosition()
@@ -382,15 +369,37 @@ export default class ListableFieldInteractor extends FieldInteractor
 		return this.#iteratorPosition;
 	}
 
-	setIteratorPosition(index)
+	setToStart()
 	{
-		this.#iteratorPosition = index;
+		this.#iteratorPosition = -1;
+		return this;
+	}
+
+	setToEnd()
+	{
+		this.#iteratorPosition = this.length();
+		return this;
+	}
+
+	setIteratorPosition(position)
+	{
+		if (position < -1)
+		{
+			this.setToStart();
+		}
+		else if (position > this.length())
+		{
+			this.setToEnd();
+		}
+		else
+		{
+			this.#iteratorPosition = position;
+		}
 		return this;
 	}
 
 	restartIterator()
 	{
-		this.#iteratorPosition = -1;
-		return this;
+		return this.setToStart();
 	}
 }

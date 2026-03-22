@@ -1,13 +1,24 @@
-Wichtigste Änderungen in LeMoS-1.0.1:
-- Anpassung der ReadMe-Dateien
-- Ergänzung des Skripts "runLeMoS.sh" um Abfrage, ob ein Resourcenordner vorhanden ist (Vermeidung einer Fehlermeldung)
+Wichtigste Änderungen in LeMoS-1.1.0:
+- Kompatibilität: abwärtskompatibel zu Version 1.0.0, wenn folgende Maßnahmen getroffen werden
+  - In bestehdenen Lernmodulkonfigurationen muss der Feldtyp "SELECTOR" durch "SELECT" ersetzt werden
+- Strukturell
+  - Dokumentation der Systemfunktionen erstellt
+- Generierung
+  - LeMoS-Skripte für Windows erstellt
+  - SelectorField zur Vereinheitlichung in SelectField umbenannt
+- Lernmodul
+  - Automatisches Scrollen nach Klick auf Buttons eingebaut
+  - Darstellung von Infotexten überarbeitet
+  - setEnabled()-Methode ergänzt
+  - setDisplayed() und setEnabled() in Historie (für Rückschritte) aufgenommen
+  - Letzter Eintrag von Listen/Tabellen wird nun unsichtbar, wenn er entfernt werden soll (vorher blieb der letzte Eintrag immer bestehen und sichtbar)
+  - Systemfunktionen der Module-Klasse in mehrere Klassen aufgespalten, um eine bessere Trennung der Funktionen zu erreichen
+- Konfigurationen
+  - Konfiguration eines Moduls zum Testen aller Systemfunktionen hinzugefügt
 
 Ausstehende Arbeiten:
-  - Anpassung der Dateinamen (kein Camel-Case wie LeMoS)
+  - Anpassung der Dateinamen (kein Camel-Case wie "LeMoS")
   - Erweiterung der Konfigurationen um Protokolausgaben
-  - Konfiguration eines Moduls zum Testen aller Systemfunktionen
-  - Dokumentation der Systemfunktionen
-  - Erstellen der LeMoS-Skripte für Windows
 
 Allgemeine Hinweise:
 - Zum Ausführen der Lernmodule wird ein aktueller Browser benötigt

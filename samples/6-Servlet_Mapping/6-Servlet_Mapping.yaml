@@ -33,6 +33,7 @@ fields:
     type: TEXT
     usage: OUTPUT
     multiline: true
+    fixLines: 8
 
 states:
   - id: Z0

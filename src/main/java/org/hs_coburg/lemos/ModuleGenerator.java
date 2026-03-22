@@ -42,21 +42,21 @@ public class ModuleGenerator
                      .replace("<!--BIG-STEP-ENABLING-->", general.generateBigStepEnabledStateCSS())
                      .replace("<!--ADDITIONAL-IMPORTS-->", general.generateImportsJS())
                      .replace("<!--RESOURCES-->", general.generateResourcesJS())
-                     .replace("<!--ADDITIONAL-VARIABLES-->", general.generateVariablesJS())
+                     .replace("<!--ADDITIONAL-variables-->", general.generatevariablesJS())
                      .replace("<!--SPECIAL-FUNCTIONS-->", general.generateFunctionsJS());
     }
 
     private static String insertFields(List<Field> fields, String result)
     {
         StringBuilder tempHTML         = new StringBuilder();
-        StringBuilder tempJS_Variables = new StringBuilder();
+        StringBuilder tempJS_variables = new StringBuilder();
         for (Field field : fields)
         {
             tempHTML.append(field.generateFieldTagHTML());
-            tempJS_Variables.append(field.generateFieldVariableJS()).append("\n");
+            tempJS_variables.append(field.generateFieldVariableJS()).append("\n");
         }
         return result.replace("<!--FIELDS-->", tempHTML.toString())
-                     .replace("<!--FIELD-VARIABLES-->", tempJS_Variables.toString());
+                     .replace("<!--FIELD-variables-->", tempJS_variables.toString());
     }
 
     private static String insertStates(List<State> states, String result)

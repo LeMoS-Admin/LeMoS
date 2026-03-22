@@ -358,7 +358,7 @@
             ]
           },
           {
-            "$comment": "SelectorField",
+            "$comment": "SelectField",
             "description": "Auswahlfeld – Eingabe durch Auswahl aus vorgegebenen Werten, Verarbeitung als ein Wert",
             "unevaluatedProperties": false,
             "allOf": [
@@ -375,7 +375,7 @@
                   "type": {
                     "$ref": "#/$defs/generalFieldTypeDefinition",
                     "enum": [
-                      "SELECTOR"
+                      "SELECT"
                     ]
                   },
                   "options": {
@@ -692,11 +692,11 @@
         },
         "allowEmpty": {
           "type": "boolean",
-          "description": "Leere Eingaben erlauben (Standard: false) \nNur bei usage INPUT berücksichtigt \nBei type INFO nicht berücksichtigt, da Infofelder für Benutzer stets unveränderlich sind \nFelder mit type SELECTOR gelten als leer, wenn eine leere Zeichenkette (bei emptyOption FALSE) bzw. die erste Option (bei emptyOption TRUE) gewählt wurde \nFelder mit type LIST oder TABLE gelten als leer, wenn alle Einträge leer sind"
+          "description": "Leere Eingaben erlauben (Standard: false) \nNur bei usage INPUT berücksichtigt \nBei type INFO nicht berücksichtigt, da Infofelder für Benutzer stets unveränderlich sind \nFelder mit type SELECT gelten als leer, wenn eine leere Zeichenkette (bei emptyOption FALSE) bzw. die erste Option (bei emptyOption TRUE) gewählt wurde \nFelder mit type LIST oder TABLE gelten als leer, wenn alle Einträge leer sind"
         },
         "datatype": {
           "type": "string",
-          "description": "Datentyp der Eingaben (Standard: 'STRING') \nNur bei usage INPUT berücksichtigt \nBei type INFO, SELECTOR und TABLE nicht berücksichtigt \nBei type SPLIT und LIST auf jeden Eintrag angewandt",
+          "description": "Datentyp der Eingaben (Standard: 'STRING') \nNur bei usage INPUT berücksichtigt \nBei type INFO, SELECT und TABLE nicht berücksichtigt \nBei type SPLIT und LIST auf jeden Eintrag angewandt",
           "enum": [
             "INTEGER",
             "NUMBER",
@@ -722,7 +722,7 @@
         },
         "minLines": {
           "type": "integer",
-          "description": "Minimale Zeilenanzahl von Einträgen, nur bei multiline = true berücksichtigt, nicht mit fixLines kombinierbar (Standard: 1)"
+          "description": "Minimale Zeilenanzahl von Einträgen, nur bei multiline = true berücksichtigt, nicht mit fixLines kombinierbar (Standard: -1 = unbegrenzt)"
         },
         "maxLines": {
           "type": "integer",

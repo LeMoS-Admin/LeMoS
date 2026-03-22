@@ -2,6 +2,7 @@ package org.hs_coburg.lemos;
 
 import org.hs_coburg.lemos.module.LearningModule;
 import org.hs_coburg.lemos.util.FileHelper;
+import org.hs_coburg.lemos.util.StringHelper;
 
 import java.io.File;
 import java.util.Arrays;
@@ -25,13 +26,15 @@ public class LeMoS
             System.out.println("-PaL or -PrintAsLine to print the read configuration as single line");
             System.exit(1);
         }
-        File   moduleConfig = new File(args[0]).getAbsoluteFile();
-        String moduleName   = moduleConfig.getName().replace(FileHelper.getExtension(moduleConfig), "");
-        File   targetFolder = new File(args[1]).getAbsoluteFile();
-        readOptions(Arrays.copyOfRange(args, 2, args.length));
 
+        String moduleName = "Module";
         try
         {
+            File   moduleConfig = new File(args[0]).getCanonicalFile();
+            File   targetFolder = new File(args[1]).getCanonicalFile();
+            moduleName   = moduleConfig.getName().replace(FileHelper.getExtension(moduleConfig), "");
+            readOptions(Arrays.copyOfRange(args, 2, args.length));
+
             System.out.println(moduleName + ": reading configuration");
             LearningModule module = ModuleReader.readModuleConfiguration(moduleConfig, moduleName);
             printLearningModule(module, moduleName);

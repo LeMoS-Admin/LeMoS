@@ -68,12 +68,11 @@ states:
     name: Aktueller Wert definiert
     importance: LOW
     actions:
-      - let Etemp = E.next()
-      - if(Etemp !== undefined) X.setValue(Etemp) # undefined nicht schreiben
+      - X.setValue(E.next())
     transitions:
       - target: Z3
       - target: Z5
-        explanation: Wenn die Iteration über die Eingabeliste abgeschlossen ist, folgt die Aktuallisierung der Ein- und Ausgabeliste
+        explanation: Wenn die Iteration über die Eingabeliste abgeschlossen ist, folgt die Aktualisierung der Ein- und Ausgabeliste
         conditions:
           - terms:
               - E.isAtEnd()

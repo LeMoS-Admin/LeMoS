@@ -38,7 +38,7 @@
             <id>T</id>
             <name>Aufgabentyp</name>
             <explanation>Auswahl, welche Variante der Formel genutzt werden soll (nicht implementiert)</explanation>
-            <type>SELECTOR</type>
+            <type>SELECT</type>
             <options>
                 <option>
                     <id>Auto</id>

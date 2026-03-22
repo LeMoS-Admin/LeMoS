@@ -2,7 +2,9 @@
 general:
   heading: Modul zum Testen aller Systemfunktionen
   explanation: |
-    Lernmodul, dass alle möglichen Systemfunktionen mindestens einmal ausführt und das Ergebnis vergleicht
+    Lernmodul, dass alle möglichen Systemfunktionen mindestens einmal ausführt und das Ergebnis vergleicht<br>
+    Hinweis: Die Szenarioauswahl funktioniert hier nicht, da es für dieses Modul eigentlich kein Szenario gibt,
+    die Konfiguration aber im gleichen Ordner wie die anderen Testmodule liegt, um die Ressourcen nicht doppelt speichern zu müssen.
   settings:
     libraryVersion: 1.0.0
     showFieldIDs: true
@@ -21,7 +23,7 @@ general:
         source: ./resources/TestLib.js
   resources:
     - id: Image1
-      source: ./resources/img0_3840x2160.jpg
+      source: ./resources/poster.png
     - id: Image2
       source: https://www.w3schools.com/html/pic_trulli.jpg
       isExternal: true
@@ -39,12 +41,13 @@ general:
 fields:
   - id: Info1
     name: Infofeld
+    explanation: Infofeld für Erläuterungen durch Texte
     type: INFO
     hidden: true
     text: Infotext
   - id: Image1
     name: Infofeld
-    explanation: Image, das lokal im Lernmodul abgelegt ist
+    explanation: Infofeld für Erläuterungen durch Bilder
     type: INFO
     hidden: true
     text: Image nicht gefunden
@@ -54,7 +57,7 @@ fields:
     resourceID: Image1
   - id: Audio1
     name: Infofeld
-    explanation: Audio, die lokal im Lernmodul abgelegt ist
+    explanation: Infofeld für Erläuterungen durch Audios
     type: INFO
     hidden: true
     text: Audio nicht gefunden
@@ -64,7 +67,7 @@ fields:
     resourceID: Audio1
   - id: Video1
     name: Infofeld
-    explanation: Video, das von einer externen Quelle geladen wird
+    explanation: Infofeld für Erläuterungen durch Videos
     type: INFO
     hidden: true
     text: Video nicht gefunden
@@ -97,6 +100,7 @@ fields:
     allowEmpty: true
     type: CHECK
     hidden: true
+    multipleCheck: false
     options:
       - id: Opt0
         name: Option 0
@@ -124,11 +128,11 @@ fields:
       - id: Opt2
         name: Option 2
         explanation: Zweite Option
-  - id: Selector1
+  - id: Select1
     name: Auswahlfeld
     explanation: Eingabe durch Auswahl aus vorgegebenen Werten, Verarbeitung als ein Wert
     allowEmpty: true
-    type: SELECTOR
+    type: SELECT
     hidden: true
     emptyOption: true
     options:
@@ -149,154 +153,38 @@ fields:
     hidden: true
     growthDirection: HORIZONTAL
     allowWrap: true
-    initialEntries: 5
+    initialEntries: 3
     minEntryWidth: 5
     maxEntries: 20
   - id: Table1
     name: Tabellenfeld
-    explanation: Eingabe und Verarbeitung als Liste von Werten dynamischer Anzahl
     allowEmpty: true
     type: TABLE
     hidden: true
-    initialEntries: 5
+    growthDirection: VERTICAL
+    initialEntries: 3
     maxEntries: 20
     innerFields:
-      - id: Info1
-        name: Infofeld (Text)
-        type: INFO
-        text: Statische Anzeige eines Texts ohne weitere Verarbeitung
-      - id: Image1
-        name: Infofeld (Image, lokal)
-        explanation: Image, das lokal im Lernmodul abgelegt ist
-        type: INFO
-        text: Image nicht gefunden
-        contentType: IMAGE
-        maxWidth: 512
-        maxHeight: 512
-        resourceID: Image1
-      - id: Audio1
-        name: Infofeld (Audio, lokal)
-        explanation: Audio, die lokal im Lernmodul abgelegt ist
-        type: INFO
-        text: Audio nicht gefunden
-        contentType: AUDIO
-        maxWidth: 512
-        maxHeight: 512
-        resourceID: Audio1
-      - id: Video1
-        name: Infofeld (Video, lokal)
-        explanation: Video, das von einer externen Quelle geladen wird
-        type: INFO
-        text: Video nicht gefunden
-        contentType: VIDEO
-        maxWidth: 512
-        maxHeight: 512
-        resourceID: Video1
-      - id: Text1
-        name: Einfaches Feld
-        explanation: Eingabe und Verarbeitung als genau ein Wert
-        allowEmpty: true
+      - id: Attr1
         type: TEXT
-        multiline: true
-        minLines: 3
-        maxLines: 12
-      - id: Split1
-        name: Aufgeteiltes Feld
-        explanation: "Eingabe als genau ein Wert, Verarbeitung als Liste (aufgeteilt nach zu konfigurierendem Trennzeichen, hier: ';')"
-        allowEmpty: true
-        type: SPLIT
-        separator: ";"
-        multiline: true
-        minLines: 3
-        maxLines: 12
-      - id: Radio1
-        name: Ankreuzfeld
-        explanation: Eingabe durch Anhaken aus vorgegebenen Werten, Verarbeitung als einzelner Wert
-        allowEmpty: true
-        type: CHECK
-        options:
-          - id: Opt0
-            name: Option 0
-            explanation: Nullte Option
-          - id: Opt1
-            name: Option 1
-            explanation: Erste Option
-          - id: Opt2
-            name: Option 2
-            explanation: Zweite Option
-      - id: Check1
-        name: Ankreuzfeld
-        explanation: Eingabe durch Anhaken aus vorgegebenen Werten, Verarbeitung als Liste von Werten
-        allowEmpty: true
-        type: CHECK
-        multipleCheck: true
-        options:
-          - id: Opt0
-            name: Option 0
-            explanation: Nullte Option
-          - id: Opt1
-            name: Option 1
-            explanation: Erste Option
-          - id: Opt2
-            name: Option 2
-            explanation: Zweite Option
-      - id: Selector1
-        name: Auswahlfeld
-        explanation: Eingabe durch Auswahl aus vorgegebenen Werten, Verarbeitung als ein Wert
-        allowEmpty: true
-        type: SELECTOR
-        emptyOption: true
-        options:
-          - id: Opt0
-            name: Option 0
-            explanation: Nullte Option
-          - id: Opt1
-            name: Option 1
-            explanation: Erste Option
-          - id: Opt2
-            name: Option 2
-            explanation: Zweite Option
-      - id: List1
-        name: Listenfeld
-        explanation: Eingabe und Verarbeitung als Liste von Werten dynamischer Anzahl
-        allowEmpty: true
-        type: LIST
-        growthDirection: HORIZONTAL
-        allowWrap: true
-        initialEntries: 5
-        minEntryWidth: 5
-        maxEntries: 20
-      - id: Table1
-        name: Tabellenfeld
-        allowEmpty: true
-        type: TABLE
-        innerFields:
-          - id: Attr1
-            type: TEXT
-          - id: Attr2
-            type: TEXT
-          - id: Attr3
-            type: TEXT
-        growthDirection: VERTICAL
-        minColumnWidth: 2
-        initialEntries: 3
-        maxEntries: 5
+      - id: Attr2
+        type: TEXT
+      - id: Attr3
+        type: TEXT
 
 states:
   - id: Z0
     name: Lernmodul initialisiert
     explanation: Einstieg
     type: ENTRY
-    actions:
-      - Tester.setSystemLibs(Module, Resource, Utils)
     transitions:
       - target: Z1a
   - id: Z1a
     name: Test von Info1
     actions:
       - Info1.setDisplayed(true)
-      - Module.print(Info1.toDebugString())
-      - errors.value.add(Tester.testInfoField(Info1))
+      - Logger.print(Info1.getDebug())
+      - errors.value = errors.value.concat(Tester.testInfoField(Info1))
     transitions:
       - target: Z1b
   - id: Z1b
@@ -304,15 +192,15 @@ states:
     importance: ZERO
     actions:
       - Info1.setDisplayed(false)
-      - Module.clearLogger()
+      - Logger.clear()
     transitions:
       - target: Z2a
   - id: Z2a
     name: Test von Image1
     actions:
       - Image1.setDisplayed(true)
-      - Module.print(Image1.toDebugString())
-      - errors.value.add(Tester.testImageField(Image1))
+      - Logger.print(Image1.getDebug())
+      - errors.value = errors.value.concat(Tester.testImageField(Image1))
     transitions:
       - target: Z2b
   - id: Z2b
@@ -320,15 +208,15 @@ states:
     importance: ZERO
     actions:
       - Image1.setDisplayed(false)
-      - Module.clearLogger()
+      - Logger.clear()
     transitions:
       - target: Z3a
   - id: Z3a
     name: Test von Audio1
     actions:
       - Audio1.setDisplayed(true)
-      - Module.print(Audio1.toDebugString())
-      - errors.value.add(Tester.testAudioField(Audio1))
+      - Logger.print(Audio1.getDebug())
+      - errors.value = errors.value.concat(Tester.testAudioField(Audio1))
     transitions:
       - target: Z3b
   - id: Z3b
@@ -336,15 +224,15 @@ states:
     importance: ZERO
     actions:
       - Audio1.setDisplayed(false)
-      - Module.clearLogger()
+      - Logger.clear()
     transitions:
       - target: Z4a
   - id: Z4a
     name: Test von Video1
     actions:
       - Video1.setDisplayed(true)
-      - Module.print(Video1.toDebugString())
-      - errors.value.add(Tester.testVideoField(Video1))
+      - Logger.print(Video1.getDebug())
+      - errors.value = errors.value.concat(Tester.testVideoField(Video1))
     transitions:
       - target: Z4b
   - id: Z4b
@@ -352,15 +240,16 @@ states:
     importance: ZERO
     actions:
       - Video1.setDisplayed(false)
-      - Module.clearLogger()
+      - Logger.clear()
     transitions:
       - target: Z5a
   - id: Z5a
     name: Test von Text1
     actions:
       - Text1.setDisplayed(true)
-      - Module.print(Text1.toDebugString())
-      - errors.value.add(Tester.testTextField(Text1))
+      - Logger.print(Text1.getDebug())
+      - errors.value = errors.value.concat(Tester.testTextField(Text1))
+      - Text1.setEnabled(false);
     transitions:
       - target: Z5b
   - id: Z5b
@@ -368,15 +257,16 @@ states:
     importance: ZERO
     actions:
       - Text1.setDisplayed(false)
-      - Module.clearLogger()
+      - Logger.clear()
     transitions:
       - target: Z6a
   - id: Z6a
     name: Test von Split1
     actions:
       - Split1.setDisplayed(true)
-      - Module.print(Split1.toDebugString())
-      - errors.value.add(Tester.testSplitField(Split1))
+      - Logger.print(Split1.getDebug())
+      - errors.value = errors.value.concat(Tester.testSplitField(Split1))
+      - Split1.setEnabled(false)
     transitions:
       - target: Z6b
   - id: Z6b
@@ -384,15 +274,16 @@ states:
     importance: ZERO
     actions:
       - Split1.setDisplayed(false)
-      - Module.clearLogger()
+      - Logger.clear()
     transitions:
       - target: Z7a
   - id: Z7a
     name: Test von Radio1
     actions:
       - Radio1.setDisplayed(true)
-      - Module.print(Radio1.toDebugString())
-      - errors.value.add(Tester.testRadioField(Radio1))
+      - Logger.print(Radio1.getDebug())
+      - errors.value = errors.value.concat(Tester.testRadioField(Radio1))
+      - Radio1.setEnabled(false)
     transitions:
       - target: Z7b
   - id: Z7b
@@ -400,15 +291,16 @@ states:
     importance: ZERO
     actions:
       - Radio1.setDisplayed(false)
-      - Module.clearLogger()
+      - Logger.clear()
     transitions:
       - target: Z8a
   - id: Z8a
     name: Test von Check1
     actions:
       - Check1.setDisplayed(true)
-      - Module.print(Check1.toDebugString())
-      - errors.value.add(Tester.testCheckField(Check1))
+      - Logger.print(Check1.getDebug())
+      - errors.value = errors.value.concat(Tester.testCheckField(Check1))
+      - Check1.setEnabled(false)
     transitions:
       - target: Z8b
   - id: Z8b
@@ -416,31 +308,33 @@ states:
     importance: ZERO
     actions:
       - Check1.setDisplayed(false)
-      - Module.clearLogger()
+      - Logger.clear()
     transitions:
       - target: Z9a
   - id: Z9a
-    name: Test von Selector1
+    name: Test von Select1
     actions:
-      - Selector1.setDisplayed(true)
-      - Module.print(Selector1.toDebugString())
-      - errors.value.add(Tester.testSelectorField(Selector1))
+      - Select1.setDisplayed(true)
+      - Logger.print(Select1.getDebug())
+      - errors.value = errors.value.concat(Tester.testSelectField(Select1))
+      - Select1.setEnabled(false)
     transitions:
       - target: Z9b
   - id: Z9b
-    name: Test von Selector1 aufräumen
+    name: Test von Select1 aufräumen
     importance: ZERO
     actions:
-      - Selector1.setDisplayed(false)
-      - Module.clearLogger()
+      - Select1.setDisplayed(false)
+      - Logger.clear()
     transitions:
       - target: Z10a
   - id: Z10a
     name: Test von List1
     actions:
       - List1.setDisplayed(true)
-      - Module.print(List1.toDebugString())
-      - errors.value.add(Tester.testListField(List1))
+      - Logger.print(List1.getDebug())
+      - errors.value = errors.value.concat(Tester.testListField(List1))
+      - List1.setEnabled(false)
     transitions:
       - target: Z10b
   - id: Z10b
@@ -448,15 +342,16 @@ states:
     importance: ZERO
     actions:
       - List1.setDisplayed(false)
-      - Module.clearLogger()
+      - Logger.clear()
     transitions:
       - target: Z11a
   - id: Z11a
     name: Test von Table1
     actions:
       - Table1.setDisplayed(true)
-      - Module.print(Table1.toDebugString())
-      - errors.value.add(Tester.testTableField(Table1))
+      - Logger.print(Table1.getDebug())
+      - errors.value = errors.value.concat(Tester.testTableField(Table1))
+      - Table1.setEnabled(false)
     transitions:
       - target: Z11b
   - id: Z11b
@@ -464,10 +359,18 @@ states:
     importance: ZERO
     actions:
       - Table1.setDisplayed(false)
-      - Module.clearLogger()
+      - Logger.clear()
     transitions:
-      - target: Z12
-  - id: Z12
+      - target: Z12a
+      - target: Z12b
+        conditions:
+          - terms:
+              - errors.value.length === 0
+  - id: Z12a
+    name: Fehler aufgetreten
+    actions:
+      - "Logger.alert('Es sind fehler aufgetreten:\\n' + errors.value.map(err => err.message).join('\\n'))"
+  - id: Z12b
     name: Alle Tests erfolgreich
     actions:
-      - Module.alert("Alle Tests erfolgreich")
+      - "Logger.alert('Alle Tests erfolgreich')"

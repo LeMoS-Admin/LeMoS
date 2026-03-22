@@ -22,15 +22,29 @@ export default class SplitFieldManager extends MultilineableFieldManager
 		return new ListFieldInteractor(this);
 	}
 
-	getValue()
+	getValue(keepEmptyEntries = false)
 	{
-		return this.getField().value
-				   .split(this.separator)
-				   .filter(entry => entry.trim() !== "");
+		if (keepEmptyEntries)
+		{
+			return this.getField().value
+					   .split(this.separator);
+		}
+		else
+		{
+			return this.getField().value
+					   .split(this.separator)
+					   .filter(entry => entry.trim() !== "");
+		}
 	}
 
 	setValue(value)
 	{
+		if (value === undefined)
+		{
+			this.clear();
+			return;
+		}
+
 		if (value instanceof Array)
 		{
 			this.getField().value = value.join(this.separator);
@@ -40,6 +54,7 @@ export default class SplitFieldManager extends MultilineableFieldManager
 			this.getField().value = value;
 		}
 		this.resetHeight();
+		this.scrollToBottom();
 	}
 
 	isEmpty()
@@ -61,7 +76,7 @@ export default class SplitFieldManager extends MultilineableFieldManager
 
 	getPrint()
 	{
-		return "['" + this.getValue().join("', '") + "']";
+		return this.getValue().toString();
 	}
 
 	validateInternal(outerField, tolerateEmptiness)

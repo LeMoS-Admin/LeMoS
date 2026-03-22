@@ -1,4 +1,4 @@
-import Module from "../systemFunctions/Module.js";
+import Logger from "../systemFunctions/Logger.js";
 import FieldManager from "./FieldManager.js";
 import CheckFieldInteractor from "../fieldInteractors/CheckFieldInteractor.js";
 
@@ -50,6 +50,11 @@ export default class CheckFieldManager extends FieldManager
 		}
 		else
 		{
+			if(!this.multipleCheck && value.length > 1)
+			{
+				Logger.error(this.getMessagePrefix() + "CheckFields without multipleCheck can not select multiple values")
+			}
+
 			for (let v of value)
 			{
 				this.#setChecked(v);
@@ -67,7 +72,7 @@ export default class CheckFieldManager extends FieldManager
 		}
 		else
 		{
-			Module.log(this.getMessagePrefix() + "option '" + value + "' is not available")
+			Logger.log(this.getMessagePrefix() + "option '" + value + "' is not available")
 		}
 	}
 
@@ -131,16 +136,11 @@ export default class CheckFieldManager extends FieldManager
 	{
 		if (!this.multipleCheck)
 		{
-			let value = this.getValue();
-			if (value === undefined)
-			{
-				value = "undefined";
-			}
-			return value;
+			return String(this.getValue());
 		}
 		else
 		{
-			return "['" + this.getValue().join("', '") + "']";
+			return this.getValue().toString();
 		}
 	}
 

@@ -38,7 +38,7 @@
       "id": "T",
       "name": "Aufgabentyp",
       "explanation": "Auswahl, welche Variante der Formel genutzt werden soll (nicht implementiert)",
-      "type": "SELECTOR",
+      "type": "SELECT",
       "options": [
         {
           "id": "Auto",

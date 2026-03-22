@@ -1,16 +1,22 @@
 #! /bin/bash
+echo Executing LeMoS
 
 SWD=$PWD			# SWD = Start Working Directory
 cd $(dirname "$BASH_SOURCE")	# Auflösen des ggf. relativen Pfades zum Skript, um absoluten Pfad des Skripts zu erhalten
 LWD=$PWD			# LWD = LeMoS Working Directory
 TEMPLATE="moduleTemplate"	# TEMPLATE = Vorlage für Webarchiv eines Lernmoduls
 
+# LeMoS-Dateinamen ermitteln
+LeMoS=(LeMoS*.jar)		# Liefert Array mit allen passenden Dateien (sollte stets einen Eintrag haben)
+LeMoS=${LeMoS[0]}
+echo Found LeMoS-Version: $LeMoS
+echo
+
 # Wenn keine Parameter übergeben: Erklärung der Funktionsweise des LeMoS
-if [[ $# == 0 ]]
-then
+if [[ $# == 0 ]]; then
 	echo "Bitte mindestens eine Lernmodul-Konfiguration (YAML-, JSON- oder XML-Datei) als absoluten oder relativen Pfad angeben."
 	echo "Konfigurationen von Lernmodul-Szenarien (YAML-, JSON- oder XML-Datei) sind nicht anzugeben, sie werden am Speicherort der Lernmodul-Konfiguration im Unterordner 'scenarios' erwartet."
-	echo "Bei erfolgreicher Ausführung werden die generierten Lernmodule wird am Aufrufort dieses Skripts als ZIP-Datei unter dem Namen der Lernmodul-Konfiguration abgelegt."
+	echo "Bei erfolgreicher Ausführung werden die generierten Lernmodule am Aufrufort dieses Skripts als ZIP-Datei unter dem Namen der Lernmodul-Konfiguration abgelegt."
 	exit 1
 fi
 
@@ -26,7 +32,7 @@ for arg in "$@"; do
 	# Erstellen einer Kopie der Vorlage, damit diese anschließend mit den Daten des Lernmodul ausgefüllt werden kann
 	echo $name: preparing template
 	cd "$LWD"
-	unzip -q LeMoS*.jar "$TEMPLATE/*"
+	unzip -q $LeMoS "$TEMPLATE/*"
 	
 	# Übernehmen der hinterlegten Resourcen (falls vorhanden) in das Verzeichnis des Lernmoduls
 	echo $name: preparing resources
@@ -37,11 +43,10 @@ for arg in "$@"; do
 	# Aufruf des LeMoS-Generators zur Verarbeitung der Lernmodul-Konfiguration (Parameter: Lernmodul-Konfigurationsdatei, Zielordner)
 	echo $name: starting generator
 	cd "$SWD"	# LeMoS muss in Startverzeichnis aufgerufen werden, damit es etwaige relative Pfade korrekt auflösen kann
-	java -jar "$LWD"/LeMoS*.jar "$arg" "$LWD/$TEMPLATE"
+	java -jar "$LWD"/$LeMoS "$arg" "$LWD/$TEMPLATE"
 	
 	# Behandeln von erfolglosen Generierungen (über einen vom LeMoS-Generator zurückgegebenen Statuscode, der ungleich 0 ist)
-	if [ $? != 0 ]
-	then
+	if [ $? != 0 ]; then
 		failedGeneration=true
 		rm -r "$LWD/$TEMPLATE"
 		continue
@@ -55,17 +60,26 @@ for arg in "$@"; do
 	
 	# Packen des fertigen Lernmoduls zu einer ZIP-Datei, bereinigen der ausgefüllten Kopie der Vorlage
 	echo $name: packing archive
-	rm -f "$SWD/$name.zip"
+	if [ -d "$SWD/$name.zip" ]; then
+		rm -f "$SWD/$name.zip"
+	fi
 	zip -r -q "$SWD/$name.zip" *
+
+	# Bereinigen der temporären Kopie der Vorlage
+	echo $name: deleting template
 	cd ..
 	rm -r "$TEMPLATE"
 
+	# Erfolgsausgabe
 	echo $name: finished "$SWD/$name.zip"
+
+	echo
 done
 
-if $failedGeneration
-then
+if $failedGeneration; then
+	echo Failed with at least one generation
 	exit 1
 else
+	echo All generations successful
 	exit 0
 fi

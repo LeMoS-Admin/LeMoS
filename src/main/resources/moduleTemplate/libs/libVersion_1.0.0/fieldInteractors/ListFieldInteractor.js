@@ -2,39 +2,43 @@ import ListableFieldInteractor from "./ListableFieldInteractor.js";
 
 export default class ListFieldInteractor extends ListableFieldInteractor
 {
-	constructor(fieldManager)
+	constructor(fieldManager, keepEmptyEntries)
 	{
-		super(fieldManager);
+		super(fieldManager, keepEmptyEntries);
+	}
+
+	withEmptyEntries()
+	{
+		return new ListFieldInteractor(this._fieldManager, true);
+	}
+
+	getValue()
+	{
+		return this._fieldManager.getValue(this.keepEmptyEntries);
 	}
 
 	minimum()
 	{
-		return this.getValue().sort().at(0);
+		return this.getValue().minimum();
 	}
 
 	maximum()
 	{
-		return this.getValue().sort().at(this.length() - 1);
+		return this.getValue().maximum();
 	}
 
 	average()
 	{
-		return this.sum() / this.length();
+		return this.getValue().average();
 	}
 
 	median()
 	{
-		let middle = Math.round(this.length() / 2);
-		return this.getValue().sort().at(middle);
+		return this.getValue().median();
 	}
 
 	sum()
 	{
-		let sum = 0;
-		for (let value of this.getValue())
-		{
-			sum += Number(value);
-		}
-		return sum;
+		return this.getValue().sum();
 	}
 }

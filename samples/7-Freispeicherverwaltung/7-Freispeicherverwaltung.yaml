@@ -57,7 +57,7 @@ fields:
     innerFields:
       - id: A
         name: Aktion
-        type: SELECTOR
+        type: SELECT
         emptyOption: true
         options:
           - id: Leer
@@ -99,7 +99,7 @@ fields:
     innerFields:
       - id: A
         name: Aktion
-        type: SELECTOR
+        type: SELECT
         emptyOption: true
         options:
           - id: Leer

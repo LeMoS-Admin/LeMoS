@@ -1,4 +1,5 @@
-import Module from "../systemFunctions/Module.js";
+import Logger from "../systemFunctions/Logger.js";
+import Controller from "../internalFunctions/Controller.js";
 import ValidationError from "../ValidationError.js";
 
 export default class FieldManager
@@ -10,6 +11,8 @@ export default class FieldManager
 		this.allowEmpty = allowEmpty;
 		this.datatype = datatype;
 		this.restrictions = restrictions;
+		this.initialyDisplayed = this.isDisplayed();
+		this.initialyEnabled = this.isEnabled();
 	}
 
 	clone(newSelector) { }
@@ -45,21 +48,41 @@ export default class FieldManager
 
 	clear() { }
 
-	reset(excludeInputFields = false) {
+	backup()
+	{
+		let backup = new Map();
+		backup.set("value", this.getValue());
+		backup.set("displayed", this.isDisplayed());
+		backup.set("enabled", this.isEnabled());
+		return backup;
+	}
+
+	restore(backup)
+	{
+		this.setValue(backup.get("value"));
+		this.setDisplayed(backup.get("displayed"));
+		this.setEnabled(backup.get("enabled"));
+	}
+
+	reset(excludeInputFields = false)
+	{
 		if (!(excludeInputFields && this.isInputField()))
 		{
 			this.resetInternal(excludeInputFields);
 		}
 	}
 
-	resetInternal(excludeInputFields = false) {
+	resetInternal(excludeInputFields = false)
+	{
 		this.clear();
 		this.setFailed(false);
+		this.setDisplayed(this.initialyDisplayed);
+		this.setEnabled(this.initialyEnabled);
 	}
 
 	toString()
 	{
-		return this.constructor.name + ": " +
+		return this.constructor.name.replace("Manager", "") + ": " +
 			"\n\tselector: " + this.selector +
 			"\n\tfieldName: " + this.fieldName +
 			"\n\tallowEmpty: " + this.allowEmpty +
@@ -71,7 +94,9 @@ export default class FieldManager
 		return "'" + this.getValue() + "'";
 	}
 
-	validate(doAlert = true, tolerateEmptiness = false)
+	// Hinweis: tolerateEmptiness wird bei einer durch ein Change-Event ausgelösten Überprüfung von Tabelleneinträgen benötigt,
+	// 			um keine Fehlermeldungen wegen noch nicht ausgefüllter Felder zu erzeugen
+	validate(tolerateEmptiness = false)
 	{
 		// Felder ohne Eingabemöglichkeit müssen nicht validiert werden
 		if (!this.isInputField())
@@ -90,20 +115,9 @@ export default class FieldManager
 		}
 		catch (err)
 		{
-			if (err instanceof ValidationError)
-			{
-				let message = err.message;
-				this.setFailed(true, message);
-				if (doAlert && message !== "")
-				{
-					Module.fail(this.getMessagePrefix() + message, false);
-				}
-				throw err;
-			}
-			else
-			{
-				throw err;
-			}
+			err.message = this.getMessagePrefix() + err.message;
+			this.setFailed(true, err.message);
+			Logger.fail(err);
 		}
 	}
 
@@ -123,15 +137,9 @@ export default class FieldManager
 			}
 			catch (err)
 			{
-				if (err instanceof ValidationError)
-				{
-					entry.setFailed(true, err.message);
-					errors.push(err);
-				}
-				else
-				{
-					throw err;
-				}
+				err.message = entry.getMessagePrefix() + err.message;
+				entry.setFailed(true, err.message);
+				errors.push(err);
 			}
 		}
 		if (errors.length === 1)
@@ -141,15 +149,7 @@ export default class FieldManager
 		else if (errors.length > 1)
 		{
 			let errorList = errors.map(err => "- " + err.message).join("\n").replaceAll("\n", "\n\t ");
-			throw new ValidationError(this.getMessagePrefix() + "mehrere Fehler:\n\t " + errorList);
-		}
-	}
-
-	validateEmptiness(tolerateEmptiness = false)
-	{
-		if (this.isEmpty() && !this.allowEmpty && !tolerateEmptiness)
-		{
-			throw new ValidationError(this.getMessagePrefix() + "Feld darf nicht leer sein");
+			Logger.fail(this.getMessagePrefix() + "mehrere Fehler:\n\t " + errorList);
 		}
 	}
 
@@ -159,11 +159,19 @@ export default class FieldManager
 		this.validateRestrictions(this, outerField);
 	}
 
+	validateEmptiness(tolerateEmptiness = false)
+	{
+		if (this.isEmpty() && !this.allowEmpty && !tolerateEmptiness)
+		{
+			throw new ValidationError("Feld darf nicht leer sein");
+		}
+	}
+
 	validateDatatype(value = this.getValue())
 	{
 		if (!this.#datatypeCorrect(value))
 		{
-			throw new ValidationError(this.getMessagePrefix() + "Wert '" + value + "' muss vom Typ '" + this.datatype + "' sein");
+			throw new ValidationError("Wert '" + value + "' ist kein " + this.datatype);
 		}
 	}
 
@@ -228,7 +236,7 @@ export default class FieldManager
 	handleChangeEvent()
 	{
 		this.validate();
-		Module._handleChangeEvent();
+		Controller.handleChangeEvent();
 	}
 
 	getChildElement(childSelector)
@@ -239,5 +247,41 @@ export default class FieldManager
 	getChildElements(childSelector)
 	{
 		return Array.from(document.querySelectorAll(this.selector + " > " + childSelector));
+	}
+
+	isDisplayed()
+	{
+		return this.getNode().style.display !== "none";
+	}
+
+	setDisplayed(displayed)
+	{
+		if (displayed)
+		{
+			this.getNode().style.display = "";
+		}
+		else
+		{
+			this.getNode().style.display = "none";
+		}
+	}
+
+	isEnabled()
+	{
+		return this.getNode().classList.contains("InputField");
+	}
+
+	setEnabled(enabled)
+	{
+		let classList = this.getNode().classList;
+		if (enabled && !classList.contains("InputField"))
+		{
+			classList.add("InputField");
+		}
+		else if (!enabled && classList.contains("InputField"))
+		{
+			classList.remove("InputField")
+		}
+		this.getChildElement(".field > *").disabled = !enabled;
 	}
 }

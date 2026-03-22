@@ -49,9 +49,9 @@ export default class TextFieldInteractor extends FieldInteractor
 		return this.getValue().search(regexp);
 	}
 
-	split(splitter, limit)
+	split(separator, limit)
 	{
-		return this.getValue().split(splitter, limit);
+		return this.getValue().split(separator, limit);
 	}
 
 	startsWith(searchString, position)
@@ -61,37 +61,37 @@ export default class TextFieldInteractor extends FieldInteractor
 
 
 // Verändernde Methoden
-	concat(strings)
+	concat(...str)
 	{
-		let newValue = this.getValue().concat(strings);
+		let newValue = this.getValue().concat(...str);
 		this.setValue(newValue);
 		return this;
 	}
 
-	repeat(number)
+	repeat(count)
 	{
-		let newValue = this.getValue().repeat(number);
+		let newValue = this.getValue().repeat(count);
 		this.setValue(newValue);
 		return this;
 	}
 
-	replace(searchValue, replacer)
+	replace(pattern, replacement)
 	{
-		let newValue = this.getValue().replace(searchValue, replacer);
+		let newValue = this.getValue().replace(pattern, replacement);
 		this.setValue(newValue);
 		return this;
 	}
 
-	replaceAll(searchValue, replacer)
+	replaceAll(pattern, replacement)
 	{
-		let newValue = this.getValue().replaceAll(searchValue, replacer);
+		let newValue = this.getValue().replaceAll(pattern, replacement);
 		this.setValue(newValue);
 		return this;
 	}
 
-	slice(start, end)
+	slice(indexStart, indexEnd)
 	{
-		let newValue = this.getValue().slice(start, end);
+		let newValue = this.getValue().slice(indexStart, indexEnd);
 		this.setValue(newValue);
 		return this;
 	}
@@ -143,16 +143,16 @@ export default class TextFieldInteractor extends FieldInteractor
 		return this.getValue().asNumber();
 	}
 
-	insert(index, strings)
+	insert(index, ...str)
 	{
-		let newValue = this.getValue().insert(index, strings);
+		let newValue = this.getValue().insert(index, ...str);
 		this.setValue(newValue);
 		return this;
 	}
 
-	remove(start, end = start)
+	remove(indexStart, indexEnd)
 	{
-		let newValue = this.getValue().remove(start, end);
+		let newValue = this.getValue().remove(indexStart, indexEnd);
 		this.setValue(newValue);
 		return this;
 	}

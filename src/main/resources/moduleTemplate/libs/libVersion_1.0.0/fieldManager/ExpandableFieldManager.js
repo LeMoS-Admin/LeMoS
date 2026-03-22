@@ -1,4 +1,5 @@
-import Module from "../systemFunctions/Module.js";
+import Logger from "../systemFunctions/Logger.js";
+import Scroller from "../internalFunctions/Scroller.js";
 import FieldManager from "./FieldManager.js";
 
 export default class ExpandableFieldManager extends FieldManager
@@ -9,6 +10,25 @@ export default class ExpandableFieldManager extends FieldManager
 		this.entries = [];
 		this.initialEntries = initialEntries;
 		this.maxEntries = maxEntries;
+
+		this.getChildElement(".buttons > .addEntryButton").addEventListener("click", () =>
+		{
+			// Die Scroll-Position muss stets vom Auslöser einer Änderung angepasst werden, damit die Anpassung nicht mehrfach erfolgt
+			// --> Muss im EventListener beschrieben werden, da this.addEntry(); auch intern aufgerufen wird
+			Scroller.saveCurrentScrollPosition(this.selector + " > .buttons");
+			this.addEntry();
+			Scroller.scrollToSavedPosition();
+			this.handleChangeEvent();
+		});
+		this.getChildElement(".buttons > .removeEntryButton").addEventListener("click", () =>
+		{
+			// Die Scroll-Position muss stets vom Auslöser einer Änderung angepasst werden, damit die Anpassung nicht mehrfach erfolgt
+			// --> Muss im EventListener beschrieben werden, da this.removeEntry(); auch intern aufgerufen wird
+			Scroller.saveCurrentScrollPosition(this.selector + " > .buttons");
+			this.removeEntry();
+			Scroller.scrollToSavedPosition();
+			this.handleChangeEvent();
+		});
 	}
 
 	static getSelectorWithReplacedEntryName(selector, oldEntryName, newEntryName)
@@ -19,29 +39,27 @@ export default class ExpandableFieldManager extends FieldManager
 		return stringBeforeIndex + stringAfterIndex.replace(oldEntryName, newEntryName);
 	}
 
-	getValue()
+	getValue(keepEmptyEntries = false)
 	{
-		return this.getEntries()
+		return this.getEntries(keepEmptyEntries)
 				   .map(entry => entry.getValue());
 	}
 
 	setValue(value)
 	{
+		if(value === undefined)
+		{
+			this.clear();
+			return;
+		}
+
 		this.setLength(value.length);
 
-		if (value.length === 0)
+		// Hinweis: es muss über this.entries iteriert werden, da ggf. die maximale Länge überschritten wurde
+		// Ergebnis: überschüssige Einträge von value werden ignoriert
+		for (let [index, field] of this.entries.entries())
 		{
-			// Da stets ein Eintrag benötigt ist, wird dieser bei einer Soll-Länge lediglich geleert
-			this.entries.at(0).clear();
-		}
-		else
-		{
-			// Hinweis: es muss über this.entries iteriert werden, da ggf. die maximale Länge überschritten wurde
-			// Ergebnis: überschüssige Einträge von value werden ignoriert
-			for (let index of this.entries.keys())
-			{
-				this.entries.at(index).setValue(value.at(index));
-			}
+			field.setValue(value.at(index));
 		}
 	}
 
@@ -52,18 +70,49 @@ export default class ExpandableFieldManager extends FieldManager
 
 	clear()
 	{
-		this.setLength(1);
-		this.entries.at(0).clear();
+		this.setLength(this.initialEntries);
+		for (let entry of this.entries)
+		{
+			entry.clear();
+		}
+	}
+
+	backup()
+	{
+		let entriesBackup = [];
+		for(let entry of this.entries)
+		{
+			entriesBackup.push(entry.backup());
+		}
+
+		let backup = new Map();
+		backup.set("value", entriesBackup);
+		backup.set("displayed", this.isDisplayed());
+		backup.set("enabled", this.isEnabled());
+		return backup;
+	}
+
+	restore(backup)
+	{
+		let entriesBackup = backup.get("value");
+		this.setLength(entriesBackup.length);
+		for (let [index, field] of this.entries.entries())
+		{
+			field.restore(entriesBackup.at(index));
+		}
+
+		this.setDisplayed(backup.get("displayed"));
+		this.setEnabled(backup.get("enabled"));
 	}
 
 	resetInternal(excludeInputFields = false)
 	{
-		this.setLength(this.initialEntries);
-		this.setFailed(false);
+		super.resetInternal(excludeInputFields);
 		for (let entry of this.entries)
 		{
 			entry.reset(excludeInputFields);
 		}
+		this.setLength(this.initialEntries); // entry.reset setzt auch die Sichtbarkeit des Eintrags zurück, sodass sie ggf. erneut angepasst werden muss
 	}
 
 	toString()
@@ -75,12 +124,19 @@ export default class ExpandableFieldManager extends FieldManager
 
 	validateInternal(outerField, tolerateEmptiness)
 	{
-		super.validateMultiple(this.entries, tolerateEmptiness);
+		super.validateMultiple(this.getEntries(), tolerateEmptiness);
 	}
 
 	getLength()
 	{
-		return this.entries.length;
+		if (this.entries.length === 1 && !this.entries.at(0).isDisplayed())
+		{
+			return 0;
+		}
+		else
+		{
+			return this.entries.length;
+		}
 	}
 
 	setLength(length)
@@ -104,22 +160,29 @@ export default class ExpandableFieldManager extends FieldManager
 
 	getEntries(keepEmptyEntries = false)
 	{
+		// Ausgeblendete Zeilen werden nicht berücksichtigt, sodass auch eine leere Liste/Tabelle dargestellt werden kann
 		if (keepEmptyEntries)
 		{
 			return this.entries;
 		}
 		else
 		{
-			return this.entries.filter(entry => !entry.isEmpty());
+			return this.entries.filter(entry => entry.isDisplayed() && !entry.isEmpty());
 		}
 	}
 
 	addEntry()
 	{
-		if (this.getLength() === this.maxEntries)
+		if (this.getLength() === 0)
+		{
+			// Erster Eintrag wird ausgeblendet statt entfernt und muss daher lediglich wieder sichtbar gemacht werden
+			this.entries.at(0).setDisplayed(true);
+			return;
+		}
+		else if (this.getLength() === this.maxEntries)
 		{
 			// Maximale Anzahl von Einträgen darf nicht überschritten werden
-			Module.log(this.getMessagePrefix() + "maximum amount of entries already reached")
+			Logger.log(this.getMessagePrefix() + "maximum amount of entries already reached")
 			return;
 		}
 
@@ -132,11 +195,11 @@ export default class ExpandableFieldManager extends FieldManager
 
 	removeEntry()
 	{
-		if (this.getLength() === 1)
+		if (this.getLength() <= 1)
 		{
 			// Es muss stets ein Eintrag erhalten bleiben
-			Module.log(this.getMessagePrefix() + "last remaining entry can not be removed")
 			this.entries.at(0).clear();
+			this.entries.at(0).setDisplayed(false);
 			return;
 		}
 
@@ -163,4 +226,29 @@ export default class ExpandableFieldManager extends FieldManager
 	}
 
 	removeEntryInternal(lastEntryIndex) { }
+
+	isEnabled()
+	{
+		if (this.entries === undefined)	// Kommt nur während Initialisierung vor
+		{
+			return super.isEnabled();
+		}
+
+		for (let entry of this.entries)
+		{
+			if (entry.isEnabled())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	setEnabled(enabled)
+	{
+		for (let entry of this.entries)
+		{
+			entry.setEnabled(enabled);
+		}
+	}
 }

@@ -42,7 +42,11 @@ export default class InfoFieldManager extends FieldManager
 
 	setValue(value)
 	{
-		if (this.contentType === "Text")
+		if(value === undefined)
+		{
+			this.clear();
+		}
+		else if (this.contentType === "Text")
 		{
 			this.getChildElement(".field > span").innerHTML = value;
 		}
@@ -69,7 +73,7 @@ export default class InfoFieldManager extends FieldManager
 			"\n\tvalue: " + this.getValue();
 	}
 
-	validate(doAlert = true, tolerateEmptiness = false)
+	validate(tolerateEmptiness = false)
 	{
 		// Do nothing
 	}
@@ -85,5 +89,10 @@ export default class InfoFieldManager extends FieldManager
 		this.getChildElement(".field > *").style.display = "none";
 		// Alternativ-Text einblenden
 		this.getChildElement(".field > span").style.display = "";
+	}
+
+	setEnabled(enabled)
+	{
+		// Do nothing
 	}
 }

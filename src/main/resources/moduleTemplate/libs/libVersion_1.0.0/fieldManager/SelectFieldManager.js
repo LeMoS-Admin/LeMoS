@@ -1,8 +1,8 @@
-import Module from "../systemFunctions/Module.js";
+import Logger from "../systemFunctions/Logger.js";
 import FieldManager from "./FieldManager.js";
-import SelectorFieldInteractor from "../fieldInteractors/SelectorFieldInteractor.js";
+import SelectFieldInteractor from "../fieldInteractors/SelectFieldInteractor.js";
 
-export default class SelectorFieldManager extends FieldManager
+export default class SelectFieldManager extends FieldManager
 {
 	constructor(selector, fieldName, emptyOption, allowEmpty, restrictions)
 	{
@@ -15,12 +15,12 @@ export default class SelectorFieldManager extends FieldManager
 
 	clone(newSelector)
 	{
-		return new SelectorFieldManager(newSelector, this.fieldName, this.emptyOption, this.allowEmpty, this.restrictions);
+		return new SelectFieldManager(newSelector, this.fieldName, this.emptyOption, this.allowEmpty, this.restrictions);
 	}
 
 	getInteractor()
 	{
-		return new SelectorFieldInteractor(this);
+		return new SelectFieldInteractor(this);
 	}
 
 	getValue()
@@ -30,6 +30,12 @@ export default class SelectorFieldManager extends FieldManager
 
 	setValue(value)
 	{
+		if (value === undefined)
+		{
+			this.clear();
+			return;
+		}
+
 		let selectElement = this.getChildElement(".field > select");
 		if (typeof value === "string")
 		{
@@ -39,7 +45,7 @@ export default class SelectorFieldManager extends FieldManager
 			}
 			else
 			{
-				Module.log(this.getMessagePrefix() + "option '" + value + "' is not available")
+				Logger.log(this.getMessagePrefix() + "option '" + value + "' is not available")
 			}
 		}
 		else
@@ -50,7 +56,7 @@ export default class SelectorFieldManager extends FieldManager
 			}
 			else
 			{
-				Module.log(this.getMessagePrefix() + "option with index " + value + " is not available")
+				Logger.log(this.getMessagePrefix() + "option with index " + value + " is not available")
 			}
 		}
 	}

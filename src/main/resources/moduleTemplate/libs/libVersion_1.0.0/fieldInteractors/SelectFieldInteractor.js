@@ -1,6 +1,6 @@
 import FieldInteractor from "./FieldInteractor.js";
 
-export default class SelectorFieldInteractor extends FieldInteractor
+export default class SelectFieldInteractor extends FieldInteractor
 {
 	constructor(fieldManager)
 	{

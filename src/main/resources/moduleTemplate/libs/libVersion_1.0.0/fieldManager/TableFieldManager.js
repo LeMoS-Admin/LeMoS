@@ -18,9 +18,6 @@ export default class TableFieldManager extends ExpandableFieldManager
 			this.entries.push(new ObjectFieldManager(this.selector + " > .table", this.fieldName, this.restrictions, "entry0", innerFields));
 		}
 		this.setLength(this.initialEntries);
-
-		this.getChildElement(".buttons > .addEntryButton").addEventListener("click", () => this.addEntry());
-		this.getChildElement(".buttons > .removeEntryButton").addEventListener("click", () => this.removeEntry());
 	}
 
 	clone(newSelector)

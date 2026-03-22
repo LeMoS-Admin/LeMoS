@@ -1,4 +1,5 @@
-import Module from "./systemFunctions/Module.js";
+import Logger from "./systemFunctions/Logger.js";
+import Controller from "./internalFunctions/Controller.js";
 
 export default class GlobalVariable
 {
@@ -11,7 +12,7 @@ export default class GlobalVariable
 
 		if (!isConstant)	// Konstante Variablen müssen nicht verwaltet werden
 		{
-			Module._registerVariable(this);
+			Controller.registerVariable(this);
 		}
 	}
 
@@ -24,7 +25,7 @@ export default class GlobalVariable
 	toString()
 	{
 		// Ermöglicht implizite Umwandlung des Felds in einen String
-		return this.value;
+		return String(this.value);
 	}
 
 	getValue()
@@ -36,7 +37,7 @@ export default class GlobalVariable
 	{
 		if (this.isConstant)
 		{
-			Module.error(this.name + " is constant and therefore not changeable.")
+			Logger.error(this.name + " is constant and therefore not changeable.")
 		}
 		this.value = value;
 		return this;

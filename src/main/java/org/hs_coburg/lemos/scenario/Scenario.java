@@ -30,7 +30,7 @@ public class Scenario
 
     public String generateScenarioOptionHTML()
     {
-        return new Option(id, name, explanation).generateSelectorOptionHTML();
+        return new Option(id, name, explanation).generateSelectOptionHTML();
     }
 
     public String generateScenarioCaseJS()

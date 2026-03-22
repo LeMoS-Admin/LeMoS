@@ -12,9 +12,6 @@ export default class ListFieldManager extends ExpandableFieldManager
 		let firstEntryInteractor = new TextFieldManager(firstEntrySelector, this.fieldName, false, false, true, this.datatype, this.restrictions);
 		this.entries.push(firstEntryInteractor);
 		this.setLength(this.initialEntries);
-
-		this.getChildElement(".buttons > .addEntryButton").addEventListener("click", () => this.addEntry());
-		this.getChildElement(".buttons > .removeEntryButton").addEventListener("click", () => this.removeEntry());
 	}
 
 	clone(newSelector)
@@ -42,7 +39,7 @@ export default class ListFieldManager extends ExpandableFieldManager
 
 	getPrint()
 	{
-		return "['" + this.getValue().join("', '") + "']";
+		return this.getValue().toString()
 	}
 
 	setFailed(isFailed, message)

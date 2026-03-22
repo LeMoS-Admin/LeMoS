@@ -16,7 +16,7 @@ import java.util.Objects;
                @Type(name = "TEXT", value = TextField.class),
                @Type(name = "SPLIT", value = SplitField.class),
                @Type(name = "CHECK", value = CheckField.class),
-               @Type(name = "SELECTOR", value = SelectorField.class),
+               @Type(name = "SELECT", value = SelectField.class),
                @Type(name = "LIST", value = ListField.class),
                @Type(name = "TABLE", value = TableField.class)})
 public abstract class Field

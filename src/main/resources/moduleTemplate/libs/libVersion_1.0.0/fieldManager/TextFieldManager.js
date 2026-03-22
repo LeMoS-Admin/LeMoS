@@ -28,8 +28,15 @@ export default class TextFieldManager extends MultilineableFieldManager
 
 	setValue(value)
 	{
+		if (value === undefined)
+		{
+			this.clear();
+			return;
+		}
+		
 		this.getField().value = value;
 		this.resetHeight();
+		this.scrollToBottom();
 	}
 
 	isEmpty()

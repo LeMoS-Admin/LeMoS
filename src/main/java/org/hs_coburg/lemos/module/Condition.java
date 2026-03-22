@@ -49,7 +49,7 @@ public class Condition
         String template = """
                              if(!({{terms}}))
                              {
-                               Module.log("Condition for transition to {{target}} not met");
+                               Logger.log("Condition for transition to {{target}} not met");
                                {{alertMessage}}
                              }
                           """;
@@ -61,7 +61,7 @@ public class Condition
         String template = """
                           if (!({{terms}}))
                           {
-                            throw new ValidationError("{{fieldName}}: {{message}}");
+                            throw new ValidationError("{{message}}");
                           }
                           """;
         return performReplacements(template).replace("{{fieldName}}", fieldName);
@@ -82,7 +82,7 @@ public class Condition
         }
         else
         {
-            return "Module.alert('" + StringHelper.escape(message) + "');";
+            return "Logger.alert('" + StringHelper.escape(message) + "');";
         }
     }
 

@@ -38,7 +38,7 @@ public abstract class MultilineableField extends Field
         }
         else
         {
-            this.minLines = Objects.requireNonNullElse(minLines, 1);
+            this.minLines = Objects.requireNonNullElse(minLines, -1);
             this.maxLines = Objects.requireNonNullElse(maxLines, -1);
             this.fixLines = Objects.requireNonNullElse(fixLines, -1);
         }
@@ -85,7 +85,6 @@ public abstract class MultilineableField extends Field
         // Jeweils addieren einer halben Zeile, damit die konfigurierten Zeilen sicher in das Feld passen
         if (minLines != -1)
         {
-            // Hinweis: ist bei multiline standardmäßig 1 und wird somit standardmäßig gesetzt
             fieldStyle += " min-height: " + (minLines + 0.5) + "lh;";
         }
         if (maxLines != -1)

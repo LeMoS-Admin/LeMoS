@@ -76,8 +76,7 @@ states:
     name: Aktueller Wert definiert
     importance: LOW
     actions:
-      - let Atemp = A.next()
-      - if(Atemp !== undefined) X.setValue(Atemp) # undefined nicht schreiben
+      - X.setValue(A.next())
     transitions:
       - target: Z3
       - target: Z4a

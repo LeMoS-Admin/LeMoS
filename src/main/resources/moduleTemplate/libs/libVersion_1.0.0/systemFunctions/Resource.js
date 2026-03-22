@@ -4,10 +4,7 @@ export default class Resource
 
 	static _set(map)
 	{
-		for (let [key, value] of Object.entries(map))
-		{
-			this.#resourceMap.set(key, value);
-		}
+		this.#resourceMap = new Map(Object.entries(map));
 	}
 
 	static get(id)

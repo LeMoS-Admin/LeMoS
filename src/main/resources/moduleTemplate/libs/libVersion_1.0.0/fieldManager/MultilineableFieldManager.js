@@ -25,6 +25,13 @@ export default class MultilineableFieldManager extends FieldManager
 		}
 	}
 
+	scrollToBottom()
+	{
+		// Bei Benutzereingaben nicht ausgeführt, da der Benutzer an jeder Stelle schreiben kann
+		let element = this.getField();
+		element.scrollTop = element.scrollHeight;
+	}
+
 	getField()
 	{
 		if (this.multiline)

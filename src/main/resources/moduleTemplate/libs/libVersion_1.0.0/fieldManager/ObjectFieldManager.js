@@ -1,4 +1,5 @@
-import Module from "../systemFunctions/Module.js";
+import Logger from "../systemFunctions/Logger.js";
+import Controller from "../internalFunctions/Controller.js";
 import FieldManager from "./FieldManager.js";
 import ExpandableFieldManager from "./ExpandableFieldManager.js";
 import ObjectFieldInteractor from "../fieldInteractors/ObjectFieldInteractor.js";
@@ -17,12 +18,8 @@ export default class ObjectFieldManager extends FieldManager
 		}
 		else
 		{
-			// Hinweis: Definition der Werte mittels {} erzeugt ein Object
-			this.fieldMap = new Map();
-			for (let [key, field] of Object.entries(fieldMap))
-			{
-				this.fieldMap.set(key, field);
-			}
+			// Hinweis: Definition der Werte mittels {} erzeugt eine Object-Instanz
+			this.fieldMap = new Map(Object.entries(fieldMap));
 		}
 
 		// Grundsätzlich kümmern sich nur fundamentale Felder (ohne innere Felder) um die Events
@@ -67,7 +64,7 @@ export default class ObjectFieldManager extends FieldManager
 
 	getMessagePrefix()
 	{
-		return this.fieldName + ", " + this.entryName + ": ";
+		return this.fieldName + "[" + this.entryName.replace("entry", "") + "]: "; // Nur die Nummer behalten, Bsp.: "Ausgabetabelle[3]: "
 	}
 
 	getInteractor()
@@ -87,11 +84,15 @@ export default class ObjectFieldManager extends FieldManager
 
 	setValue(value)
 	{
-		if (value instanceof Array)
+		if (value === undefined)
+		{
+			this.clear();
+		}
+		else if (value instanceof Array)
 		{
 			if (value.length !== this.fieldMap.size)
 			{
-				Module.error(this.getMessagePrefix() + "length of value to set must be equal to number of inner #fields");
+				Logger.error(this.getMessagePrefix() + "length of value to set must be equal to number of inner #fields");
 			}
 
 			let fields = this.fieldMap.values().toArray();
@@ -102,26 +103,21 @@ export default class ObjectFieldManager extends FieldManager
 		}
 		else if (value instanceof Map)
 		{
+			this.clear(); // Nicht gesetzte Felder sollen leer sein
 			for (let [key, val] of value.entries())
 			{
 				if (!this.fieldMap.has(key))
 				{
-					Module.error(this.getMessagePrefix() + "field '" + key + "' does not exist");
+					Logger.error(this.getMessagePrefix() + "field '" + key + "' does not exist");
 				}
 				this.fieldMap.get(key).setValue(val);
 			}
 		}
 		else
 		{
-			// Hinweis: Definition der Werte mittels {} erzeugt ein Object
-			for (let [key, val] of Object.entries(value))
-			{
-				if (!this.fieldMap.has(key))
-				{
-					Module.error(this.getMessagePrefix() + "field '" + key + "' does not exist");
-				}
-				this.fieldMap.get(key).setValue(val);
-			}
+			// Hinweis: Definition der Werte mittels {} erzeugt eine Object-Instanz
+			// --> Umwandlung der Object-Instanz in Map und erneutes aufrufen dieser Methode
+			return this.setValue(new Map(Object.entries(value)));
 		}
 	}
 
@@ -140,13 +136,9 @@ export default class ObjectFieldManager extends FieldManager
 
 	resetInternal(excludeInputFields = false)
 	{
-		this.setFailed(false);
+		super.resetInternal(excludeInputFields);
 		for (let field of this.fieldMap.values())
 		{
-			if (excludeInputFields && field.isInputField())
-			{
-				continue;
-			}
 			field.reset(excludeInputFields);
 		}
 	}
@@ -203,9 +195,34 @@ export default class ObjectFieldManager extends FieldManager
 
 	handleChangeEvent(event)
 	{
-		super.validate(true, true);
-		Module._handleChangeEvent("change");
-		event.stopPropagation();
+		event.stopPropagation(); // Muss vor eigentlicher Validierung ausgeführt werden, da diese potenziell einen Fehler wirft
+		super.validate(true);
+		Controller.handleChangeEvent("change");
+	}
+
+	isEnabled()
+	{
+		if (this.fieldMap === undefined)	// Kommt nur während Initialisierung vor
+		{
+			return super.isEnabled();
+		}
+
+		for (let field of this.fieldMap.values())
+		{
+			if (field.isEnabled())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	setEnabled(enabled)
+	{
+		for (let field of this.fieldMap.values())
+		{
+			field.setEnabled(enabled);
+		}
 	}
 }
 

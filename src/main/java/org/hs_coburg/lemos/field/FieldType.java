@@ -6,7 +6,7 @@ public enum FieldType
     TEXT("TextField"),
     SPLIT("SplitField"),
     CHECK("CheckField"),
-    SELECTOR("SelectorField"),
+    SELECT("SelectField"),
     LIST("ListField"),
     TABLE("TableField");
 

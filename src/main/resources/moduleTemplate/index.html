@@ -54,15 +54,15 @@
                 height: 100%;
             }
 
+            #spacer {
+                flex: 1 1 0;
+            }
             #stepSelector {
                 width: 100%;
                 box-sizing: border-box;
                 margin-top: 20px;
             }
 
-            #spacer {
-                flex: 1 1 0;
-            }
             footer {
                 display: flex;
                 flex-wrap: wrap;
@@ -129,7 +129,7 @@
             }
 
             span:not(.label) {
-                margin: 0 0 0 4px;
+                margin: 4px;
                 display: inline-block;
             }
             textarea {
@@ -275,6 +275,9 @@
                 </form>
             </div>
         </section>
+        <section id="spacer">
+            <!--Kein Inhalt-->
+        </section>
         <section class="systemFieldContainer" id='stepSelector'>
             <details class='label'>
                 <summary>Schrittauswahl</summary>
@@ -310,9 +313,6 @@
                 <button id="forwardX">&gt;|</button>
             </div>
         </section>
-        <section id="spacer">
-            <!--Kein Inhalt-->
-        </section>
         <hr>
         <footer>
             <div id='sources'>
@@ -333,12 +333,15 @@
             import TextFieldManager from "./lib/fieldManager/TextFieldManager.js";
             import SplitFieldManager from "./lib/fieldManager/SplitFieldManager.js";
             import CheckFieldManager from "./lib/fieldManager/CheckFieldManager.js";
-            import SelectorFieldManager from "./lib/fieldManager/SelectorFieldManager.js";
+            import SelectFieldManager from "./lib/fieldManager/SelectFieldManager.js";
             import ListFieldManager from "./lib/fieldManager/ListFieldManager.js";
             import TableFieldManager from "./lib/fieldManager/TableFieldManager.js";
+            import Controller from "./lib/internalFunctions/Controller.js";
+            import Scroller from "./lib/internalFunctions/Scroller.js";
+            import Logger from "./lib/systemFunctions/Logger.js";
             import Module from "./lib/systemFunctions/Module.js";
-            import Utils from "./lib/systemFunctions/Utils.js";
             import Resource from "./lib/systemFunctions/Resource.js";
+            import Utils from "./lib/systemFunctions/Utils.js";
             import GlobalVariable from "./lib/GlobalVariable.js";
             import ValidationError from "./lib/ValidationError.js";
 
@@ -354,13 +357,13 @@
             document.getElementById("forwardX").addEventListener("click", () => _nextState(9));
             let _history = [];
 
-            Module.setLogger(new SplitFieldManager("#protocol", "Log", true, false, "\n", true, "String", () => {}).getInteractor())
+            Logger.set(new SplitFieldManager("#protocol", "Log", true, false, "\n", true, "String", () => {}).getInteractor())
             Resource._set({<!--RESOURCES-->});
             Utils._performOverwrite();
 
-            <!--FIELD-VARIABLES-->
+            <!--FIELD-variables-->
 
-            <!--ADDITIONAL-VARIABLES-->
+            <!--ADDITIONAL-variables-->
 
             let _firstState = () =>
             {
@@ -369,25 +372,36 @@
             let _nextTransition = () =>
             {
             };
-            Module._setChangeEventHandler(_restartModule)
+            Controller.setChangeEventHandler(_restartModule)
 
             function _resetModule()
             {
-                Module._resetAllFields();
-                _restartModule();
+                Controller.resetAllFields();
+                Controller.resetVariables();
                 _loadSzenario();
+
+                _firstState();
+                _history.length = 0;
+                _saveStepToHistory(9);
+                window.scrollTo(0, 0);
             }
 
             function _restartModule()
             {
-                Module._resetNonInputFields();
-                _history.length = 0;
+                Scroller.saveCurrentScrollPosition("#stepSelector");
+                Controller.resetNonInputFields();
+                Controller.resetVariables();
+                Scroller.scrollToSavedPosition();
+
                 _firstState();
+                _history.length = 0;
+                _saveStepToHistory(9);
             }
 
             function _nextState(stepSize)
             {
-                Module._validateFields();
+                Scroller.saveCurrentScrollPosition("#stepSelector");
+                Controller.validateFields();
                 while (true)
                 {
                     let ret = _nextTransition();
@@ -396,13 +410,14 @@
                     {
                         // Kein Übergang vollzogen, daher letztes Backup wieder entfernen
                         _history.pop();
-                        return;
+                        break;
                     }
                     if (ret >= stepSize)
                     {
-                        return;
+                        break;
                     }
                 }
+                Scroller.scrollToSavedPosition();
             }
 
             function _previousState(stepSize)
@@ -416,12 +431,14 @@
                 // Wenn kein entsprechender Eintrag gefunden wurde, wird zum Ausgangszustand zurückgegangen
                 if (historyEntryIndex === -1)
                 {
-                    _resetModule();
+                    _restartModule();
                     return;
                 }
 
                 // Wiederherstellen des gespeicherten Backups
+                Scroller.saveCurrentScrollPosition("#stepSelector");
                 _loadStepFromHistory(historyEntryIndex);
+                Scroller.scrollToSavedPosition();
             }
 
             function _saveStepToHistory(stepSize)
@@ -430,8 +447,8 @@
                 let historyEntry = new Map();
                 historyEntry.set("stepSize", stepSize);
                 historyEntry.set("nextTransition", _nextTransition);
-                historyEntry.set("variablesBackup", Module._backupVariables());
-                historyEntry.set("fieldBackup", Module._backupFields());
+                historyEntry.set("variablesBackup", Controller.backupVariables());
+                historyEntry.set("fieldBackup", Controller.backupFields());
                 _history.push(historyEntry);
             }
 
@@ -439,8 +456,8 @@
             {
                 // Laden und wiederherstellen eines Backups
                 let historyEntry = _history.at(index);
-                Module._restoreFields(historyEntry.get("fieldBackup"));
-                Module._restoreVariables(historyEntry.get("variablesBackup"));
+                Controller.restoreFields(historyEntry.get("fieldBackup"));
+                Controller.restoreVariables(historyEntry.get("variablesBackup"));
                 _nextTransition = historyEntry.get("nextTransition");
                 // Abschneiden der zurückgegangenen Einträge, behalten des Aktuellen (Ende des _history-Arrays vorziehen)
                 _history.length = index + 1;
