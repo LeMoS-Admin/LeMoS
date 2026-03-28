@@ -6,15 +6,15 @@ public enum StateImportance
     LOW(1),
     HIGH(2);
 
-    private final int importance;
+    private final int stepSize;
 
-    StateImportance(int importance)
+    StateImportance(int stepSize)
     {
-        this.importance = importance;
+        this.stepSize = stepSize;
     }
 
-    public int asNumber()
+    public int asStepSize()
     {
-        return importance;
+        return stepSize;
     }
 }

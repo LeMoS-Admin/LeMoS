@@ -9,6 +9,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lemos.module.LearningModule;
 import lemos.scenario.Scenario;
 import lemos.scenario.ScenarioWrapper;
+import lemos.state.State;
+import lemos.state.Transition;
 import lemos.util.FileHelper;
 
 import java.io.File;
@@ -45,6 +47,7 @@ public class ModuleReader
                 module.scenarios.add(scenario);
             }
         }
+        validateModule(module);
         return module;
     }
 
@@ -98,6 +101,7 @@ public class ModuleReader
                     steps.append("- replace usages of attribute 'message' (Condition) with attribute 'errorMessage'\n");
                 case "2.0.0":
                 case "2.1.0":
+                case "2.2.0":
                     // TODO bei neuer Version: neue Versionsnummer und (falls nötig) Kompatibilitätsmaßnahmen ergänzen
                     break;
                 default:
@@ -105,7 +109,7 @@ public class ModuleReader
             }
             if (!steps.isEmpty())
             {
-                String currentVersion = "2.1.0"; // TODO bei neuer Version: neue Versionsnummer eintragen
+                String currentVersion = "2.2.0"; // TODO bei neuer Version: neue Versionsnummer eintragen
                 steps.append("- replace value '").append(lemosVersion).append("' for attribute 'lemosVersion' (Settings) with value '").append(currentVersion).append("'");
                 throw new IllegalArgumentException(moduleName + ": configured LeMoS-Version '" + lemosVersion + "' is not fully compatible with current version '" + currentVersion + "'.\n" +
                                                    "Please perform the following actions in the given order to regain compatibility:\n" + steps);
@@ -115,5 +119,29 @@ public class ModuleReader
         {
             System.out.println(moduleName + ": no specified LeMoS-Version (attribute 'lemosVersion' in 'Settings') found, assuming current version");
         }
+    }
+
+    private static void validateModule(LearningModule module)
+    {
+        // Zielzustände der Übergänge müssen existieren
+        for (State state : module.states)
+        {
+            for (Transition transition : state.transitions)
+            {
+                if (module.states.stream().noneMatch(s -> s.id.equals(transition.target)))
+                {
+                    if (transition.name.isEmpty())
+                    {
+                        throw new RuntimeException("Targeted state '%s' not found but configured for transition in state '%s'".formatted(transition.target, state.id));
+                    }
+                    else
+                    {
+                        throw new RuntimeException("Targeted state '%s' not found but configured for transition '%s'".formatted(transition.target, transition.name));
+                    }
+                }
+            }
+        }
+
+
     }
 }

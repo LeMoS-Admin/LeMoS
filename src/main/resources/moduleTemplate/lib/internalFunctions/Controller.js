@@ -2,9 +2,21 @@ import Module from "../systemFunctions/Module.js";
 
 export default class Controller
 {
+	static #states = new Map();
 	static #variables = [];
 	static #fields = [];
 	static #changeEventHandler = () => {};
+
+	// Zustandsverwaltung
+	static registerState(state)
+	{
+		Controller.#states.set(state.stateID, state);
+	}
+
+	static getState(stateID)
+	{
+		return Controller.#states.get(stateID);
+	}
 
 	// Variablenverwaltung
 	static registerVariable(variable)

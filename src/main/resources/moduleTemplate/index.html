@@ -399,6 +399,8 @@
             import SelectFieldManager from "./lib/fieldManager/SelectFieldManager.js";
             import ListFieldManager from "./lib/fieldManager/ListFieldManager.js";
             import TableFieldManager from "./lib/fieldManager/TableFieldManager.js";
+            import State from "./lib/internalFunctions/State.js";
+            import Transition from "./lib/internalFunctions/Transition.js";
             import Controller from "./lib/internalFunctions/Controller.js";
             import Scroller from "./lib/internalFunctions/Scroller.js";
             import Module from "./lib/systemFunctions/Module.js";
@@ -407,7 +409,6 @@
             import States from "./lib/systemFunctions/States.js";
             import Utils from "./lib/systemFunctions/Utils.js";
             import GlobalVariable from "./lib/GlobalVariable.js";
-            import ValidationError from "./lib/ValidationError.js";
 
             <!--ADDITIONAL-IMPORTS-->
 
@@ -439,13 +440,13 @@
 
             <!--ADDITIONAL-VARIABLES-->
 
-            let _firstState = () =>
+            let _currentState;
+
+            function _getFirstState()
             {
-                return <!--ENTRY-STATE-CALL-->
-            };
-            let _nextTransition = () =>
-            {
-            };
+                return Controller.getState('<!--ENTRY-STATE-ID-->');
+            }
+
             Controller.setChangeEventHandler(_restartModule)
 
             function _resetModule()
@@ -470,7 +471,8 @@
             {
                 States._reset();                    // Zurücksetzen der bisher gespeicherten Werte
                 Module.clearOutputs();              // Entfernen der bisherigen Ausgaben
-                _firstState();                      // Neustarten des Lernmoduls beim Start-Zustand
+                _currentState = _getFirstState();   // Zurücksetzen aktuellen Zustands auf den Start-Zustand
+                _currentState.performActions();     // Neustarten des Lernmoduls durch Ausführen des Start-Zustands
                 _history.length = 0;                // Zurücksetzen der bisher gespeicherten Historie
                 _saveStepToHistory(9);              // Aktuellen Zustand speichern, damit zur Ausgangssituation mit den eingegebenen Werten zurückgekehrt werden kann (9 = höchste Wichtigkeit, um Zustand unüberspringbar zu machen)
                 _setNextButtonEnabled(true);        // Aktivierender Weiter-Buttons, da sich Lernmodul nun wieder am Start befindet
@@ -487,30 +489,28 @@
 
                 while (true)
                 {
-                    let ret = _nextTransition();
-                    _saveStepToHistory(ret);
-                    if (ret === -1)     // Kein Übergang vollzogen
+                    _currentState = _currentState.getNextState();
+                    if (_currentState === null)     // Kein Übergang vollzogen
                     {
-                        // Letztes Backup wieder entfernen
-                        _history.pop();
-
                         // Deaktivieren der Weiter-Buttons, da kein Fortsetzen möglich ist
                         _setNextButtonEnabled(false);
-
                         break;
                     }
-                    if (ret === 9)
+
+                    _currentState.performActions();
+                    _saveStepToHistory(_currentState.stepSize);
+                    if (_currentState.stepSize === 9)
                     {
                         // Deaktivieren der Weiter-Buttons, da Endzustand erreicht
                         _setNextButtonEnabled(false);
                         break;
                     }
-                    if (ret >= stepSize)
+                    else if (_currentState.stepSize >= stepSize)
                     {
                         break;
                     }
                 }
-                States._stepCount = _history.length - 1; // Der Einstiegszustand soll nicht mitgezählt werden
+                States._setStepCount(_history.length - 1); // Der Einstiegszustand soll nicht mitgezählt werden
                 Scroller.scrollToSavedPosition();
             }
 
@@ -538,7 +538,7 @@
                 // Wiederherstellen des gespeicherten Backups
                 Scroller.saveCurrentScrollPosition("#stepSelector");
                 _loadStepFromHistory(historyEntryIndex);
-                States._stepCount = _history.length - 1; // Der Einstiegszustand soll nicht mitgezählt werden
+                States._setStepCount(_history.length - 1); // Der Einstiegszustand soll nicht mitgezählt werden
                 Scroller.scrollToSavedPosition();
             }
 
@@ -547,7 +547,7 @@
                 // Erstellen und speichern eines Backups
                 let historyEntry = new Map();
                 historyEntry.set("stepSize", stepSize);
-                historyEntry.set("nextTransition", _nextTransition);
+                historyEntry.set("currentState", _currentState);
                 historyEntry.set("statesBackup", States._backup());
                 historyEntry.set("variablesBackup", Controller.backupVariables());
                 historyEntry.set("fieldBackup", Controller.backupFields());
@@ -563,7 +563,7 @@
                 Controller.restoreFields(historyEntry.get("fieldBackup"));
                 Controller.restoreVariables(historyEntry.get("variablesBackup"));
                 States._restore(historyEntry.get("statesBackup"));
-                _nextTransition = historyEntry.get("nextTransition");
+                _currentState = historyEntry.get("currentState");
                 // Abschneiden der zurückgegangenen Einträge, behalten des Aktuellen (Ende des _history-Arrays vorziehen)
                 _history.length = index + 1;
             }

@@ -1,4 +1,3 @@
-import Module from "../systemFunctions/Module.js";
 import Controller from "../internalFunctions/Controller.js";
 import ValidationError from "../ValidationError.js";
 

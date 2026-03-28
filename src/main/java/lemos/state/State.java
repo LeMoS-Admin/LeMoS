@@ -50,19 +50,6 @@ public class State
         validate();
     }
 
-    public static State findState(String stateID)
-    {
-        State state = LearningModule.get().states.stream().filter(s -> s.id.equals(stateID)).findFirst().orElse(null);
-        if (state != null)
-        {
-            return state;
-        }
-        else
-        {
-            throw new RuntimeException("No state with id " + stateID + " found");
-        }
-    }
-
     private void validate()
     {
         if (id.matches(".*\\s.*"))
@@ -83,83 +70,22 @@ public class State
 
     public String generateStateFunctionJS()
     {
-        String template = """
-                          function {{functionName}}
-                          {
-                            States._currentStateID = `{{id}}`;
-                            States._currentStateName = `{{name_plain}}`;
-                            States._currentStateExplanation = `{{explanation_plain}}`;
-                            (() => {
-                              {{actions}}
-                            })();
-                            Module.log(`Reached state {{id}}{{name}}{{explanation}}`);
-                            {{explanationPrint}}
-                            _nextTransition = () => {
-                              States._lastStateID = `{{id}}`;
-                              States._lastStateName = `{{name_plain}}`;
-                              States._lastStateExplanation = `{{explanation_plain}}`;
-                              {{transitions}}
-                              {{error}}
-                            }
-                            return {{importance}};
-                          }
-                          """;
+        String template = "new State('{{id}}', '{{name}}', '{{explanation}}', {{stepSize}}, '{{errorMessage}}', () => {\n{{actions}}}, () => {\n{{transitions}}});\n";
         return performReplacements(template);
     }
 
     private String performReplacements(String string)
     {
         return string.replace("{{id}}", StringHelper.escape(id))
-                     .replace("{{name}}", StringHelper.escape(getName()))
-                     .replace("{{name_plain}}", StringHelper.escape(name))
-                     .replace("{{explanation}}", StringHelper.escape(getExplanation()))
-                     .replace("{{explanation_plain}}", StringHelper.escape(explanation))
-                     .replace("{{explanationPrint}}", getExplanationPrint())
-                     .replace("{{type}}", type.asName())
-                     .replace("{{importance}}", getImportance())
+                     .replace("{{name}}", StringHelper.escape(name))
+                     .replace("{{explanation}}", StringHelper.escape(explanation))
+                     .replace("{{stepSize}}", getStepSize())
                      .replace("{{actions}}", Operation.generateActionJS(actions))
                      .replace("{{transitions}}", generateTransitionsJS())
-                     .replace("{{error}}", getError())
-                     .replace("{{functionName}}", generateFunctionCallJS());
+                     .replace("{{errorMessage}}", StringHelper.escape(errorMessage));
     }
 
-    private String getName()
-    {
-        if (name.isEmpty())
-        {
-            return "";
-        }
-        else
-        {
-            return ": " + name;
-        }
-    }
-
-    private String getExplanation()
-    {
-        if (explanation.isEmpty())
-        {
-            return "";
-        }
-        else
-        {
-            return " (" + explanation + ")";
-        }
-    }
-
-    private String getExplanationPrint()
-    {
-        if (explanation.isEmpty())
-        {
-            return "";
-        }
-        else
-        {
-            return "Module.print(`" + StringHelper.escape(explanation) + "`);";
-        }
-    }
-
-    private String getImportance()
+    private String getStepSize()
     {
         if (transitions.isEmpty())
         {
@@ -167,19 +93,7 @@ public class State
         }
         else
         {
-            return Integer.toString(importance.asNumber());
-        }
-    }
-
-    private String getError()
-    {
-        if (errorMessage.isEmpty())
-        {
-            return "";
-        }
-        else
-        {
-            return "Module.fail(`" + StringHelper.escape(errorMessage) + "`);";
+            return Integer.toString(importance.asStepSize());
         }
     }
 
@@ -187,10 +101,7 @@ public class State
     {
         if (transitions.isEmpty())
         {
-            return """
-                   Module.log("No further transitions, learning module is completed");
-                   return -1;
-                   """;
+            return "return null;";
         }
 
         StringBuilder transitionsJS     = new StringBuilder();
@@ -203,7 +114,7 @@ public class State
                 defaultTransition = transition;
                 continue;
             }
-            transitionsJS.append(transition.generateTransitionJS());
+            transitionsJS.append(transition.generateTransitionJS()).append("\n");
         }
 
         // Festlegen des Verhaltens im Fall, dass keiner der bedingten Übergänge (Transitions) erfolgen konnte (ELSE-Fall)
@@ -215,10 +126,7 @@ public class State
         else
         {
             // Falls kein unbedingter Übergang definiert wurde, wird als ELSE-Fall '-1' zurückgegeben (kein Übergang möglich)
-            transitionsJS.append("""
-                                 Module.log("No suitable transition, staying in current state");
-                                 return -1;
-                                 """);
+            transitionsJS.append("return null;");
         }
         return transitionsJS.toString();
     }

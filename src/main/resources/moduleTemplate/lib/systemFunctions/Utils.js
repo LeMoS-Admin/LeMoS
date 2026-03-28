@@ -21,13 +21,11 @@ export default class Utils
 
 	static #overwriteArray()
 	{
-		Array.prototype.includes = function (searchElement, fromIndex)
-		{
+		Array.prototype.includes = function (searchElement, fromIndex) {
 			return this.indexOf(searchElement, fromIndex) !== -1;
 		};
 
-		Array.prototype.indexOf = function (searchElement, fromIndex)
-		{
+		Array.prototype.indexOf = function (searchElement, fromIndex) {
 			// Übernommen aus Dokumentation von Array.indexOf()
 			if (-this.length <= fromIndex < 0)
 			{
@@ -54,8 +52,7 @@ export default class Utils
 			return -1;
 		};
 
-		Array.prototype.lastIndexOf = function (searchElement, fromIndex)
-		{
+		Array.prototype.lastIndexOf = function (searchElement, fromIndex) {
 			// Übernommen aus Dokumentation von Array.indexOf()
 			if (-this.length <= fromIndex < 0)
 			{
@@ -82,51 +79,42 @@ export default class Utils
 			return -1;
 		};
 
-		Array.prototype.toString = function ()
-		{
+		Array.prototype.toString = function () {
 			return "[" + this.map(value => Utils.objectToPrint(value)).join(", ") + "]";
 		}
 	}
 
 	static #extendArray()
 	{
-		Array.prototype.getLength = function ()
-		{
+		Array.prototype.getLength = function () {
 			return this.length;
 		};
 
-		Array.prototype.first = function ()
-		{
+		Array.prototype.first = function () {
 			return this.at(0);
 		};
 
-		Array.prototype.last = function ()
-		{
+		Array.prototype.last = function () {
 			return this.at(this.length - 1);
 		};
 
-		Array.prototype.contains = function (searchElement, fromIndex)
-		{
+		Array.prototype.contains = function (searchElement, fromIndex) {
 			return this.includes(searchElement, fromIndex);
 		};
 
-		Array.prototype.add = function (...element)
-		{
+		Array.prototype.add = function (...element) {
 			return this.push(...element);
 		};
 
-		Array.prototype.set = function (index, ...item)
-		{
+		Array.prototype.set = function (index, ...item) {
 			return this.splice(index, 1, ...item);
 		};
 
-		Array.prototype.insert = function (index, ...item)
-		{
+		Array.prototype.insert = function (index, ...item) {
 			return this.splice(index, 0, ...item);
 		};
 
-		Array.prototype.remove = function (searchElement)
-		{
+		Array.prototype.remove = function (searchElement) {
 			let index = this.indexOf(searchElement);
 			if (index !== -1)
 			{
@@ -134,13 +122,11 @@ export default class Utils
 			}
 		};
 
-		Array.prototype.removeIndex = function (start, end = start + 1)
-		{
+		Array.prototype.removeIndex = function (start, end = start + 1) {
 			return this.splice(start, end - start);
 		};
 
-		Array.prototype.unify = function ()
-		{
+		Array.prototype.unify = function () {
 			let oldValue = Array.from(this);
 			this.length = 0;
 			for (let value of oldValue)
@@ -153,29 +139,24 @@ export default class Utils
 			return this;
 		};
 
-		Array.prototype.minimum = function ()
-		{
+		Array.prototype.minimum = function () {
 			return this.map(val => Number(val)).sort((a, b) => a - b).at(0);
 		};
 
-		Array.prototype.maximum = function ()
-		{
+		Array.prototype.maximum = function () {
 			return this.map(val => Number(val)).sort((a, b) => a - b).at(-1);
 		};
 
-		Array.prototype.average = function ()
-		{
+		Array.prototype.average = function () {
 			return this.sum() / this.length;
 		};
 
-		Array.prototype.median = function ()
-		{
+		Array.prototype.median = function () {
 			let middle = Math.round((this.length - 1) / 2);
 			return this.map(val => Number(val)).sort((a, b) => a - b).at(middle);
 		};
 
-		Array.prototype.sum = function ()
-		{
+		Array.prototype.sum = function () {
 			let sum = 0;
 			for (let value of this)
 			{
@@ -187,18 +168,15 @@ export default class Utils
 
 	static #extendMap()
 	{
-		Map.prototype.getLength = function ()
-		{
+		Map.prototype.getLength = function () {
 			return this.size;
 		};
 
-		Map.prototype.remove = function (key)
-		{
+		Map.prototype.remove = function (key) {
 			return this.delete(key);
 		};
 
-		Map.prototype.toString = function ()
-		{
+		Map.prototype.toString = function () {
 			let pairs = [];
 			for (let [key, value] of this.entries())
 			{
@@ -210,13 +188,11 @@ export default class Utils
 
 	static #extendString()
 	{
-		String.prototype.getLength = function ()
-		{
+		String.prototype.getLength = function () {
 			return this.length;
 		};
 
-		String.prototype.asNumber = function ()
-		{
+		String.prototype.asNumber = function () {
 			if (this.trim() === "") // "" würde zu 0 konvertiert und wäre somit nicht mehr leer
 			{
 				return NaN;
@@ -227,20 +203,17 @@ export default class Utils
 			}
 		};
 
-		String.prototype.insert = function (index, ...str)
-		{
+		String.prototype.insert = function (index, ...str) {
 			return this.slice(0, index)
 					   .concat(...str)
 					   .concat(this.slice(index, this.length));
 		};
 
-		String.prototype.remove = function (indexStart, indexEnd = indexStart + 1)
-		{
+		String.prototype.remove = function (indexStart, indexEnd = indexStart + 1) {
 			return this.slice(0, indexStart) + this.slice(indexEnd);
 		};
 
-		String.prototype.replaceAt = function (index, ...str)
-		{
+		String.prototype.replaceAt = function (index, ...str) {
 			return this.slice(0, index)
 					   .concat(...str)
 					   .concat(this.slice(index + 1, this.length));

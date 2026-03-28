@@ -1,98 +1,115 @@
 export default class States
 {
-	static _stepCount;
-	static _currentStateID;
-	static _currentStateName;
-	static _currentStateExplanation;
-	static _lastStateID;
-	static _lastStateName;
-	static _lastStateExplanation;
-	static _lastTransitionName;
-	static _lastTransitionExplanation;
+	static #stepCount;
+	static #currentStateID;
+	static #currentStateName;
+	static #currentStateExplanation;
+	static #lastStateID;
+	static #lastStateName;
+	static #lastStateExplanation;
+	static #lastTransitionName;
+	static #lastTransitionExplanation;
 
 	static _reset()
 	{
-		States._stepCount = 0;
-		States._currentStateID = undefined;
-		States._currentStateName = undefined;
-		States._currentStateExplanation = undefined;
-		States._lastStateID = undefined;
-		States._lastStateName = undefined;
-		States._lastStateExplanation = undefined;
-		States._lastTransitionName = undefined;
-		States._lastTransitionExplanation = undefined;
+		States.#stepCount = 0;
+		States.#currentStateID = undefined;
+		States.#currentStateName = undefined;
+		States.#currentStateExplanation = undefined;
+		States.#lastStateID = undefined;
+		States.#lastStateName = undefined;
+		States.#lastStateExplanation = undefined;
+		States.#lastTransitionName = undefined;
+		States.#lastTransitionExplanation = undefined;
 	}
 
 	static _backup()
 	{
 		let backup = new Map();
-		backup.set("stepCount", States._stepCount);
-		backup.set("currentStateID", States._currentStateID);
-		backup.set("currentStateName", States._currentStateName);
-		backup.set("currentStateExplanation", States._currentStateExplanation);
-		backup.set("lastStateID", States._lastStateID);
-		backup.set("lastStateName", States._lastStateName);
-		backup.set("lastStateExplanation", States._lastStateExplanation);
-		backup.set("lastTransitionName", States._lastTransitionName);
-		backup.set("lastTransitionExplanation", States._lastTransitionExplanation);
+		backup.set("stepCount", States.#stepCount);
+		backup.set("currentStateID", States.#currentStateID);
+		backup.set("currentStateName", States.#currentStateName);
+		backup.set("currentStateExplanation", States.#currentStateExplanation);
+		backup.set("lastStateID", States.#lastStateID);
+		backup.set("lastStateName", States.#lastStateName);
+		backup.set("lastStateExplanation", States.#lastStateExplanation);
+		backup.set("lastTransitionName", States.#lastTransitionName);
+		backup.set("lastTransitionExplanation", States.#lastTransitionExplanation);
 		return backup;
 	}
 
 	static _restore(backup)
 	{
-		States._stepCount = backup.get("stepCount");
-		States._currentStateID = backup.get("currentStateID");
-		States._currentStateName = backup.get("currentStateName");
-		States._currentStateExplanation = backup.get("currentStateExplanation");
-		States._lastStateID = backup.get("lastStateID");
-		States._lastStateName = backup.get("lastStateName");
-		States._lastStateExplanation = backup.get("lastStateExplanation");
-		States._lastTransitionName = backup.get("lastTransitionName");
-		States._lastTransitionExplanation = backup.get("lastTransitionExplanation");
+		States.#stepCount = backup.get("stepCount");
+		States.#currentStateID = backup.get("currentStateID");
+		States.#currentStateName = backup.get("currentStateName");
+		States.#currentStateExplanation = backup.get("currentStateExplanation");
+		States.#lastStateID = backup.get("lastStateID");
+		States.#lastStateName = backup.get("lastStateName");
+		States.#lastStateExplanation = backup.get("lastStateExplanation");
+		States.#lastTransitionName = backup.get("lastTransitionName");
+		States.#lastTransitionExplanation = backup.get("lastTransitionExplanation");
+	}
+
+	static _setStepCount(stepCount)
+	{
+		this.#stepCount = stepCount;
+	}
+
+	static _applyTransition(transition)
+	{
+		States.#lastStateID = States.#currentStateID;
+		States.#lastStateName = States.#currentStateName;
+		States.#lastStateExplanation = States.#currentStateExplanation;
+		States.#lastTransitionName = transition.transitionName;
+		States.#lastTransitionExplanation = transition.transitionExplanation;
+		States.#currentStateID = transition.targetState.stateID;
+		States.#currentStateName = transition.targetState.stateName;
+		States.#currentStateExplanation = transition.targetState.stateExplanation;
 	}
 
 	static getStepCount()
 	{
-		return States._stepCount;
+		return States.#stepCount;
 	}
 
 	static getCurrentStateID()
 	{
-		return States._currentStateID;
+		return States.#currentStateID;
 	}
 
 	static getCurrentStateName()
 	{
-		return States._currentStateName;
+		return States.#currentStateName;
 	}
 
 	static getCurrentStateExplanation()
 	{
-		return States._currentStateExplanation;
+		return States.#currentStateExplanation;
 	}
 
 	static getLastStateID()
 	{
-		return States._lastStateID;
+		return States.#lastStateID;
 	}
 
 	static getLastStateName()
 	{
-		return States._lastStateName;
+		return States.#lastStateName;
 	}
 
 	static getLastStateExplanation()
 	{
-		return States._lastStateExplanation;
+		return States.#lastStateExplanation;
 	}
 
 	static getLastTransitionName()
 	{
-		return States._lastTransitionName;
+		return States.#lastTransitionName;
 	}
 
 	static getLastTransitionExplanation()
 	{
-		return States._lastTransitionExplanation;
+		return States.#lastTransitionExplanation;
 	}
 }

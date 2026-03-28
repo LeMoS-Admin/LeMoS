@@ -61,17 +61,16 @@ export default class SplitFieldManager extends MultilineableFieldManager
 		if (value instanceof Array)
 		{
 			// NaN muss explizit in "" umgewandelt werden, damit der Eintrag leer bleibt und nicht zu "NaN" wird
-			this.getField().value = value.map(val =>
-											  {
-												  if (Number.isNaN(val))
-												  {
-													  return ""
-												  }
-												  else
-												  {
-													  return val
-												  }
-											  }).join(this.separator);
+			this.getField().value = value.map(val => {
+				if (Number.isNaN(val))
+				{
+					return ""
+				}
+				else
+				{
+					return val
+				}
+			}).join(this.separator);
 		}
 		else
 		{
