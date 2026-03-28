@@ -8,7 +8,6 @@ cd ..
 # Bereinigen der alten LeMoS-Versionen
 rm -f lemos*.jar
 
-
 # Kompilieren des LeMoS
 ./scripts/mvnw -f ../pom.xml clean package
 
@@ -22,7 +21,10 @@ lemos=$(ls target/lemos*.jar)	# Ermitteln des konkreten Pfades zur  lemos*.jar
 lemos="${lemos##*/}"		# Pfad entfernen, um Namen der Datei (inkl. Endung) zu erhalten
 echo Generated LeMoS-Version: "$lemos"
 
-# Verschieben der jar-Datei in den Oberordner (praktischer für spätere Auslieferung des fertigen LeMoS)
-mv "target/$lemos" "$lemos"
+# Verschieben der jar-Datei in den Skript-Oberordner (praktischer für spätere Auslieferung des fertigen LeMoS)
+mv "target/$lemos" "scripts/$lemos"
+
+# Bereinigen der temporären Dateien von Maven
+./scripts/mvnw -f ../pom.xml clean
 
 exit 0

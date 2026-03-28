@@ -27,8 +27,11 @@ for %%f in (target\lemos*.jar) do (
 )
 echo Generated LeMoS-Version: %lemos%
 
-:: Verschieben der jar-Datei in den Oberordner (praktischer für spätere Auslieferung des fertigen LeMoS)
-move target\%lemos% %lemos% >nul
+:: Verschieben der jar-Datei in den Skript-Oberordner (praktischer für spätere Auslieferung des fertigen LeMoS)
+move target\%lemos% scripts\%lemos% >nul
+
+:: Bereinigen der temporären Dateien von Maven
+call scripts\mvnw.cmd clean
 
 cd /d %oldDir%
 exit /b 0

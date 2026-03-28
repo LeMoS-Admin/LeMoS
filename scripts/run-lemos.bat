@@ -11,7 +11,7 @@ set "OPTIONS="                  & :: OPTIONS = Optionen für LeMoS-Aufruf, folge
 
 :: LeMoS-Dateinamen ermitteln, indem über alle passenden Dateien iteriert wird (es sollte nur einen Eintrag geben, ggf. werden aber auch alte Versionen gefunden)
 :: Schleife stellt sicher, dass der letzte Eintrag genommen wird (für den Fall, dass es mehr als einen Eintrag gibt, ist der Letzte vermutlich der Aktuellste)
-for %%f in (lemos*.jar) do (
+for %%f in (scripts\lemos*.jar) do (
 	set "lemos=%%f"
 )
 echo Found LeMoS-Version: %lemos%
@@ -44,17 +44,16 @@ for %%x in (%*) do (
 	if exist "!pfad!\resources\" (
 		xcopy "!pfad!\resources" "%LWD%\%TEMPLATE%\res" /e /i /q /y >nul
 	)
-	
+
 	:: Aufruf des LeMoS-Generators zur Verarbeitung der Lernmodulkonfiguration (Parameter: Lernmodulkonfigurationsdatei, Zielordner)
 	echo !name!: starting generator
 	cd /d "%SWD%"					& :: LeMoS muss in Startverzeichnis aufgerufen werden, damit es etwaige relative Pfade korrekt auflösen kann
 	java -jar "%LWD%\%lemos%" %%x "%LWD%\%TEMPLATE%" %OPTIONS%"
 
 	:: Behandeln von erfolglosen Generierungen (über einen vom LeMoS-Generator zurückgegebenen Statuscode, der ungleich 0 ist)
-	if %errorlevel% neq 0 (
+	if !errorlevel! neq 0 (
 		set failedGeneration=true
 		rmdir "%LWD%\%TEMPLATE%" /s /q
-		echo.
 		goto :continue
 	)
 
@@ -79,7 +78,8 @@ for %%x in (%*) do (
 )
 
 cd /d "%SWD%"
-if %failedGeneration% equ "true" (
+
+if !failedGeneration!==true (
 	echo Failed with at least one generation
 	exit /b 1
 ) else (
