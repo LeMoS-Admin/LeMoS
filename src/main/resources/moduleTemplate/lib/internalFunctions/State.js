@@ -23,13 +23,13 @@ export default class State
 		{
 			logMessage += ": " + this.stateName;
 		}
-		if (this.stateExplanation !== null)
+		if (this.stateExplanation !== "")
 		{
 			logMessage += " (" + this.stateExplanation + ")";
 		}
 		Module.log(logMessage);
 
-		if (this.stateExplanation !== null)
+		if (this.stateExplanation !== "")
 		{
 			Module.print(this.stateExplanation);
 		}

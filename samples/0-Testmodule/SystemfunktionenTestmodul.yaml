@@ -370,7 +370,7 @@ states:
   - id: Z12a
     name: Fehler aufgetreten
     actions:
-      - "Module.alert('Es sind fehler aufgetreten:\\n' + errors.value.map(err => err.message).join('\\n'))"
+      - "Module.alert('Es sind Fehler aufgetreten:\\n' + errors.value.map(err => err.message).join('\\n'))"
   - id: Z12b
     name: Alle Tests erfolgreich
     actions:
