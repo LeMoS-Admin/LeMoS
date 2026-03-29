@@ -37,7 +37,7 @@ public class Condition
         String template = """
                           if (!({{terms}}))
                           {
-                            throw new ValidationError(`{{errorMessage}}`);
+                            Module.fail(`{{errorMessage}}`);
                           }
                           """;
         return performReplacements(template).replace("{{fieldName}}", fieldName);

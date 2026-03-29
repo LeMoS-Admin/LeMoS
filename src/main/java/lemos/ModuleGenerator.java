@@ -68,7 +68,7 @@ public class ModuleGenerator
             temp.append(state.generateStateFunctionJS());
         }
         State entryState = states.stream().filter(s -> s.type.equals(StateType.ENTRY)).findFirst().get();
-        return result.replace("<!--ENTRY-STATE-CALL-->", entryState.generateFunctionCallJS())
+        return result.replace("<!--ENTRY-STATE-ID-->", entryState.id)
                      .replace("<!--STATES-->", temp.toString());
     }
 

@@ -12,8 +12,7 @@ export default class ExpandableFieldManager extends FieldManager
 		this.initialEntries = initialEntries;
 		this.maxEntries = maxEntries;
 
-		this.getChildElement(".buttons > .addEntryButton").addEventListener("click", () =>
-		{
+		this.getChildElement(".buttons > .addEntryButton").addEventListener("click", () => {
 			Controller.handleChangeEvent();
 			// Die Scroll-Position muss stets vom Auslöser einer Änderung angepasst werden, damit die Anpassung nicht mehrfach erfolgt
 			// --> Muss im EventListener beschrieben werden, da this.addEntry(); auch intern aufgerufen wird
@@ -21,8 +20,7 @@ export default class ExpandableFieldManager extends FieldManager
 			this.addEntry();
 			Scroller.scrollToSavedPosition();
 		});
-		this.getChildElement(".buttons > .removeEntryButton").addEventListener("click", () =>
-		{
+		this.getChildElement(".buttons > .removeEntryButton").addEventListener("click", () => {
 			Controller.handleChangeEvent();
 			// Die Scroll-Position muss stets vom Auslöser einer Änderung angepasst werden, damit die Anpassung nicht mehrfach erfolgt
 			// --> Muss im EventListener beschrieben werden, da this.removeEntry(); auch intern aufgerufen wird
