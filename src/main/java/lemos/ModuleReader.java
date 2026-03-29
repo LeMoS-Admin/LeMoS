@@ -100,8 +100,8 @@ public class ModuleReader
                 case "1.2.3":
                     steps.append("- replace usages of attribute 'message' (Condition) with attribute 'errorMessage'\n");
                 case "2.0.0":
-                case "2.1.0":
-                case "2.2.0":
+                case "2.1.0": // Letzte Version für Masterarbeit
+                case "2.2.0": // Erste Version der Veröffentlichung
                     // TODO bei neuer Version: neue Versionsnummer und (falls nötig) Kompatibilitätsmaßnahmen ergänzen
                     break;
                 default:

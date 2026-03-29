@@ -469,9 +469,9 @@
 
             function _resetSteps()
             {
-                States._reset();                    // Zurücksetzen der bisher gespeicherten Werte
-                Module.clearOutputs();              // Entfernen der bisherigen Ausgaben
                 _currentState = _getFirstState();   // Zurücksetzen aktuellen Zustands auf den Start-Zustand
+                States._reset(_currentState);       // Zurücksetzen der bisher gespeicherten Werte auf den Start-Zustand
+                Module.clearOutputs();              // Entfernen der bisherigen Ausgaben
                 _currentState.performActions();     // Neustarten des Lernmoduls durch Ausführen des Start-Zustands
                 _history.length = 0;                // Zurücksetzen der bisher gespeicherten Historie
                 _saveStepToHistory(9);              // Aktuellen Zustand speichern, damit zur Ausgangssituation mit den eingegebenen Werten zurückgekehrt werden kann (9 = höchste Wichtigkeit, um Zustand unüberspringbar zu machen)

@@ -10,12 +10,12 @@ export default class States
 	static #lastTransitionName;
 	static #lastTransitionExplanation;
 
-	static _reset()
+	static _reset(entryState)
 	{
 		States.#stepCount = 0;
-		States.#currentStateID = undefined;
-		States.#currentStateName = undefined;
-		States.#currentStateExplanation = undefined;
+		States.#currentStateID = entryState.stateID;
+		States.#currentStateName = entryState.stateName;
+		States.#currentStateExplanation = entryState.stateExplanation;
 		States.#lastStateID = undefined;
 		States.#lastStateName = undefined;
 		States.#lastStateExplanation = undefined;
