@@ -13,7 +13,7 @@ general:
         E-Mail: "max@mustermann.de"
         Büro: "0-815"
   settings:
-    lemosVersion: "2.1.0"
+    lemosVersion: "2.2.0"
 fields:
   - id: "M"
     name: "Minuend"

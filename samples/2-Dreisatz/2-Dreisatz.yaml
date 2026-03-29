@@ -3,7 +3,7 @@ general:
   heading: Dreisatz
   explanation: Interaktives Modul, um den Dreisatz auszuprobieren
   settings:
-    lemosVersion: 2.1.0
+    lemosVersion: 2.2.0
 
 fields:
   - id: LS

@@ -6,7 +6,7 @@ general:
     --> Speicherabschnitte können für Prozesse allokiert und freigegeben werden<br>
     L1 = Allokation und Freigabe als Funktionen ausgelagert
   settings:
-    lemosVersion: 2.1.0
+    lemosVersion: 2.2.0
   variables:
     - name: X
   functions:

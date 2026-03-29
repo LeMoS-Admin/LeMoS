@@ -3,7 +3,7 @@ general:
   heading: Sortieralgorithmus V2
   explanation: Sortieren einer Liste von Werten durch direktes Einfügen ("Insertionsort")
   settings:
-    lemosVersion: 2.1.0
+    lemosVersion: 2.2.0
 
 fields:
   - id: 'E'

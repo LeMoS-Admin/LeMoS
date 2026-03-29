@@ -32,7 +32,7 @@ general:
         E-Mail: dieter.wissmann@hs-coburg.de
         Büro: 2-127
   settings:
-    lemosVersion: 2.1.0
+    lemosVersion: 2.2.0
     differentStepSizes: false
   logger:
     minWidth: 120
