@@ -2,10 +2,8 @@ Wichtigste Änderungen in LeMoS-2.2.0:
 - Kompatibilität: abwärtskompatibel zu Version 2.0.0
 - Fehlerbehebungen in den Skripten
 - LeMos-Jar-Datei nun bei den Skripten abgelegt
-- Internes Refactoring
-
-
-TODO: - LeMoS-Version in allen Konfigurationen auf 2.2.0 angepasst
+- Internes Refactoring der Zustandsverwaltung
+- LeMoS-Version in allen Konfigurationen auf 2.2.0 angepasst
 
 Allgemeine Hinweise:
 - Zum Ausführen der Lernmodule wird ein aktueller Browser mit mindestens ECMAScript-Version es2022 benötigt
